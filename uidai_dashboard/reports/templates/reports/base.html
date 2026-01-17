@@ -1,276 +1,314 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}UIDAI Dashboard{% endblock %}</title>
-    
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <!-- Google Fonts: Outfit for headings, Inter for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- DataTables -->
+    <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     <style>
         :root {
-            --primary: #4e73df;
-            --secondary: #858796;
-            --success: #1cc88a;
-            --info: #36b9cc;
-            --warning: #f6c23e;
-            --danger: #e74a3b;
-            --dark: #5a5c69;
-            --sidebar-width: 250px;
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --info: #4895ef;
+            --warning: #f72585;
+            /* Using vibrant pink/red for contrast */
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --sidebar-width: 260px;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
+
         body {
-            background-color: #f8f9fc;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
             overflow-x: hidden;
         }
-        
-        /* Sidebar */
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Sidebar - Glassmorphism Dark */
         .sidebar {
             width: var(--sidebar-width);
             min-height: 100vh;
-            background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+            background: linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%);
             position: fixed;
             left: 0;
             top: 0;
-            z-index: 100;
-        }
-        
-        .sidebar-brand {
-            padding: 1.5rem 1rem;
-            text-align: center;
+            z-index: 1000;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
             color: white;
+            padding-top: 1rem;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-brand h4 {
             font-weight: 700;
-            font-size: 1.25rem;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+            margin: 0;
+            background: linear-gradient(to right, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
+
         .sidebar-nav {
-            padding: 1rem 0;
+            padding: 0 1rem;
         }
-        
+
         .sidebar-nav a {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            color: rgba(255,255,255,0.8);
+            padding: 0.85rem 1rem;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            transition: all 0.2s;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: linear-gradient(90deg, rgba(67, 97, 238, 0.2), rgba(67, 97, 238, 0.1));
+            color: #fff;
+            transform: translateX(5px);
+            border-left: 3px solid var(--primary);
         }
-        
+
         .sidebar-nav a i {
-            margin-right: 0.75rem;
-            font-size: 1rem;
+            margin-right: 0.85rem;
+            font-size: 1.1rem;
         }
-        
+
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
-            padding: 2rem;
+            padding: 2.5rem;
         }
-        
+
+        /* Top Navbar (if needed) */
+
         /* Cards */
-        .metric-card {
+        .card {
             background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.1);
             border: none;
-            transition: transform 0.2s;
-        }
-        
-        .metric-card:hover {
-            transform: translateY(-2px);
-        }
-        
-        .metric-card .card-body {
-            padding: 1.25rem;
-        }
-        
-        .metric-card .metric-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--secondary);
-            margin-bottom: 0.25rem;
-        }
-        
-        .metric-card .metric-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-        
-        .metric-card .metric-icon {
-            font-size: 2rem;
-            opacity: 0.3;
-        }
-        
-        .border-left-primary { border-left: 4px solid var(--primary); }
-        .border-left-success { border-left: 4px solid var(--success); }
-        .border-left-warning { border-left: 4px solid var(--warning); }
-        .border-left-danger { border-left: 4px solid var(--danger); }
-        .border-left-info { border-left: 4px solid var(--info); }
-        
-        /* Chart Cards */
-        .chart-card {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.1);
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
             margin-bottom: 1.5rem;
         }
-        
-        .chart-card .card-header {
-            background: none;
-            border-bottom: 1px solid #e3e6f0;
-            padding: 1rem 1.25rem;
+
+        .card:hover {
+            box-shadow: var(--card-hover-shadow);
+            transform: translateY(-3px);
         }
-        
-        .chart-card .card-header h6 {
-            font-weight: 700;
-            color: var(--primary);
-            margin: 0;
-        }
-        
-        .chart-card .card-body {
-            padding: 1.25rem;
-        }
-        
-        /* Insight Cards */
-        .insight-card {
+
+        .card-header {
             background: white;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 0.1rem 0.5rem rgba(0,0,0,0.05);
-        }
-        
-        .insight-card.info { border-left-color: var(--info); }
-        .insight-card.warning { border-left-color: var(--warning); }
-        .insight-card.success { border-left-color: var(--success); }
-        .insight-card.danger { border-left-color: var(--danger); }
-        
-        .insight-card .insight-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-        }
-        
-        .insight-card .insight-title {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.25rem 1.5rem;
             font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 0.25rem;
+            color: var(--primary-dark);
         }
-        
-        .insight-card .insight-text {
-            font-size: 0.875rem;
-            color: var(--secondary);
-        }
-        
-        /* Tables */
-        .table-card {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.15rem 1.75rem rgba(58, 59, 69, 0.1);
+
+        /* Metric Cards */
+        .metric-card {
+            position: relative;
             overflow: hidden;
         }
-        
-        .table {
-            margin-bottom: 0;
+
+        .metric-card .card-body {
+            padding: 1.5rem;
         }
-        
+
+        .metric-card .metric-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .metric-card .metric-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            opacity: 0.1;
+        }
+
+        /* Gradient borders for metric cards */
+        .border-left-primary {
+            border-left: 5px solid var(--primary);
+        }
+
+        .border-left-success {
+            border-left: 5px solid var(--success);
+        }
+
+        .border-left-warning {
+            border-left: 5px solid var(--warning);
+        }
+
+        .border-left-info {
+            border-left: 5px solid var(--info);
+        }
+
+        .border-left-danger {
+            border-left: 5px solid var(--danger);
+        }
+
+        /* Tables */
+        .table-responsive {
+            border-radius: 0.5rem;
+        }
+
         .table thead th {
-            background: #f8f9fc;
-            border-bottom: 2px solid #e3e6f0;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            color: #495057;
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.75rem;
-            color: var(--secondary);
+            padding: 1rem;
         }
-        
-        /* Page Header */
-        .page-header {
-            margin-bottom: 2rem;
+
+        .table tbody td {
+            vertical-align: middle;
+            padding: 1rem;
+            border-bottom: 1px solid #f1f3f5;
         }
-        
-        .page-header h1 {
-            font-weight: 700;
-            color: var(--dark);
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
         }
-        
-        .page-header .lead {
-            color: var(--secondary);
+
+        /* Badges */
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 500;
+            border-radius: 0.35rem;
         }
-        
+
         /* Footer */
         .footer {
-            padding: 2rem 0;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
             text-align: center;
-            color: var(--secondary);
-            font-size: 0.875rem;
+            color: #6c757d;
+            font-size: 0.9rem;
         }
-        
+
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 991px) {
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
+                min-height: auto;
             }
+
             .main-content {
                 margin-left: 0;
             }
         }
     </style>
-    
-    {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     <!-- Sidebar -->
-    <nav class="sidebar d-none d-md-block">
+    <nav class="sidebar d-lg-block d-none">
         <div class="sidebar-brand">
-            🇮🇳 UIDAI Hackathon<br>
-            <small style="font-size: 0.65rem; font-weight: 400;">Data Dashboard 2026</small>
+            <h4><i class="bi bi-fingerprint"></i> UIDAI Analytics</h4>
+            <div class="text-white-50 small mt-1">Hackathon 2026 Edition</div>
         </div>
-        <div class="sidebar-nav">
-            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-                <i class="bi bi-speedometer2"></i> Dashboard
+        <div class="sidebar-nav mt-3">
+            <a href="{% url 'dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i> Execute Dashboard
             </a>
-            <a href="{% url 'clusters' %}" class="{% if request.resolver_match.url_name == 'clusters' %}active{% endif %}">
-                <i class="bi bi-diagram-3"></i> Clusters
+            <a href="{% url 'clusters' %}"
+                class="{% if request.resolver_match.url_name == 'clusters' %}active{% endif %}">
+                <i class="bi bi-diagram-3-fill"></i> Cluster Analysis
             </a>
-            <a href="{% url 'insights' %}" class="{% if request.resolver_match.url_name == 'insights' %}active{% endif %}">
-                <i class="bi bi-lightbulb"></i> Insights
+            <a href="{% url 'insights' %}"
+                class="{% if request.resolver_match.url_name == 'insights' %}active{% endif %}">
+                <i class="bi bi-lightning-charge-fill"></i> Smart Insights
             </a>
-            <hr class="my-3 mx-3" style="border-color: rgba(255,255,255,0.15);">
-            <a href="https://github.com/oki-dokii/UIDAI" target="_blank">
-                <i class="bi bi-github"></i> GitHub Repo
+
+            <div class="border-top border-white-10 my-3 mx-3"></div>
+            <div class="px-3 text-uppercase text-white-50 small fw-bold mb-2">Modules</div>
+
+            <a href="#" class="text-white-50">
+                <i class="bi bi-person-badge"></i> Enrolment
             </a>
+            <a href="#" class="text-white-50">
+                <i class="bi bi-people"></i> Demographic
+            </a>
+            <a href="#" class="text-white-50">
+                <i class="bi bi-eye"></i> Biometric
+            </a>
+
+            <div class="mt-auto px-3 pb-3 position-absolute bottom-0 w-100">
+                <a href="https://github.com/oki-dokii/UIDAI" target="_blank" class="btn btn-outline-light w-100 btn-sm">
+                    <i class="bi bi-github"></i> View Source
+                </a>
+            </div>
         </div>
     </nav>
-    
+
     <!-- Mobile Nav -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary d-md-none">
+    <nav class="navbar navbar-dark bg-dark d-lg-none">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'dashboard' %}">🇮🇳 UIDAI Dashboard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav">
+            <a class="navbar-brand fw-bold" href="#">UIDAI 2026</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="mobileNav">
-                <ul class="navbar-nav">
+            <div class="collapse navbar-collapse" id="mobileMenu">
+                <ul class="navbar-nav p-3">
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'clusters' %}">Clusters</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'insights' %}">Insights</a></li>
@@ -278,22 +316,45 @@
             </div>
         </div>
     </nav>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         {% block content %}{% endblock %}
-        
-        <!-- Footer -->
+
         <footer class="footer">
-            <p>UIDAI Data Hackathon 2026 • Built with Django + Chart.js</p>
+            <p>&copy; 2026 UIDAI Data Hackathon • Built with Django & Chart.js • <span class="text-primary fw-bold">Team
+                    Antigravity</span></p>
         </footer>
     </main>
-    
-    <!-- Bootstrap JS -->
+
+    <!-- JS Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        // Global defaults for Chart.js
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#6c757d';
+        Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.05)';
+        Chart.defaults.plugins.tooltip.backgroundColor = '#2d2d44';
+        Chart.defaults.plugins.tooltip.padding = 10;
+
+        // Auto-initialize DataTables
+        $(document).ready(function () {
+            $('.table-datatable').DataTable({
+                "pageLength": 10,
+                "language": {
+                    "search": "Filter records:",
+                    "lengthMenu": "Show _MENU_ entries"
+                }
+            });
+        });
+    </script>
+
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>

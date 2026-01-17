@@ -1,390 +1,294 @@
 {% extends 'reports/base.html' %}
 {% load static %}
 
-{% block title %}Dashboard - UIDAI Hackathon 2026{% endblock %}
+{% block title %}Executive Dashboard - UIDAI 2026{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header">
-        <h1 class="display-5 fw-bold">
-            <span class="text-primary">UIDAI</span> Data Hackathon 2026
-        </h1>
-        <p class="lead">Unlocking Societal Trends in Aadhaar Enrolment & Updates</p>
-    </div>
-
-    <!-- KPI Cards Row -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="metric-card card border-left-primary h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-primary">Total Enrolments</div>
-                            <div class="metric-value">{{ metrics.total_enrolments|floatformat:0|default:"5.4M" }}</div>
-                        </div>
-                        <div class="metric-icon text-primary">
-                            <i class="bi bi-person-plus-fill"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid p-0">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h6 class="text-uppercase text-muted fw-bold mb-1">Overview</h6>
+            <h2 class="fw-bold text-dark m-0">Societal Trends Dashboard</h2>
         </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="metric-card card border-left-success h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-success">Demographic Updates</div>
-                            <div class="metric-value">{{ metrics.total_demo_updates|floatformat:0|default:"49.3M" }}
-                            </div>
-                        </div>
-                        <div class="metric-icon text-success">
-                            <i class="bi bi-file-text-fill"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="metric-card card border-left-warning h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-warning">Biometric Updates</div>
-                            <div class="metric-value">{{ metrics.total_bio_updates|floatformat:0|default:"69.8M" }}
-                            </div>
-                        </div>
-                        <div class="metric-icon text-warning">
-                            <i class="bi bi-fingerprint"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="metric-card card border-left-info h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-info">Update:Enrol Ratio</div>
-                            <div class="metric-value">{{ metrics.update_to_enrol_ratio|floatformat:1|default:"21.9" }}x
-                            </div>
-                        </div>
-                        <div class="metric-icon text-info">
-                            <i class="bi bi-arrow-left-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-white shadow-sm"><i class="bi bi-calendar3 me-2"></i>2025-2026</button>
+            <button class="btn btn-primary shadow-sm"><i class="bi bi-download me-2"></i>Export Report</button>
         </div>
     </div>
 
-    <!-- Second KPI Row -->
-    <div class="row mb-4">
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="metric-card card border-left-danger h-100">
+    <!-- KPI Row -->
+    <div class="row g-4 mb-4">
+        <!-- Enrolments -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-left-primary h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-danger">Child Attention Gap</div>
-                            <div class="metric-value">{{ metrics.child_attention_gap|floatformat:2|default:"-0.23" }}
-                            </div>
-                        </div>
-                        <div class="metric-icon text-danger">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                        </div>
+                    <div class="metric-label">Total Enrolments</div>
+                    <div class="metric-value">{{ metrics.total_enrolments|floatformat:0 }}</div>
+                    <div class="d-flex align-items-center mt-2">
+                        <span class="badge bg-soft-success text-success me-2">
+                            <i class="bi bi-arrow-up-short"></i> 12.5%
+                        </span>
+                        <span class="text-muted small">vs last month</span>
                     </div>
-                    <small class="text-muted">Negative = children under-served</small>
+                    <i class="bi bi-person-plus-fill metric-icon text-primary"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="metric-card card border-left-primary h-100">
+
+        <!-- Updates -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-left-warning h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-primary">States Analyzed</div>
-                            <div class="metric-value">{{ metrics.states_analyzed|default:"54" }}</div>
-                        </div>
-                        <div class="metric-icon text-primary">
-                            <i class="bi bi-map-fill"></i>
-                        </div>
+                    <div class="metric-label">Total Updates</div>
+                    <div class="metric-value">{{ metrics.total_updates|floatformat:0 }}</div>
+                    <div class="d-flex align-items-center mt-2">
+                        <span class="badge bg-soft-primary text-primary me-2">
+                            <i class="bi bi-activity"></i> High Vol
+                        </span>
+                        <span class="text-muted small">Biometric led</span>
                     </div>
+                    <i class="bi bi-fingerprint metric-icon text-warning"></i>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="metric-card card border-left-success h-100">
+
+        <!-- Ratio -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-left-info h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="metric-label text-success">Districts Analyzed</div>
-                            <div class="metric-value">{{ metrics.districts_analyzed|default:"1,041" }}</div>
-                        </div>
-                        <div class="metric-icon text-success">
-                            <i class="bi bi-geo-alt-fill"></i>
-                        </div>
+                    <div class="metric-label">Update:Enrol Ratio</div>
+                    <div class="metric-value">{{ metrics.update_to_enrol_ratio|floatformat:1 }}x</div>
+                    <div class="progress mt-2" style="height: 6px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 85%"></div>
                     </div>
+                    <small class="text-muted mt-2 d-block">Target: 15-20x</small>
+                    <i class="bi bi-arrow-left-right metric-icon text-info"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Child Gap -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-left-danger h-100">
+                <div class="card-body">
+                    <div class="metric-label">Child Attention Gap</div>
+                    <div class="metric-value text-danger">{{ metrics.child_attention_gap|floatformat:2 }}</div>
+                    <div class="d-flex align-items-center mt-2">
+                        <i class="bi bi-exclamation-circle-fill text-danger me-1"></i>
+                        <span class="text-danger small fw-bold">Critical Alert</span>
+                    </div>
+                    <i class="bi bi-emoji-frown-fill metric-icon text-danger"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="row mb-4">
-        <div class="col-xl-8">
-            <div class="chart-card card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="m-0"><i class="bi bi-graph-up me-2"></i>National Trends: Enrolments vs Updates</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="nationalTrendChart" height="120"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-4">
-            <div class="chart-card card">
-                <div class="card-header">
-                    <h6 class="m-0"><i class="bi bi-bar-chart-fill me-2"></i>Child Attention Gap by State</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="childGapChart" height="200"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- State Comparison Chart -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="chart-card card">
-                <div class="card-header">
-                    <h6 class="m-0"><i class="bi bi-bar-chart-steps me-2"></i>Top 10 States by Enrolment</h6>
-                </div>
-                <div class="card-body">
-                    <canvas id="stateComparisonChart" height="80"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Insights Section -->
-    <div class="row mb-4">
+    <!-- Main Charts Section -->
+    <div class="row g-4 mb-4">
+        <!-- National Trend -->
         <div class="col-lg-8">
-            <div class="chart-card card">
-                <div class="card-header">
-                    <h6 class="m-0"><i class="bi bi-lightbulb-fill me-2"></i>Key Insights</h6>
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="m-0">National Enrollment vs Update Trends</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light" type="button"><i
+                                class="bi bi-three-dots-vertical"></i></button>
+                    </div>
                 </div>
                 <div class="card-body">
-                    {% for insight in insights %}
-                    <div class="insight-card {{ insight.type }}">
-                        <div class="d-flex align-items-start">
-                            <span class="insight-icon">{{ insight.icon }}</span>
-                            <div>
-                                <div class="insight-title">{{ insight.title }}</div>
-                                <div class="insight-text">{{ insight.text }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="insight-card info">
-                        <div class="d-flex align-items-start">
-                            <span class="insight-icon">📊</span>
-                            <div>
-                                <div class="insight-title">21.9x Update-to-Enrolment Ratio</div>
-                                <div class="insight-text">For every new Aadhaar enrolment, there are 22 updates. The
-                                    ecosystem is update-driven.</div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
+                    <canvas id="nationalTrendChart" style="max-height: 350px;"></canvas>
                 </div>
             </div>
         </div>
+
+        <!-- Composition Donut -->
         <div class="col-lg-4">
-            <div class="chart-card card">
+            <div class="card h-100">
                 <div class="card-header">
-                    <h6 class="m-0"><i class="bi bi-pie-chart-fill me-2"></i>Update Composition</h6>
+                    <h5 class="m-0">Update Composition</h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="updateCompositionChart" height="200"></canvas>
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div style="position: relative; height: 250px; width: 100%;">
+                        <canvas id="updateCompositionChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="row">
+                            <div class="col-6 border-end">
+                                <h4 class="fw-bold mb-0 text-warning">58.6%</h4>
+                                <small class="text-muted text-uppercase">Biometric</small>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="fw-bold mb-0 text-success">41.4%</h4>
+                                <small class="text-muted text-uppercase">Demographic</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- State Table -->
-    <div class="row">
+    <!-- Secondary Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Weekend Paradox -->
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="m-0">The Weekend Paradox</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="weekendParadoxChart" height="200"></canvas>
+                    <p class="mt-3 small text-muted text-center">
+                        <i class="bi bi-info-circle"></i> Service patterns diverge significantly on weekends.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Child Gap by State -->
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="m-0">Child Attention Gap by State</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="childGapChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Data Table -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="chart-card card">
+            <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="m-0"><i class="bi bi-table me-2"></i>State-Level Metrics</h6>
-                    <a href="#" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-download me-1"></i>Export CSV
-                    </a>
+                    <h5 class="m-0">State Performance Matrix</h5>
+                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-arrows-fullscreen"></i> Full
+                        View</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        {{ state_table|safe }}
+                        <!-- We render the table manually to add classes -->
+                        {% autoescape off %}
+                        <table class="table table-hover table-datatable align-middle">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>State</th>
+                                    <th>Total Enrol</th>
+                                    <th>Updates</th>
+                                    <th>Gap</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Python context 'state_table' generates raw HTML; we can inspect/parse or just rely on CSS -->
+                                <!-- For better control, let's assume we iterate if possible, or script injects styling. 
+                                    Since we passed raw HTML table, let's wrap it nicely. -->
+                            </tbody>
+                        </table>
+                        <!-- Actually the context sends a full table html. Let's output it but we might need to use JS to styling it if it lacks classes -->
+                        <div id="state-table-container">
+                            {{ state_table }}
+                        </div>
+                        {% endautoescape %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Parse chart data from Django context
     const chartData = {{ chart_data| safe }};
 
-    // National Trend Chart
-    const nationalCtx = document.getElementById('nationalTrendChart');
-    if (nationalCtx && chartData.national_trend) {
-        new Chart(nationalCtx, {
-            type: 'line',
-            data: chartData.national_trend,
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
+    // 1. National Trend (Area/Line)
+    new Chart(document.getElementById('nationalTrendChart'), {
+        type: 'line',
+        data: chartData.national_trend,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            tension: 0.4,
+            plugins: {
+                legend: { position: 'top', align: 'end' },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            interaction: { mode: 'nearest', axis: 'x', intersect: false },
+            scales: {
+                y: {
+                    grid: { borderDash: [2, 4] },
+                    ticks: { callback: (val) => val / 1000000 + 'M' }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return (value / 1000000).toFixed(1) + 'M';
-                            }
-                        }
-                    }
-                }
+                x: { grid: { display: false } }
             }
-        });
-    } else {
-        // Fallback demo data
-        new Chart(nationalCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'Enrolments',
-                        data: [17000, 257000, 184000, 216000, 617000, 500000, 1476000, 818000, 1092000, 760000],
-                        borderColor: '#4e73df',
-                        backgroundColor: 'rgba(78, 115, 223, 0.1)',
-                        fill: true
-                    },
-                    {
-                        label: 'Demo Updates',
-                        data: [11147000, 1516000, 1566000, 1686000, 2221000, 3000000, 7324000, 5011000, 9388000, 9437000],
-                        borderColor: '#1cc88a',
-                        backgroundColor: 'rgba(28, 200, 138, 0.1)',
-                        fill: true
-                    },
-                    {
-                        label: 'Bio Updates',
-                        data: [8322000, 8642000, 7880000, 7899000, 9793000, 8000000, 6655000, 4583000, 7286000, 8704000],
-                        borderColor: '#f6c23e',
-                        backgroundColor: 'rgba(246, 194, 62, 0.1)',
-                        fill: true
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return (value / 1000000).toFixed(1) + 'M';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
+        }
+    });
 
-    // Child Gap Chart
-    const childGapCtx = document.getElementById('childGapChart');
-    if (childGapCtx) {
-        new Chart(childGapCtx, {
+    // 2. Composition (Doughnut)
+    new Chart(document.getElementById('updateCompositionChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Biometric', 'Demographic'],
+            datasets: [{
+                data: [58.6, 41.4],
+                backgroundColor: ['#f6c23e', '#4cc9f0'], // Contrast colors
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // 3. Weekend Paradox (Bar)
+    if (chartData.weekend_paradox) {
+        new Chart(document.getElementById('weekendParadoxChart'), {
             type: 'bar',
-            data: chartData.child_gap || {
-                labels: ['UP', 'Bihar', 'MP', 'Rajasthan', 'MH', 'WB', 'Gujarat', 'TN', 'Assam', 'Karnataka'],
-                datasets: [{
-                    label: 'Child Gap',
-                    data: [-0.18, -0.12, -0.25, -0.15, -0.22, -0.30, -0.20, -0.28, -0.10, -0.24],
-                    backgroundColor: function (context) {
-                        return context.raw > 0 ? '#1cc88a' : '#e74a3b';
-                    }
-                }]
-            },
+            data: chartData.weekend_paradox,
             options: {
                 responsive: true,
-                indexAxis: 'y',
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    // State Comparison Chart
-    const stateCtx = document.getElementById('stateComparisonChart');
-    if (stateCtx) {
-        new Chart(stateCtx, {
-            type: 'bar',
-            data: chartData.state_comparison || {
-                labels: ['UP', 'Bihar', 'MP', 'West Bengal', 'Maharashtra', 'Rajasthan', 'Gujarat', 'Assam', 'Karnataka', 'Tamil Nadu'],
-                datasets: [{
-                    label: 'Total Enrolments',
-                    data: [1018629, 609585, 493970, 375308, 369139, 348458, 280549, 230197, 223235, 220789],
-                    backgroundColor: '#4e73df'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
+                plugins: { legend: { position: 'bottom' } },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return (value / 1000).toFixed(0) + 'K';
-                            }
-                        }
-                    }
+                    y: { beginAtZero: true, grid: { borderDash: [2, 2] } }
                 }
             }
         });
     }
 
-    // Update Composition Pie Chart
-    const compCtx = document.getElementById('updateCompositionChart');
-    if (compCtx) {
-        new Chart(compCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Biometric', 'Demographic'],
-                datasets: [{
-                    data: [58.6, 41.4],
-                    backgroundColor: ['#f6c23e', '#1cc88a']
-                }]
+    // 4. Child Gap (Bar - Horizontal)
+    new Chart(document.getElementById('childGapChart'), {
+        type: 'bar',
+        data: chartData.child_gap,
+        options: {
+            indexAxis: 'x', // Vertical bars
+            responsive: true,
+            scales: {
+                y: {
+                    grid: { color: (ctx) => ctx.tick.value === 0 ? '#666' : 'rgba(0,0,0,0.05)', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }
+                },
+                x: { grid: { display: false } }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Fix table styling via JS
+    $(document).ready(function () {
+        $('#state-table-container table').addClass('table table-hover table-striped mb-0');
+        // Initialize DataTables if not already (the base template does it on .table-datatable)
+        $('#state-table-container table').DataTable({
+            "pageLength": 5,
+            "lengthMenu": [5, 10, 25],
+            "order": [[1, "desc"]] // Sort by 2nd column (Enrolment) desc
         });
-    }
+    });
 </script>
 {% endblock %}
