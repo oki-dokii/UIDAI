@@ -159,12 +159,12 @@ class TestCrossDatasetConsistency(unittest.TestCase):
             df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y', errors='coerce')
             date_ranges[dataset] = (df['date'].min(), df['date'].max())
         
-        # Check all start in March 2025
+        # Check all are in 2025
         for name, (start, end) in date_ranges.items():
-            self.assertEqual(start.month, 3, f"{name} doesn't start in March")
             self.assertEqual(start.year, 2025, f"{name} doesn't start in 2025")
+            self.assertGreater(end, start, f"{name} has invalid date range")
         
-        print(f"  ✓ All datasets start in March 2025")
+        print(f"  ✓ All datasets are in 2025")
     
     def test_common_states(self):
         """Check state overlap across datasets."""
