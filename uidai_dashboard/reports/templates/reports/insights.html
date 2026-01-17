@@ -1,0 +1,177 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}Insights - UIDAI Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><i class="bi bi-lightbulb-fill text-warning me-2"></i>Key Insights</h1>
+        <p class="lead">Actionable findings from the integrated analysis</p>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="chart-card card">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="m-0"><i class="bi bi-trophy me-2"></i>Hackathon Highlights</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="display-4 text-primary fw-bold">21.9x</div>
+                            <div class="text-muted">Update-to-Enrolment Ratio</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="display-4 text-success fw-bold">97.5%</div>
+                            <div class="text-muted">Child Share in Enrolments</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="display-4 text-warning fw-bold">58.6%</div>
+                            <div class="text-muted">Biometric Update Share</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="display-4 text-danger fw-bold">-0.23</div>
+                            <div class="text-muted">Child Attention Gap</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insights Grid -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="insight-card info">
+                <div class="d-flex">
+                    <span class="insight-icon">📊</span>
+                    <div>
+                        <div class="insight-title">Update-Dominated Ecosystem</div>
+                        <div class="insight-text">
+                            For every new Aadhaar enrolment, there are 21.9 updates.
+                            The system has shifted from onboarding to maintenance mode.
+                            Adult Aadhaar saturation is near-complete.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="insight-card danger">
+                <div class="d-flex">
+                    <span class="insight-icon">👶</span>
+                    <div>
+                        <div class="insight-title">Child Attention Gap Crisis</div>
+                        <div class="insight-text">
+                            Children form 97% of new enrolments but only ~30% of updates.
+                            Negative child attention gap (-0.23) indicates children are under-served.
+                            <strong>Action:</strong> Target child update campaigns.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="insight-card warning">
+                <div class="d-flex">
+                    <span class="insight-icon">📅</span>
+                    <div>
+                        <div class="insight-title">Weekend Service Paradox</div>
+                        <div class="insight-text">
+                            Biometric updates: -31% on weekends<br>
+                            Demographic updates: +69% on weekends<br>
+                            Different service patterns indicate different user behaviors.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="insight-card success">
+                <div class="d-flex">
+                    <span class="insight-icon">🗺️</span>
+                    <div>
+                        <div class="insight-title">Regional Maturity Distribution</div>
+                        <div class="insight-text">
+                            48% Legacy (mature, update-heavy)<br>
+                            28% Emerging (onboarding, need update awareness)<br>
+                            23% Under-served (need comprehensive drives)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="insight-card info">
+                <div class="d-flex">
+                    <span class="insight-icon">🔄</span>
+                    <div>
+                        <div class="insight-title">Biometric Dominance</div>
+                        <div class="insight-text">
+                            58.6% of all updates are biometric (fingerprint/iris).
+                            41.4% are demographic (name/address changes).
+                            High biometric refresh activity indicates quality concerns or renewal patterns.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="insight-card warning">
+                <div class="d-flex">
+                    <span class="insight-icon">📍</span>
+                    <div>
+                        <div class="insight-title">Concentration Risk</div>
+                        <div class="insight-text">
+                            Top 50 districts account for 21-24% of all activity.
+                            High concentration in urban areas.
+                            Rural outreach remains a challenge.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="chart-card card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="m-0"><i class="bi bi-check-circle me-2"></i>Recommendations for UIDAI</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6 class="text-danger"><i class="bi bi-1-circle-fill me-2"></i>Immediate</h6>
+                            <ul>
+                                <li>Child update campaigns in gap states</li>
+                                <li>Weekend biometric services</li>
+                                <li>Mobile camps for under-served districts</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-warning"><i class="bi bi-2-circle-fill me-2"></i>Medium-Term</h6>
+                            <ul>
+                                <li>Update awareness in emerging regions</li>
+                                <li>Quality review in high-bio districts</li>
+                                <li>Cluster-based intervention strategies</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-success"><i class="bi bi-3-circle-fill me-2"></i>Monitoring</h6>
+                            <ul>
+                                <li>Track update-to-enrol ratio (target: 15-25)</li>
+                                <li>Monitor child attention gap (target: > -0.1)</li>
+                                <li>Under-served district % (target: < 20%)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
