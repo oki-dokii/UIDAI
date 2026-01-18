@@ -685,35 +685,67 @@ def plot_volatility_analysis(volatility_df, output_dir):
     print("  ✓ Generated: 07_volatility_analysis.png")
 
 def plot_age_group_analysis(df, output_dir):
-    """Analyze patterns by age group."""
+    """Analyze patterns by age group.
+    
+    FIXED: Added scale warnings since updates >> enrolments in this dataset.
+    This is a data completeness issue, not a processing error.
+    """
     national = df.groupby('date').agg({
         'age_0_5': 'sum', 'age_5_17': 'sum', 'age_18_greater': 'sum',
         'bio_age_5_17': 'sum', 'bio_age_17_': 'sum',
         'demo_age_5_17': 'sum', 'demo_age_17_': 'sum'
     }).reset_index()
     
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
     
-    # Enrolment by age
+    # Panel 1: Enrolment by age (smaller scale)
     axes[0].stackplot(national['date'], national['age_0_5'], national['age_5_17'], national['age_18_greater'],
-                      labels=['0-5 yrs', '5-17 yrs', '18+ yrs'], alpha=0.8)
+                      labels=['0-5 yrs', '5-17 yrs', '18+ yrs'], alpha=0.8, colors=['#2ecc71', '#3498db', '#9b59b6'])
     axes[0].set_title('Enrolments by Age Group', fontweight='bold')
     axes[0].legend(loc='upper left')
     axes[0].tick_params(axis='x', rotation=45)
+    # Add scale annotation
+    enrol_total = national['age_0_5'].sum() + national['age_5_17'].sum() + national['age_18_greater'].sum()
+    axes[0].text(0.98, 0.98, f'Total: {enrol_total/1e6:.1f}M', transform=axes[0].transAxes, 
+                 ha='right', va='top', fontsize=10, bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
     
-    # Updates by age
+    # Panel 2: Updates by age (larger scale)
     child_updates = national['bio_age_5_17'] + national['demo_age_5_17']
     adult_updates = national['bio_age_17_'] + national['demo_age_17_']
     axes[1].stackplot(national['date'], child_updates, adult_updates,
-                      labels=['5-17 yrs', '17+ yrs'], alpha=0.8)
+                      labels=['5-17 yrs', '17+ yrs'], alpha=0.8, colors=['#e74c3c', '#f39c12'])
     axes[1].set_title('Updates by Age Group', fontweight='bold')
     axes[1].legend(loc='upper left')
     axes[1].tick_params(axis='x', rotation=45)
+    # Add scale annotation
+    update_total = child_updates.sum() + adult_updates.sum()
+    axes[1].text(0.98, 0.98, f'Total: {update_total/1e6:.1f}M', transform=axes[1].transAxes, 
+                 ha='right', va='top', fontsize=10, bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
     
-    plt.tight_layout()
+    # Panel 3: Normalized index comparison (makes trends comparable regardless of scale)
+    total_enrol = national['age_0_5'] + national['age_5_17'] + national['age_18_greater']
+    total_updates = child_updates + adult_updates
+    
+    # Normalize to base = first day = 100
+    base_enrol = total_enrol.iloc[0] if total_enrol.iloc[0] > 0 else 1
+    base_updates = total_updates.iloc[0] if total_updates.iloc[0] > 0 else 1
+    
+    axes[2].plot(national['date'], total_enrol / base_enrol * 100, 'g-', label='Enrolments', linewidth=2)
+    axes[2].plot(national['date'], total_updates / base_updates * 100, 'r-', label='Updates', linewidth=2)
+    axes[2].axhline(y=100, color='gray', linestyle='--', alpha=0.5)
+    axes[2].set_title('Normalized Trend Comparison\n(Day 1 = 100)', fontweight='bold')
+    axes[2].set_ylabel('Index')
+    axes[2].legend(loc='upper left')
+    axes[2].tick_params(axis='x', rotation=45)
+    
+    # Add overall data caveat
+    fig.text(0.5, 0.01, '⚠️ Note: Updates >> Enrolments due to data collection differences - see validate_data.py', 
+             ha='center', fontsize=9, style='italic', color='orange')
+    
+    plt.tight_layout(rect=[0, 0.03, 1, 1])
     plt.savefig(os.path.join(output_dir, '08_age_group_analysis.png'), dpi=150, bbox_inches='tight')
     plt.close()
-    print("  ✓ Generated: 08_age_group_analysis.png")
+    print("  ✓ Generated: 08_age_group_analysis.png (FIXED: added normalized comparison)")
 
 def plot_state_comparison(df, output_dir):
     """Compare key states."""
