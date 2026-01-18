@@ -179,10 +179,12 @@ def calculate_concentration_metrics(df):
     """Calculate Gini coefficient and concentration metrics."""
     
     def gini_coefficient(values):
-        """Calculate Gini coefficient for inequality measurement."""
+        """Gini coefficient - zeros included as legitimate data."""
         values = np.array(values)
-        values = values[values > 0]
+        # Do NOT filter zeros - they represent legitimate zero-activity
         if len(values) < 2:
+            return 0
+        if np.sum(values) == 0:
             return 0
         sorted_values = np.sort(values)
         n = len(sorted_values)

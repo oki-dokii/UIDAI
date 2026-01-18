@@ -243,10 +243,19 @@ def calculate_concentration(df):
     """Calculate Gini and concentration metrics per state."""
     
     def gini(values):
+        """Calculate Gini coefficient.
+        
+        Note: We do NOT filter out zeros because zero-activity districts
+        are legitimate data points. Excluding them would inflate the Gini
+        coefficient and make concentration appear higher than it is.
+        """
         values = np.array(values)
-        values = values[values > 0]
+        # Do NOT filter zeros - they represent legitimate zero-activity districts
+        # values = values[values > 0]  # REMOVED - this was inflating Gini
         if len(values) < 2:
             return 0
+        if np.sum(values) == 0:
+            return 0  # All zeros means perfect equality
         sorted_values = np.sort(values)
         n = len(sorted_values)
         cumsum = np.cumsum(sorted_values)

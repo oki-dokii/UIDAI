@@ -241,9 +241,12 @@ def calculate_concentration(df):
     """Calculate Gini/HHI concentration metrics."""
     
     def gini(values):
+        """Gini coefficient - zeros included as legitimate data."""
         values = np.array(values)
-        values = values[values > 0]
+        # Do NOT filter zeros - they represent legitimate zero-activity
         if len(values) < 2:
+            return 0
+        if np.sum(values) == 0:
             return 0
         sorted_values = np.sort(values)
         n = len(sorted_values)

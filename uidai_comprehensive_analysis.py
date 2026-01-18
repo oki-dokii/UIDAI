@@ -344,10 +344,15 @@ def add_percentile_ranks(df):
 # ============================================================================
 # CLUSTERING & SEGMENTATION
 # ============================================================================
-def segment_districts(df):
-    """Segment districts into behavioral clusters."""
+def segment_districts(df, k_range=(2, 8)):
+    """Segment districts into behavioral clusters with validated k selection.
+    
+    Uses silhouette score to determine optimal cluster count instead of
+    arbitrary k=4. Prints validation metrics for transparency.
+    """
     from sklearn.cluster import KMeans
     from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import silhouette_score
     
     # Aggregate to district level
     district_agg = df.groupby(['state', 'district']).agg({
@@ -361,6 +366,11 @@ def segment_districts(df):
     # Filter districts with sufficient data
     district_agg = district_agg[district_agg['total_enrolments'] > 100]
     
+    if len(district_agg) < 10:
+        print("  ⚠️ Not enough districts for clustering")
+        district_agg['cluster'] = 0
+        return district_agg
+    
     # Features for clustering
     features = ['update_intensity', 'bio_share']
     X = district_agg[features].values
@@ -369,34 +379,111 @@ def segment_districts(df):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # K-means with 4 clusters
-    kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
+    # Find optimal k using silhouette score
+    print("  📊 Cluster validation (silhouette scores):")
+    best_k = 4  # default fallback
+    best_score = -1
+    scores = {}
+    
+    k_min, k_max = k_range
+    k_max = min(k_max, len(district_agg) - 1)  # Can't have more clusters than samples
+    
+    for k in range(k_min, k_max + 1):
+        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        labels = kmeans.fit_predict(X_scaled)
+        score = silhouette_score(X_scaled, labels)
+        scores[k] = score
+        print(f"      k={k}: silhouette={score:.3f}")
+        
+        if score > best_score:
+            best_score = score
+            best_k = k
+    
+    print(f"  ✓ Optimal k={best_k} (silhouette={best_score:.3f})")
+    
+    # Final clustering with optimal k
+    kmeans = KMeans(n_clusters=best_k, random_state=42, n_init=10)
     district_agg['cluster'] = kmeans.fit_predict(X_scaled)
     
-    # Label clusters based on characteristics
-    cluster_labels = {
-        0: 'Low Activity',
-        1: 'Demo-Heavy',
-        2: 'Bio-Heavy', 
-        3: 'High Activity'
-    }
-    
-    # Reorder clusters by mean intensity
+    # Reorder clusters by mean intensity for consistency
     cluster_means = district_agg.groupby('cluster')['update_intensity'].mean().sort_values()
     label_map = {old: new for new, old in enumerate(cluster_means.index)}
     district_agg['cluster'] = district_agg['cluster'].map(label_map)
+    
+    # Store validation metadata
+    district_agg.attrs['optimal_k'] = best_k
+    district_agg.attrs['silhouette_score'] = best_score
+    district_agg.attrs['validation_scores'] = scores
     
     return district_agg
 
 # ============================================================================
 # ANOMALY DETECTION
 # ============================================================================
-def detect_anomalies(df, zscore_threshold=3):
-    """Detect anomalous districts based on z-score."""
-    anomalies = df[abs(df['update_intensity_zscore']) > zscore_threshold].copy()
+def detect_anomalies(df, method='combined', zscore_threshold=3, iqr_multiplier=1.5):
+    """Detect anomalous districts using multiple methods.
+    
+    Args:
+        df: DataFrame with update_intensity and update_intensity_zscore columns
+        method: Detection method - 'zscore', 'iqr', 'mad', or 'combined'
+        zscore_threshold: Threshold for z-score method (default 3)
+        iqr_multiplier: Multiplier for IQR method (default 1.5)
+    
+    Returns:
+        DataFrame of anomalies with detection metadata
+    
+    Note: Z-score method may miss anomalies in skewed distributions.
+    IQR is more robust for skewed data. 'combined' catches both.
+    """
+    df = df.copy()
+    
+    # Z-score based detection (existing method)
+    df['is_zscore_anomaly'] = abs(df['update_intensity_zscore']) > zscore_threshold
+    
+    # IQR-based detection (more robust for skewed distributions)
+    q75 = df['update_intensity'].quantile(0.75)
+    q25 = df['update_intensity'].quantile(0.25)
+    iqr = q75 - q25
+    lower_bound = q25 - (iqr_multiplier * iqr)
+    upper_bound = q75 + (iqr_multiplier * iqr)
+    df['is_iqr_anomaly'] = (df['update_intensity'] < lower_bound) | (df['update_intensity'] > upper_bound)
+    
+    # MAD-based detection (robust to outliers)
+    median = df['update_intensity'].median()
+    mad = (df['update_intensity'] - median).abs().median()
+    if mad > 0:
+        df['mad_zscore'] = 0.6745 * (df['update_intensity'] - median) / mad
+        df['is_mad_anomaly'] = abs(df['mad_zscore']) > zscore_threshold
+    else:
+        df['is_mad_anomaly'] = False
+        df['mad_zscore'] = 0
+    
+    # Select anomalies based on method
+    if method == 'zscore':
+        mask = df['is_zscore_anomaly']
+        detection_method = 'Z-score'
+    elif method == 'iqr':
+        mask = df['is_iqr_anomaly']
+        detection_method = 'IQR'
+    elif method == 'mad':
+        mask = df['is_mad_anomaly']
+        detection_method = 'MAD'
+    else:  # 'combined' - union of all methods
+        mask = df['is_zscore_anomaly'] | df['is_iqr_anomaly']
+        detection_method = 'Combined (Z-score + IQR)'
+    
+    anomalies = df[mask].copy()
     anomalies['anomaly_type'] = np.where(
         anomalies['update_intensity_zscore'] > 0, 'High Spike', 'Low Drop'
     )
+    anomalies['detection_method'] = detection_method
+    
+    # Print detection summary
+    print(f"  📊 Anomaly Detection Summary:")
+    print(f"      Z-score (>{zscore_threshold}σ): {df['is_zscore_anomaly'].sum():,} records")
+    print(f"      IQR (>{iqr_multiplier}×IQR): {df['is_iqr_anomaly'].sum():,} records")
+    print(f"      Combined: {mask.sum():,} records")
+    
     return anomalies
 
 # ============================================================================
