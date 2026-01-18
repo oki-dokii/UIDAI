@@ -17,9 +17,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ============================================================================
-# CONFIGURATION
+# CONFIGURATION - Using relative paths for portability
 # ============================================================================
-DATA_BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"
+DATA_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DIRS = {
     "biometric": os.path.join(DATA_BASE_DIR, "api_data_aadhar_biometric"),
     "demographic": os.path.join(DATA_BASE_DIR, "api_data_aadhar_demographic"),
@@ -28,18 +28,48 @@ DIRS = {
 OUTPUT_DIR = os.path.join(DATA_BASE_DIR, "analysis_output")
 PLOTS_DIR = os.path.join(OUTPUT_DIR, "plots")
 
-# State name normalization mapping
+# Comprehensive state name normalization mapping (30+ variations)
 STATE_MAP = {
+    # Andaman & Nicobar variations
     "Andaman & Nicobar Islands": "Andaman And Nicobar Islands",
+    "Andaman and Nicobar Islands": "Andaman And Nicobar Islands",
+    
+    # J&K variations
     "J & K": "Jammu And Kashmir",
+    "J&K": "Jammu And Kashmir",
     "Jammu & Kashmir": "Jammu And Kashmir",
-    "Dadra & Nagar Haveli": "Dadra And Nagar Haveli",
-    "Daman & Diu": "Daman And Diu",
+    "Jammu and Kashmir": "Jammu And Kashmir",
+    
+    # Dadra/Daman (merged UT)
+    "Dadra & Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+    "Dadra and Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+    "Daman & Diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "Daman and Diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "The Dadra And Nagar Haveli And Daman And Diu": "Dadra And Nagar Haveli And Daman And Diu",
+    
+    # Other variations
     "Telengana": "Telangana",
+    "Telanagana": "Telangana",
     "Orissa": "Odisha",
+    "ODISHA": "Odisha",
     "Pondicherry": "Puducherry",
     "Chattisgarh": "Chhattisgarh",
+    "Chhatisgarh": "Chhattisgarh",
     "Uttaranchal": "Uttarakhand",
+    "Tamilnadu": "Tamil Nadu",
+    "Tamil  Nadu": "Tamil Nadu",
+    
+    # West Bengal variations
+    "WEST BENGAL": "West Bengal",
+    "WESTBENGAL": "West Bengal",
+    "Westbengal": "West Bengal",
+    "West  Bengal": "West Bengal",
+}
+
+# Invalid entries to filter (districts/pincodes mistakenly in state column)
+INVALID_STATE_ENTRIES = {
+    "100000", "Balanagar", "Darbhanga", "Jaipur", "Nagpur",
+    "Madanapalle", "Puttenahalli", "Raja Annamalai Puram",
 }
 
 # ============================================================================
@@ -79,15 +109,18 @@ def load_all_data():
 # DATA PREPROCESSING
 # ============================================================================
 def preprocess_dataset(df, dataset_type):
-    """Clean and standardize a dataset."""
+    """Clean and standardize a dataset with comprehensive normalization."""
     if df.empty:
         return df
     
     df = df.copy()
+    initial_len = len(df)
     
     # Parse dates
     if 'date' in df.columns:
         df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y', errors='coerce')
+        # Remove rows with invalid dates
+        df = df[df['date'].notna()]
         df['year'] = df['date'].dt.year
         df['month'] = df['date'].dt.month
         df['month_name'] = df['date'].dt.month_name()
@@ -97,10 +130,27 @@ def preprocess_dataset(df, dataset_type):
     if 'state' in df.columns:
         df['state'] = df['state'].astype(str).str.strip().str.title()
         df['state'] = df['state'].replace(STATE_MAP)
+        # Filter out invalid entries (districts/pincodes in state column)
+        df = df[~df['state'].isin(INVALID_STATE_ENTRIES)]
+        # Filter rows where state is just digits (pincodes)
+        df = df[~df['state'].str.match(r'^\d+$', na=False)]
     
     # Normalize district names
     if 'district' in df.columns:
         df['district'] = df['district'].astype(str).str.strip().str.title()
+    
+    # Deduplicate: keep first occurrence of each date-state-district-pincode combo
+    dup_cols = ['date', 'state', 'district']
+    if 'pincode' in df.columns:
+        dup_cols.append('pincode')
+    dup_cols = [c for c in dup_cols if c in df.columns]
+    before_dedup = len(df)
+    df = df.drop_duplicates(subset=dup_cols, keep='first')
+    dup_count = before_dedup - len(df)
+    
+    removed = initial_len - len(df)
+    if removed > 0:
+        print(f"    Cleaned {dataset_type}: removed {removed:,} rows ({dup_count:,} duplicates)")
     
     return df
 
@@ -116,7 +166,7 @@ def aggregate_to_district_level(df):
     return df.groupby(group_cols, as_index=False)[numeric_cols].sum()
 
 def merge_datasets(enrol, bio, demo):
-    """Merge all datasets at state-district-date level."""
+    """Merge all datasets at state-district-date level with proper handling of missing data."""
     merge_keys = ['date', 'year', 'month', 'state', 'district']
     
     # Merge enrolment with biometric
@@ -124,9 +174,33 @@ def merge_datasets(enrol, bio, demo):
     # Merge with demographic
     merged = pd.merge(merged, demo, on=merge_keys, how='outer', suffixes=('', '_demo'))
     
+    # Track which source each record came from (before fillna)
+    has_enrol = merged.get('age_0_5', pd.Series([np.nan]*len(merged))).notna()
+    has_bio = merged.get('bio_age_5_17', pd.Series([np.nan]*len(merged))).notna()
+    has_demo = merged.get('demo_age_5_17', pd.Series([np.nan]*len(merged))).notna()
+    
     # Fill NaN with 0 for numeric columns
     numeric_cols = merged.select_dtypes(include=[np.number]).columns
     merged[numeric_cols] = merged[numeric_cols].fillna(0)
+    
+    # CRITICAL FIX: Filter out rows with no actual activity
+    # This prevents false data from outer join + fillna(0)
+    total_before = len(merged)
+    
+    # Calculate totals for filtering
+    merged['_total_enrol'] = merged.get('age_0_5', 0) + merged.get('age_5_17', 0) + merged.get('age_18_greater', 0)
+    merged['_total_bio'] = merged.get('bio_age_5_17', 0) + merged.get('bio_age_17_', 0)
+    merged['_total_demo'] = merged.get('demo_age_5_17', 0) + merged.get('demo_age_17_', 0)
+    
+    has_activity = (merged['_total_enrol'] > 0) | (merged['_total_bio'] > 0) | (merged['_total_demo'] > 0)
+    merged = merged[has_activity]
+    
+    # Clean up temp columns
+    merged = merged.drop(columns=['_total_enrol', '_total_bio', '_total_demo'], errors='ignore')
+    
+    filtered_count = total_before - len(merged)
+    if filtered_count > 0:
+        print(f"  ✓ Filtered {filtered_count:,} rows with no actual activity")
     
     return merged
 

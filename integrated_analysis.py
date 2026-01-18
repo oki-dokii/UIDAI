@@ -20,25 +20,56 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ============================================================================
-# CONFIGURATION
+# CONFIGURATION - Using relative paths for portability
 # ============================================================================
-BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ENROL_DIR = os.path.join(BASE_DIR, "api_data_aadhar_enrolment")
 DEMO_DIR = os.path.join(BASE_DIR, "api_data_aadhar_demographic")
 BIO_DIR = os.path.join(BASE_DIR, "api_data_aadhar_biometric")
 OUTPUT_DIR = os.path.join(BASE_DIR, "integrated_analysis")
 PLOTS_DIR = os.path.join(OUTPUT_DIR, "plots")
 
-# State normalization
+# Import comprehensive data utilities
+try:
+    from data_utils import (
+        normalize_state_name,
+        normalize_district_name,
+        deduplicate_data,
+        filter_valid_activity,
+        validate_data_quality,
+    )
+    USE_DATA_UTILS = True
+except ImportError:
+    USE_DATA_UTILS = False
+    print("⚠️ data_utils.py not found, using built-in normalization")
+
+# Fallback state normalization (if data_utils not available)
 STATE_FIX = {
     "Orissa": "Odisha",
     "Pondicherry": "Puducherry",
     "Andaman & Nicobar Islands": "Andaman And Nicobar Islands",
     "J & K": "Jammu And Kashmir",
     "Jammu & Kashmir": "Jammu And Kashmir",
-    "Dadra & Nagar Haveli": "Dadra And Nagar Haveli",
-    "Daman & Diu": "Daman And Diu",
+    "Dadra & Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+    "Daman & Diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "Dadra and Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+    "Daman and Diu": "Dadra And Nagar Haveli And Daman And Diu",
     "Telengana": "Telangana",
+    "Tamilnadu": "Tamil Nadu",
+    "Chattisgarh": "Chhattisgarh",
+    "Chhatisgarh": "Chhattisgarh",
+    "Uttaranchal": "Uttarakhand",
+    "WEST BENGAL": "West Bengal",
+    "WESTBENGAL": "West Bengal",
+    "Westbengal": "West Bengal",
+    "West  Bengal": "West Bengal",
+    "ODISHA": "Odisha",
+}
+
+# Invalid entries to filter (districts/pincodes in state column)
+INVALID_STATES = {
+    "100000", "Balanagar", "Darbhanga", "Jaipur", "Nagpur",
+    "Madanapalle", "Puttenahalli", "Raja Annamalai Puram",
 }
 
 EPS = 1e-10  # Small epsilon for division
@@ -75,20 +106,47 @@ def load_all_data():
 def preprocess(df, name):
     """Clean and standardize a dataset."""
     df = df.copy()
+    initial_len = len(df)
     
     # Parse dates
     df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y', errors='coerce')
+    # Remove rows with invalid dates
+    df = df[df['date'].notna()]
     df['year'] = df['date'].dt.year
     df['month'] = df['date'].dt.month
     df['day_of_week'] = df['date'].dt.day_name()
     df['is_weekend'] = df['day_of_week'].isin(['Saturday', 'Sunday'])
     
-    # Standardize geography
-    df['state'] = df['state'].astype(str).str.strip().str.title().replace(STATE_FIX)
-    df['district'] = df['district'].astype(str).str.strip().str.title()
+    # Standardize geography using comprehensive normalization
+    if USE_DATA_UTILS:
+        df['state'] = df['state'].apply(normalize_state_name)
+        df['district'] = df['district'].apply(normalize_district_name)
+    else:
+        df['state'] = df['state'].astype(str).str.strip().str.title().replace(STATE_FIX)
+        df['district'] = df['district'].astype(str).str.strip().str.title()
+    
+    # Filter out invalid states (districts/pincodes mistakenly in state column)
+    if not USE_DATA_UTILS:
+        df = df[~df['state'].isin(INVALID_STATES)]
+    df = df[df['state'].notna()]
+    
+    # Deduplicate: keep first occurrence of each date-state-district-pincode combo
+    if USE_DATA_UTILS:
+        df, dup_count = deduplicate_data(df)
+    else:
+        dup_cols = ['date', 'state', 'district']
+        if 'pincode' in df.columns:
+            dup_cols.append('pincode')
+        before_dedup = len(df)
+        df = df.drop_duplicates(subset=dup_cols, keep='first')
+        dup_count = before_dedup - len(df)
     
     # Create geo_key
     df['geo_key'] = df['state'] + '|' + df['district']
+    
+    removed = initial_len - len(df)
+    if removed > 0:
+        print(f"    Preprocessing {name}: removed {removed:,} invalid/duplicate rows ({dup_count:,} duplicates)")
     
     return df
 
@@ -179,7 +237,7 @@ def aggregate_all(enrol, demo, bio):
 # CROSS-DOMAIN INTEGRATION
 # ============================================================================
 def integrate_datasets(enrol_agg, demo_agg, bio_agg):
-    """Merge all three datasets on common keys."""
+    """Merge all three datasets on common keys with proper handling of missing data."""
     print("\n" + "="*70)
     print("PHASE 4: CROSS-DOMAIN INTEGRATION")
     print("="*70)
@@ -196,11 +254,26 @@ def integrate_datasets(enrol_agg, demo_agg, bio_agg):
         how='outer'
     )
     
-    # Fill NaN with 0
+    # Track source of each record to identify merge-created rows
+    merged['has_enrol'] = merged['total_enrol'].notna() & (merged['total_enrol'] > 0)
+    merged['has_demo'] = merged['total_demo'].notna() & (merged['total_demo'] > 0)
+    merged['has_bio'] = merged['total_bio'].notna() & (merged['total_bio'] > 0)
+    
+    # Fill NaN with 0 ONLY for numeric columns
     numeric_cols = merged.select_dtypes(include=[np.number]).columns
     merged[numeric_cols] = merged[numeric_cols].fillna(0)
     
+    # CRITICAL FIX: Filter out rows with no actual activity
+    # This prevents false data from outer join + fillna(0)
+    # A valid row must have either enrolments OR updates
+    total_before_filter = len(merged)
+    has_activity = (merged['total_enrol'] > 0) | (merged['total_demo'] > 0) | (merged['total_bio'] > 0)
+    merged = merged[has_activity]
+    filtered_count = total_before_filter - len(merged)
+    
     print(f"  ✓ Integrated dataset: {len(merged):,} records")
+    if filtered_count > 0:
+        print(f"  ✓ Filtered {filtered_count:,} rows with no activity (from outer join)")
     print(f"  ✓ States: {merged['state'].nunique()}")
     print(f"  ✓ Districts: {merged[['state', 'district']].drop_duplicates().shape[0]}")
     

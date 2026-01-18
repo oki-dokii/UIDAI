@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import glob
 
-# Configuration
-DATA_BASE_DIR = "/Users/sohambanerjee/Downloads"
+# Configuration - Using relative paths for portability
+DATA_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DIRS = {
     "biometric": os.path.join(DATA_BASE_DIR, "api_data_aadhar_biometric"),
     "demographic": os.path.join(DATA_BASE_DIR, "api_data_aadhar_demographic"),
     "enrolment": os.path.join(DATA_BASE_DIR, "api_data_aadhar_enrolment"),
 }
-OUTPUT_DIR = "aadhaar_plots"
+OUTPUT_DIR = os.path.join(DATA_BASE_DIR, "aadhaar_plots")
 
 def load_data(directory, dataset_name):
     """Loads all CSV files from a directory into a single DataFrame."""
@@ -39,32 +39,71 @@ def load_data(directory, dataset_name):
     return full_df
 
 def preprocess_data(df):
-    """Standardizes dates and state names."""
+    """Standardizes dates and state names with comprehensive cleaning."""
     if df.empty:
         return df
+    
+    initial_len = len(df)
         
     # parse dates
     if 'date' in df.columns:
         df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y', errors='coerce')
+        df = df[df['date'].notna()]  # Remove invalid dates
         
-    # clean state names
+    # clean state names - comprehensive mapping
     if 'state' in df.columns:
         df['state'] = df['state'].astype(str).str.strip().str.title()
-        # Normalization map
+        # Comprehensive normalization map
         state_map = {
             "Andaman & Nicobar Islands": "Andaman And Nicobar Islands",
+            "Andaman and Nicobar Islands": "Andaman And Nicobar Islands",
             "J & K": "Jammu And Kashmir",
+            "J&K": "Jammu And Kashmir",
             "Jammu & Kashmir": "Jammu And Kashmir",
-            "Dadra & Nagar Haveli": "Dadra And Nagar Haveli",
-            "Daman & Diu": "Daman And Diu",
+            "Jammu and Kashmir": "Jammu And Kashmir",
+            "Dadra & Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+            "Dadra and Nagar Haveli": "Dadra And Nagar Haveli And Daman And Diu",
+            "Daman & Diu": "Dadra And Nagar Haveli And Daman And Diu",
+            "Daman and Diu": "Dadra And Nagar Haveli And Daman And Diu",
             "Telengana": "Telangana",
-            "Orissa": "Odisha"
+            "Telanagana": "Telangana",
+            "Orissa": "Odisha",
+            "ODISHA": "Odisha",
+            "Pondicherry": "Puducherry",
+            "Chattisgarh": "Chhattisgarh",
+            "Chhatisgarh": "Chhattisgarh",
+            "Uttaranchal": "Uttarakhand",
+            "Tamilnadu": "Tamil Nadu",
+            "WEST BENGAL": "West Bengal",
+            "WESTBENGAL": "West Bengal",
+            "Westbengal": "West Bengal",
+            "West  Bengal": "West Bengal",
         }
         df['state'] = df['state'].replace(state_map)
+        
+        # Filter out invalid entries (districts/pincodes in state column)
+        invalid_states = {"100000", "Balanagar", "Darbhanga", "Jaipur", "Nagpur",
+                          "Madanapalle", "Puttenahalli", "Raja Annamalai Puram"}
+        df = df[~df['state'].isin(invalid_states)]
+        # Filter rows where state is just digits (pincodes)
+        df = df[~df['state'].str.match(r'^\d+$', na=False)]
         
     # clean district names
     if 'district' in df.columns:
         df['district'] = df['district'].astype(str).str.strip().str.title()
+    
+    # Deduplicate
+    dup_cols = ['date', 'state', 'district']
+    if 'pincode' in df.columns:
+        dup_cols.append('pincode')
+    dup_cols = [c for c in dup_cols if c in df.columns]
+    before_dedup = len(df)
+    df = df.drop_duplicates(subset=dup_cols, keep='first')
+    dup_count = before_dedup - len(df)
+    
+    removed = initial_len - len(df)
+    if removed > 0:
+        print(f"    Cleaned data: removed {removed:,} rows ({dup_count:,} duplicates)")
         
     return df
 
@@ -101,6 +140,19 @@ def prepare_and_merge_datasets():
     
     numeric_cols = merged.select_dtypes(include=['number']).columns
     merged[numeric_cols] = merged[numeric_cols].fillna(0)
+    
+    # CRITICAL FIX: Filter out rows with no actual activity
+    total_before = len(merged)
+    merged['_total'] = (merged.get('age_0_5', 0) + merged.get('age_5_17', 0) + 
+                        merged.get('age_18_greater', 0) + merged.get('bio_age_5_17', 0) + 
+                        merged.get('bio_age_17_', 0) + merged.get('demo_age_5_17', 0) + 
+                        merged.get('demo_age_17_', 0))
+    merged = merged[merged['_total'] > 0]
+    merged = merged.drop(columns=['_total'], errors='ignore')
+    
+    filtered_count = total_before - len(merged)
+    if filtered_count > 0:
+        print(f"  Filtered {filtered_count:,} rows with no actual activity")
     
     return merged
 
