@@ -320,13 +320,28 @@ def generate_visualizations(df):
     correlation = df[['total_enrolments', 'total_updates']].corr().iloc[0, 1]
     print(f"\nℹ️ Bivariate Correlation (Enrolment vs Updates): {correlation:.4f}")
     
-    plt.figure(figsize=(10, 8))
-    sns.scatterplot(data=district_df, x='total_enrolments', y='total_updates', alpha=0.6)
-    plt.title(f'Bivariate Analysis: Enrolment vs Updates (Correlation: {correlation:.2f})')
-    plt.xlabel('Total Enrolments')
-    plt.ylabel('Total Updates')
+    # NOTE: Low correlation is EXPECTED given data completeness issues
+    # Enrolment data is incomplete - updates include historical Aadhaar holders
+    if correlation < 0.5:
+        print(f"   ⚠️ Low correlation expected: updates likely include historical holders not in enrolment sample")
+    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.scatterplot(data=district_df, x='total_enrolments', y='total_updates', alpha=0.6, ax=ax)
+    ax.set_title(f'Bivariate Analysis: Enrolment vs Updates (r = {correlation:.2f})', fontweight='bold')
+    ax.set_xlabel('Total Enrolments')
+    ax.set_ylabel('Total Updates')
+    
+    # Add interpretation note for low correlation
+    if correlation < 0.5:
+        ax.text(0.02, 0.98, 
+                f'⚠️ Low r = {correlation:.2f} is expected:\n'
+                'Updates include historical Aadhaar\n'
+                'holders not in this enrolment sample',
+                transform=ax.transAxes, fontsize=9, va='top',
+                bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7))
+    
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/bivariate_scatter.png")
+    plt.savefig(f"{OUTPUT_DIR}/bivariate_scatter.png", dpi=150)
     plt.close()
 
     # 8. Bivariate: Biometric vs Demographic Updates Correlation
