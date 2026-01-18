@@ -191,17 +191,40 @@ def generate_visualizations(df):
     print(f"Generating plots in {OUTPUT_DIR}...")
     sns.set_theme(style="whitegrid")
     
-    # 1. National Time Series
+    # 1. National Time Series - FIXED with dual Y-axes
     national = df.groupby('date')[['total_updates', 'total_enrolments']].sum().reset_index()
     
-    plt.figure(figsize=(10, 6))
-    sns.lineplot(data=national, x='date', y='total_updates', label='Total Updates', marker='o')
-    sns.lineplot(data=national, x='date', y='total_enrolments', label='Total Enrolments', marker='s')
-    plt.title('National Enrolment vs Updates Over Time')
-    plt.ylabel('Volume')
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+    ax2 = ax1.twinx()
+    
+    # Enrolments on left axis (smaller scale)
+    line1 = ax1.plot(national['date'], national['total_enrolments'], 's-', 
+                     label='Total Enrolments', color='green', linewidth=2)
+    ax1.set_ylabel('Enrolments', color='green', fontsize=12)
+    ax1.tick_params(axis='y', labelcolor='green')
+    
+    # Updates on right axis (larger scale)
+    line2 = ax2.plot(national['date'], national['total_updates'], 'o-', 
+                     label='Total Updates', color='blue', linewidth=2)
+    ax2.set_ylabel('Updates', color='blue', fontsize=12)
+    ax2.tick_params(axis='y', labelcolor='blue')
+    
+    ax1.set_title('National Enrolment vs Updates Over Time (Dual Scale)', fontweight='bold')
+    ax1.set_xlabel('Date')
     plt.xticks(rotation=45)
+    
+    # Combined legend
+    lines = line1 + line2
+    labels = [l.get_label() for l in lines]
+    ax1.legend(lines, labels, loc='upper left')
+    
+    # Warning about scale difference
+    ax1.text(0.02, 0.02, '⚠️ Note: Different Y-scales\nUpdates >> Enrolments in this dataset', 
+             transform=ax1.transAxes, fontsize=8, va='bottom',
+             bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
+    
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/national_time_series.png")
+    plt.savefig(f\"{OUTPUT_DIR}/national_time_series.png\")
     plt.close()
     
     # 2. Update Intensity Heatmap (Top 10 States by Volume)

@@ -530,7 +530,11 @@ def setup_plots():
     plt.rcParams['font.size'] = 11
 
 def plot_national_overview(monthly, output_dir):
-    """National overview plot with sample size annotations."""
+    """National overview plot with proper scale handling.
+    
+    FIXED: Uses dual Y-axes because updates >> enrolments in this dataset.
+    Left axis: Enrolments, Right axis: Updates
+    """
     # Try to import viz_utils for enhanced formatting
     try:
         from viz_utils import add_sample_size_annotation
@@ -540,46 +544,71 @@ def plot_national_overview(monthly, output_dir):
     
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
     
-    # Line chart: all three domains
-    axes[0,0].plot(monthly['month'], monthly['total_enrol'], 'o-', label='Enrolment', linewidth=2)
-    axes[0,0].plot(monthly['month'], monthly['total_demo'], 's-', label='Demographic', linewidth=2)
-    axes[0,0].plot(monthly['month'], monthly['total_bio'], '^-', label='Biometric', linewidth=2)
-    axes[0,0].set_title('Monthly National Volume: Enrolment vs Updates', fontweight='bold', fontsize=14)
-    axes[0,0].set_xlabel('Month')
-    axes[0,0].set_ylabel('Total Count')
-    axes[0,0].legend()
+    # FIXED: Plot 1 - Dual Y-axis for proper scale comparison
+    ax1 = axes[0,0]
+    ax2 = ax1.twinx()
     
-    # Add sample size annotation
-    total_records = monthly['total_enrol'].sum() + monthly['total_demo'].sum() + monthly['total_bio'].sum()
-    if use_viz_utils:
-        add_sample_size_annotation(axes[0,0], {'Months': len(monthly), 'Total Records': int(total_records)})
-    else:
-        axes[0,0].text(0.98, 0.98, f'n = {len(monthly)} months', 
-                       transform=axes[0,0].transAxes, ha='right', va='top',
-                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+    # Enrolment on left axis (smaller scale)
+    line1 = ax1.plot(monthly['month'], monthly['total_enrol'], 'o-', 
+                     label='Enrolment', linewidth=2, color='green')
+    ax1.set_ylabel('Enrolments', color='green', fontsize=12)
+    ax1.tick_params(axis='y', labelcolor='green')
     
-    # Stacked bar
-    x = monthly['month']
-    axes[0,1].bar(x, monthly['total_enrol'], label='Enrolment', alpha=0.8)
-    axes[0,1].bar(x, monthly['total_demo'], bottom=monthly['total_enrol'], label='Demo Updates', alpha=0.8)
-    axes[0,1].bar(x, monthly['total_bio'], bottom=monthly['total_enrol']+monthly['total_demo'], 
-                  label='Bio Updates', alpha=0.8)
-    axes[0,1].set_title('Stacked Monthly Volume', fontweight='bold', fontsize=14)
-    axes[0,1].set_xlabel('Month')
-    axes[0,1].legend()
+    # Updates on right axis (larger scale)
+    line2 = ax2.plot(monthly['month'], monthly['total_demo'], 's-', 
+                     label='Demographic', linewidth=2, color='blue')
+    line3 = ax2.plot(monthly['month'], monthly['total_bio'], '^-', 
+                     label='Biometric', linewidth=2, color='orange')
+    ax2.set_ylabel('Updates', color='blue', fontsize=12)
+    ax2.tick_params(axis='y', labelcolor='blue')
     
-    # Ratio comparison
+    ax1.set_title('Monthly Volume (Dual Scale: Enrolment vs Updates)', fontweight='bold', fontsize=14)
+    ax1.set_xlabel('Month')
+    
+    # Combine legends
+    lines = line1 + line2 + line3
+    labels = [l.get_label() for l in lines]
+    ax1.legend(lines, labels, loc='upper right')
+    
+    # Add data scale warning
+    ax1.text(0.02, 0.98, '⚠️ Note: Different Y-scales', 
+             transform=ax1.transAxes, fontsize=9, va='top',
+             bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
+    
+    # FIXED: Plot 2 - Normalized index comparison (base = first month)
+    ax = axes[0,1]
+    base_enrol = monthly['total_enrol'].iloc[0] if monthly['total_enrol'].iloc[0] > 0 else 1
+    base_demo = monthly['total_demo'].iloc[0] if monthly['total_demo'].iloc[0] > 0 else 1
+    base_bio = monthly['total_bio'].iloc[0] if monthly['total_bio'].iloc[0] > 0 else 1
+    
+    ax.plot(monthly['month'], monthly['total_enrol'] / base_enrol * 100, 
+            'o-', label='Enrolment', linewidth=2, color='green')
+    ax.plot(monthly['month'], monthly['total_demo'] / base_demo * 100, 
+            's-', label='Demographic', linewidth=2, color='blue')
+    ax.plot(monthly['month'], monthly['total_bio'] / base_bio * 100, 
+            '^-', label='Biometric', linewidth=2, color='orange')
+    ax.axhline(y=100, color='gray', linestyle='--', alpha=0.5)
+    ax.set_title('Normalized Trend (Month 1 = 100)', fontweight='bold', fontsize=14)
+    ax.set_xlabel('Month')
+    ax.set_ylabel('Index (Base = 100)')
+    ax.legend()
+    
+    # Plot 3 - Ratio comparison (same as before but with warning)
     monthly['update_to_enrol'] = (monthly['total_demo'] + monthly['total_bio']) / (monthly['total_enrol'] + EPS)
     axes[1,0].bar(monthly['month'], monthly['update_to_enrol'], color='purple')
     axes[1,0].set_title('Update-to-Enrolment Ratio by Month', fontweight='bold', fontsize=14)
     axes[1,0].set_xlabel('Month')
     axes[1,0].set_ylabel('Ratio')
-    # Add reference line for mean
     mean_ratio = monthly['update_to_enrol'].mean()
     axes[1,0].axhline(y=mean_ratio, color='red', linestyle='--', alpha=0.7, label=f'Mean: {mean_ratio:.2f}')
     axes[1,0].legend()
     
-    # Demo vs Bio comparison
+    # Add data caveat
+    axes[1,0].text(0.02, 0.98, '⚠️ Ratio > 1 due to\nincomplete enrolment data', 
+                   transform=axes[1,0].transAxes, fontsize=8, va='top',
+                   bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
+    
+    # Plot 4 - Demo vs Bio comparison (updates only - comparable scale)
     axes[1,1].bar(monthly['month'] - 0.2, monthly['total_demo'], width=0.4, label='Demographic', color='teal')
     axes[1,1].bar(monthly['month'] + 0.2, monthly['total_bio'], width=0.4, label='Biometric', color='coral')
     axes[1,1].set_title('Demographic vs Biometric Updates', fontweight='bold', fontsize=14)
@@ -589,7 +618,7 @@ def plot_national_overview(monthly, output_dir):
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '01_national_overview.png'), dpi=150)
     plt.close()
-    print("  ✓ 01_national_overview.png")
+    print("  ✓ 01_national_overview.png (FIXED: dual Y-axes for scale)")
 
 def plot_state_comparison(state_summary, output_dir):
     """State comparison plots."""
