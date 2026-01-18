@@ -296,21 +296,44 @@ def compute_cross_domain_metrics(df):
     df['total_intensity'] = df['total_updates'] / (df['total_enrol'] + EPS)
     
     # Age-wise intensities
+    # NOTE: Age buckets are misaligned between datasets:
+    #   - Enrolment: 0-5, 5-17, 18+
+    #   - Updates: 5-17, 17+
+    # The 5-17 bucket aligns exactly, but "17+" includes 17-year-olds
+    # while "18+" does not. We handle this by:
+    #   1. Computing exact 5-17 intensities (aligned)
+    #   2. Computing "17+ updates per total enrolment" (not per-bucket)
+    #   3. Documenting the limitation for cross-age comparisons
+    
+    # 5-17 age group: EXACT ALIGNMENT - safe to compare directly
     df['demo_intensity_5_17'] = df['demo_age_5_17'] / (df['age_5_17'] + EPS)
     df['bio_intensity_5_17'] = df['bio_age_5_17'] / (df['age_5_17'] + EPS)
-    df['demo_intensity_adult'] = df['demo_age_17_'] / (df['age_18_greater'] + EPS)
-    df['bio_intensity_adult'] = df['bio_age_17_'] / (df['age_18_greater'] + EPS)
+    
+    # 17+ updates (adult-ish): Cannot compute per-bucket intensity due to misalignment
+    # Instead, compute as share of total enrolments (interpretable, not inflated)
+    df['demo_intensity_17plus'] = df['demo_age_17_'] / (df['total_enrol'] + EPS)
+    df['bio_intensity_17plus'] = df['bio_age_17_'] / (df['total_enrol'] + EPS)
+    
+    # Legacy column names for backward compatibility (but with corrected formula)
+    # These now represent "17+ updates per total enrolment" not "per 18+ enrolment"
+    df['demo_intensity_adult'] = df['demo_intensity_17plus']
+    df['bio_intensity_adult'] = df['bio_intensity_17plus']
     
     # Child share in enrolment vs updates
+    # NOTE: "Child" in enrolment = 0-5 + 5-17, but in updates = only 5-17 (no 0-5 bucket)
+    # This is a known limitation - update data doesn't distinguish 0-5 from 5-17
     df['child_share_enrol'] = (df['age_0_5'] + df['age_5_17']) / (df['total_enrol'] + EPS)
     df['child_share_updates'] = (df['demo_age_5_17'] + df['bio_age_5_17']) / (df['total_updates'] + EPS)
     
     # Child attention gap (positive = children over-represented in updates)
+    # Interpretation note: This slightly underestimates child updates since 0-5 not tracked
     df['child_attention_gap'] = df['child_share_updates'] - df['child_share_enrol']
     
-    # Adult share comparison
+    # Adult share comparison (same limitation as above)
     df['adult_share_enrol'] = df['age_18_greater'] / (df['total_enrol'] + EPS)
+    # 17+ updates includes 17-year-olds who are in 5-17 enrolment bucket
     df['adult_share_updates'] = (df['demo_age_17_'] + df['bio_age_17_']) / (df['total_updates'] + EPS)
+    # Gap is conceptually correct but buckets don't perfectly align
     df['adult_attention_gap'] = df['adult_share_updates'] - df['adult_share_enrol']
     
     # Interaction category
