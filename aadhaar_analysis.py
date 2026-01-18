@@ -224,7 +224,7 @@ def generate_visualizations(df):
              bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.5))
     
     plt.tight_layout()
-    plt.savefig(f\"{OUTPUT_DIR}/national_time_series.png\")
+    plt.savefig(f"{OUTPUT_DIR}/national_time_series.png")
     plt.close()
     
     # 2. Update Intensity Heatmap (Top 10 States by Volume)
