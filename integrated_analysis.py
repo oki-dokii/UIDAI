@@ -530,7 +530,14 @@ def setup_plots():
     plt.rcParams['font.size'] = 11
 
 def plot_national_overview(monthly, output_dir):
-    """National overview plot."""
+    """National overview plot with sample size annotations."""
+    # Try to import viz_utils for enhanced formatting
+    try:
+        from viz_utils import add_sample_size_annotation
+        use_viz_utils = True
+    except ImportError:
+        use_viz_utils = False
+    
     fig, axes = plt.subplots(2, 2, figsize=(16, 12))
     
     # Line chart: all three domains
@@ -541,6 +548,15 @@ def plot_national_overview(monthly, output_dir):
     axes[0,0].set_xlabel('Month')
     axes[0,0].set_ylabel('Total Count')
     axes[0,0].legend()
+    
+    # Add sample size annotation
+    total_records = monthly['total_enrol'].sum() + monthly['total_demo'].sum() + monthly['total_bio'].sum()
+    if use_viz_utils:
+        add_sample_size_annotation(axes[0,0], {'Months': len(monthly), 'Total Records': int(total_records)})
+    else:
+        axes[0,0].text(0.98, 0.98, f'n = {len(monthly)} months', 
+                       transform=axes[0,0].transAxes, ha='right', va='top',
+                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
     
     # Stacked bar
     x = monthly['month']
@@ -558,6 +574,10 @@ def plot_national_overview(monthly, output_dir):
     axes[1,0].set_title('Update-to-Enrolment Ratio by Month', fontweight='bold', fontsize=14)
     axes[1,0].set_xlabel('Month')
     axes[1,0].set_ylabel('Ratio')
+    # Add reference line for mean
+    mean_ratio = monthly['update_to_enrol'].mean()
+    axes[1,0].axhline(y=mean_ratio, color='red', linestyle='--', alpha=0.7, label=f'Mean: {mean_ratio:.2f}')
+    axes[1,0].legend()
     
     # Demo vs Bio comparison
     axes[1,1].bar(monthly['month'] - 0.2, monthly['total_demo'], width=0.4, label='Demographic', color='teal')
