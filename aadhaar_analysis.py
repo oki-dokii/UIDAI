@@ -230,13 +230,27 @@ def generate_visualizations(df):
     # 2. Update Intensity Heatmap (Top 10 States by Volume)
     top_states = df.groupby('state')['total_updates'].sum().nlargest(10).index
     state_df = df[df['state'].isin(top_states)].groupby(['state', 'date'])['update_intensity'].mean().reset_index()
-    state_pivot = state_df.pivot(index='state', columns='date', values='update_intensity')
     
-    plt.figure(figsize=(12, 8))
-    sns.heatmap(state_pivot, cmap='YlOrRd', annot=True, fmt=".2f")
-    plt.title('Average Update Intensity Heatmap (Top 10 States)')
+    # FIX: Format dates as readable strings before pivoting
+    state_df['date_str'] = state_df['date'].dt.strftime('%Y-%m-%d')
+    state_pivot = state_df.pivot(index='state', columns='date_str', values='update_intensity')
+    
+    # Select fewer columns if too many dates (for readability)
+    if len(state_pivot.columns) > 20:
+        # Sample every Nth date
+        n = len(state_pivot.columns) // 15
+        selected_cols = state_pivot.columns[::n]
+        state_pivot = state_pivot[selected_cols]
+    
+    plt.figure(figsize=(14, 8))
+    sns.heatmap(state_pivot, cmap='YlOrRd', annot=True, fmt=".2f", 
+                xticklabels=True, yticklabels=True)
+    plt.title('Average Update Intensity Heatmap (Top 10 States)', fontweight='bold')
+    plt.xlabel('Date')
+    plt.ylabel('State')
+    plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/state_intensity_heatmap.png")
+    plt.savefig(f"{OUTPUT_DIR}/state_intensity_heatmap.png", dpi=150)
     plt.close()
     
     # 3. Biometric vs Demographic Composition
