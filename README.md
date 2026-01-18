@@ -154,7 +154,12 @@ UIDAI/
 ### Prerequisites
 ```bash
 # Python 3.9+ required
-pip install pandas numpy matplotlib seaborn scikit-learn
+# Create virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install pandas numpy matplotlib seaborn scikit-learn scipy
 ```
 
 ### Run All Analyses
@@ -163,17 +168,33 @@ pip install pandas numpy matplotlib seaborn scikit-learn
 git clone https://github.com/oki-dokii/UIDAI.git
 cd UIDAI
 
-# Run integrated analysis (recommended)
-python3 integrated_analysis.py
+# Activate virtual environment
+source venv/bin/activate
 
-# Run individual analyses
+# Validate data first (recommended)
+python3 validate_data.py
+
+# Run comprehensive analysis (generates 10 plots)
+python3 uidai_comprehensive_analysis.py
+
+# Run basic analysis (generates 15 plots)
+python3 aadhaar_analysis.py
+
+# Run individual deep analyses
 python3 biometric_deep_analysis.py
 python3 demographic_deep_analysis.py
 python3 enrolment_deep_analysis.py
 
-# Run comprehensive pipeline
-python3 uidai_comprehensive_analysis.py
+# Run cross-domain integrated analysis
+python3 integrated_analysis.py
 ```
+
+### New Utility Scripts
+| Script | Purpose |
+|--------|---------|
+| `validate_data.py` | Check data quality, row counts, scale issues |
+| `viz_utils.py` | Enhanced plotting (dual axes, CI, sample size) |
+| `data_utils.py` | State normalization, deduplication, safe merging |
 
 ---
 
@@ -204,21 +225,47 @@ python3 uidai_comprehensive_analysis.py
 |----------|--------|---------|
 | **Intensity** | Update Intensity | `Total Updates / Total Enrolments` |
 | **Age Gap** | Child Attention Gap | `Child Share in Updates - Child Share in Enrolments` |
-| **Concentration** | Gini Coefficient | Lorenz curve area |
+| **Concentration** | Gini Coefficient | Lorenz curve area (zeros included) |
 | **Volatility** | CV | `Std Dev / Mean` |
 
 ### Machine Learning
 
-- **Clustering**: K-Means with StandardScaler (k=5)
+- **Clustering**: K-Means with **silhouette score validation** (auto-optimal k, typically 3-5)
 - **Features**: Volume, intensity, minor share, volatility
-- **Anomaly Detection**: Z-score > 3
+- **Anomaly Detection**: Combined approach:
+  - Z-score > 3σ
+  - IQR-based (> 1.5×IQR) - more robust for skewed distributions
+  - MAD (Median Absolute Deviation)
 
-### Data Quality
+### Data Quality Improvements ✅
 
-- State name normalization (38 variants → 36 standard)
-- Outlier capping (99th percentile × 10)
-- Duplicate handling (aggregation)
-- Missing value imputation (0 for counts)
+| Issue | Fix Applied |
+|-------|-------------|
+| **State Normalization** | 30+ variations mapped to standard names |
+| **Deduplication** | Explicit `drop_duplicates()` on date/state/district |
+| **False Zeros** | Filter rows where all activity columns are 0 after merge |
+| **Hardcoded Paths** | Replaced with `os.path.dirname(__file__)` for portability |
+| **Age Group Alignment** | Fixed 17+ vs 18+ bucket mismatch in intensity calculations |
+| **Gini Zeros** | Include zero-activity districts (was inflating coefficient) |
+
+### Visualization Fixes 📊
+
+| Issue | Fix Applied |
+|-------|-------------|
+| **Scale Inversion** | Dual Y-axes for enrolment (left) vs updates (right) |
+| **Heatmap Dates** | Formatted as `YYYY-MM-DD` before pivoting |
+| **Low Correlation Note** | r=0.30 explained as data completeness issue |
+| **Normalized Comparison** | Added index plots (Day 1 = 100) for trend comparison |
+
+### ⚠️ Known Data Limitations
+
+| Issue | Status |
+|-------|--------|
+| Updates >> Enrolments (20x) | **Expected**: Enrolment data is incomplete sample |
+| Age buckets misaligned | **Documented**: Updates use 17+, enrolment uses 18+ |
+| Low correlation (r~0.30) | **Expected**: Updates include historical Aadhaar holders |
+
+Run `python3 validate_data.py` to see full data validation report.
 
 ---
 
