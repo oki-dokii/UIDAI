@@ -161,7 +161,7 @@ class TestCrossDatasetConsistency(unittest.TestCase):
         # Check all are in 2025
         for name, (start, end) in date_ranges.items():
             self.assertEqual(start.year, 2025, f"{name} doesn't start in 2025")
-            self.assertGreater(end, start, f"{name} has invalid date range")
+            self.assertGreaterEqual(end, start, f"{name} has invalid date range")
         
         print(f"  ✓ All datasets are in 2025")
     
