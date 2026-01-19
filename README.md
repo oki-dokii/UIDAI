@@ -296,6 +296,26 @@ Run `python3 validate_data.py` to see full data validation report.
 
 ---
 
+## 📊 External Benchmarks
+
+| Benchmark | Value | Source |
+|-----------|-------|--------|
+| India Population (2021 Census) | **1.21 billion** | Census of India |
+| Aadhaar Saturation (Dec 2025) | **~1.4 billion** | UIDAI Official |
+| Adult Aadhaar Coverage | **99%+** | UIDAI Estimate |
+| Child (0-18) Coverage | **~85%** | UIDAI Estimate |
+| Avg. Aadhaar Age (biometric refresh cycle) | **~8 years** | Industry estimate |
+
+### Context for Our Findings
+
+- **High Update Ratio**: With 99%+ adult coverage, new enrolments naturally shift to children while updates dominate for existing adults
+- **Child Attention Gap**: The 85% child coverage vs 99% adult coverage partially explains under-representation in updates
+- **Regional Variation**: States like Kerala, Tamil Nadu have near-100% saturation; NE states lag behind
+
+> **Note**: External data is for contextual reference only. Our analysis uses only UIDAI-provided hackathon datasets.
+
+---
+
 ## 🎯 Recommendations for UIDAI
 
 ### Immediate Actions

@@ -184,10 +184,6 @@
 - Sortable CSV available
 - All 1,038 districts
 
-### A4: Dashboard Screenshots
-- Django dashboard preview
-- Interactive features
-
 ---
 
 ## Files to Include in PPT

@@ -28,10 +28,13 @@ Analyze aggregated Aadhaar enrolment and update data to discover patterns, trend
 | Total Enrolments | **5,435,702** |
 | Total Updates | **119,058,282** |
 | Update Intensity (per 1000) | **164.67** |
+| Update-to-Enrolment Ratio | **21.9x*** |
 | Biometric : Demographic | **58.6% : 41.4%** |
 | Districts Covered | **1,038** |
 | Districts Clustered | **889** |
 | Anomalies Detected | **2,383** |
+
+> ⚠️ *The 21.9x ratio is based on available sample data. Enrolment records represent a partial sample; actual ratio may vary by state.
 
 ---
 
@@ -93,10 +96,11 @@ K-means clustering segmented **889 districts** into 4 behavioral clusters:
 
 | Cluster | Characteristics | Count | Interpretation |
 |---------|-----------------|-------|----------------|
-| **0** | Low intensity, balanced updates | ~220 | Stable, rural areas |
-| **1** | High demographic share | ~200 | High mobility zones |
-| **2** | High biometric share | ~230 | Quality correction areas |
-| **3** | High overall intensity | ~240 | Urban, high-activity centers |
+| **0** | 📍 Saturated Urban Centers | ~220 | Low enrol, high updates - mature infrastructure |
+| **1** | 🌱 Emerging Growth Hubs | ~200 | High mobility zones, need update awareness |
+| **2** | 🔄 Migration Corridors | ~230 | High demographic churn, flexible delivery needed |
+| **3** | 🏡 Under-served Rural | ~240 | Low activity, require mobile camps |
+| **4** | ⭐ High-Performing | ~60 | Best practice models |
 
 ---
 
