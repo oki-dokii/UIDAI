@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_fa1493a69c427e96828de0555a6caeaa {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+        <div style="position: fixed; bottom: 50px; left: 50px; z-index: 1000; 
+                    background-color: white; padding: 10px; border-radius: 5px;
+                    border: 2px solid grey;">
+            <b>Child Attention Gap</b><br>
+            <span style="color:red">●</span> Critical (&lt; -0.5)<br>
+            <span style="color:orange">●</span> Severe (-0.5 to -0.2)<br>
+            <span style="color:yellow">●</span> Moderate (-0.2 to 0)<br>
+            <span style="color:green">●</span> Good (&gt; 0)
+        </div>
+        
+    
+            <div class="folium-map" id="map_fa1493a69c427e96828de0555a6caeaa" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_fa1493a69c427e96828de0555a6caeaa = L.map(
+                "map_fa1493a69c427e96828de0555a6caeaa",
+                {
+                    center: [20.5937, 78.9629],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_ddc637cfc7fb397ea33813b218115e7a = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 20,
+  "maxNativeZoom": 20,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors \u0026copy; \u003ca href=\"https://carto.com/attributions\"\u003eCARTO\u003c/a\u003e",
+  "subdomains": "abcd",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_ddc637cfc7fb397ea33813b218115e7a.addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+            var circle_marker_206f5019767ad0a91cd8e8883799418e = L.circleMarker(
+                [15.9129, 79.74],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.514674471484454, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_85758b3e0da7034f0fde9c7de78fa52a = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_cd925d39a64efb76b4ce1bee2eaf89cd = $(`<div id="html_cd925d39a64efb76b4ce1bee2eaf89cd" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Andhra Pradesh</h4>                 <b>Enrolments:</b> 127,686<br>                 <b>Updates:</b> 6,010,215<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.121</span>             </div>             </div>`)[0];
+                popup_85758b3e0da7034f0fde9c7de78fa52a.setContent(html_cd925d39a64efb76b4ce1bee2eaf89cd);
+            
+        
+
+        circle_marker_206f5019767ad0a91cd8e8883799418e.bindPopup(popup_85758b3e0da7034f0fde9c7de78fa52a)
+        ;
+
+        
+    
+    
+            var circle_marker_a1fd621f392f909f0883e7926d4f4930 = L.circleMarker(
+                [28.218, 94.7278],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 16.753562075398985, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_610f197edf5b683c52d622512e3d385f = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_a1380fc0d84f471f91377487d039b0de = $(`<div id="html_a1380fc0d84f471f91377487d039b0de" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Arunachal Pradesh</h4>                 <b>Enrolments:</b> 4,344<br>                 <b>Updates:</b> 108,837<br>                 <b>Child Gap:</b> <span style="color:green">+0.019</span>             </div>             </div>`)[0];
+                popup_610f197edf5b683c52d622512e3d385f.setContent(html_a1380fc0d84f471f91377487d039b0de);
+            
+        
+
+        circle_marker_a1fd621f392f909f0883e7926d4f4930.bindPopup(popup_610f197edf5b683c52d622512e3d385f)
+        ;
+
+        
+    
+    
+            var circle_marker_5fe8a68890c2b9b8b7c3ca4f68e97712 = L.circleMarker(
+                [26.2006, 92.9376],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 24.69339017426974, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_493b30144ed2ccb5e965e82a8bea2931 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_08a1a077df07c37441c0fab2b1398611 = $(`<div id="html_08a1a077df07c37441c0fab2b1398611" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Assam</h4>                 <b>Enrolments:</b> 230,197<br>                 <b>Updates:</b> 1,995,300<br>                 <b>Child Gap:</b> <span style="color:orange">-0.346</span>             </div>             </div>`)[0];
+                popup_493b30144ed2ccb5e965e82a8bea2931.setContent(html_08a1a077df07c37441c0fab2b1398611);
+            
+        
+
+        circle_marker_5fe8a68890c2b9b8b7c3ca4f68e97712.bindPopup(popup_493b30144ed2ccb5e965e82a8bea2931)
+        ;
+
+        
+    
+    
+            var circle_marker_c88ecdf71a350f6eb4a5b7686d6f2376 = L.circleMarker(
+                [25.0961, 85.3131],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 26.641070634423176, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_cfc3b6f35279d46b140524abb1c6fb41 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_a1f1bf3cac4f16c8e36bf588fbec12b3 = $(`<div id="html_a1f1bf3cac4f16c8e36bf588fbec12b3" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Bihar</h4>                 <b>Enrolments:</b> 609,585<br>                 <b>Updates:</b> 9,711,937<br>                 <b>Child Gap:</b> <span style="color:orange">-0.390</span>             </div>             </div>`)[0];
+                popup_cfc3b6f35279d46b140524abb1c6fb41.setContent(html_a1f1bf3cac4f16c8e36bf588fbec12b3);
+            
+        
+
+        circle_marker_c88ecdf71a350f6eb4a5b7686d6f2376.bindPopup(popup_cfc3b6f35279d46b140524abb1c6fb41)
+        ;
+
+        
+    
+    
+            var circle_marker_1a0edd8c742db4aeb585ae4c5da913ac = L.circleMarker(
+                [21.2787, 81.8661],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.089235823405435, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_994362aaee765f073010fb72f82ff042 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_b51ab820d9ba849dd5fe1c0a91a6b8b2 = $(`<div id="html_b51ab820d9ba849dd5fe1c0a91a6b8b2" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Chhattisgarh</h4>                 <b>Enrolments:</b> 103,219<br>                 <b>Updates:</b> 4,654,163<br>                 <b>Child Gap:</b> <span style="color:orange">-0.307</span>             </div>             </div>`)[0];
+                popup_994362aaee765f073010fb72f82ff042.setContent(html_b51ab820d9ba849dd5fe1c0a91a6b8b2);
+            
+        
+
+        circle_marker_1a0edd8c742db4aeb585ae4c5da913ac.bindPopup(popup_994362aaee765f073010fb72f82ff042)
+        ;
+
+        
+    
+    
+            var circle_marker_579900c27bf0ca1735dc3650266bd653 = L.circleMarker(
+                [28.7041, 77.1025],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 22.91334504683886, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_886bca6c50b5aba4d2ebd11feaaf1b19 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_1a4631a4ac061e90344231d0fadd98bb = $(`<div id="html_1a4631a4ac061e90344231d0fadd98bb" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Delhi</h4>                 <b>Enrolments:</b> 94,529<br>                 <b>Updates:</b> 2,743,296<br>                 <b>Child Gap:</b> <span style="color:orange">-0.479</span>             </div>             </div>`)[0];
+                popup_886bca6c50b5aba4d2ebd11feaaf1b19.setContent(html_1a4631a4ac061e90344231d0fadd98bb);
+            
+        
+
+        circle_marker_579900c27bf0ca1735dc3650266bd653.bindPopup(popup_886bca6c50b5aba4d2ebd11feaaf1b19)
+        ;
+
+        
+    
+    
+            var circle_marker_7cfbfda584e6e50a58b09cb6c4bb8dc1 = L.circleMarker(
+                [15.2993, 74.124],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.510677625693003, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_6d210dc5e768bb6f7625e38d7f079915 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_86bdc5cb1cfdbfe55bfbf9060edfcae6 = $(`<div id="html_86bdc5cb1cfdbfe55bfbf9060edfcae6" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Goa</h4>                 <b>Enrolments:</b> 2,333<br>                 <b>Updates:</b> 103,517<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.110</span>             </div>             </div>`)[0];
+                popup_6d210dc5e768bb6f7625e38d7f079915.setContent(html_86bdc5cb1cfdbfe55bfbf9060edfcae6);
+            
+        
+
+        circle_marker_7cfbfda584e6e50a58b09cb6c4bb8dc1.bindPopup(popup_6d210dc5e768bb6f7625e38d7f079915)
+        ;
+
+        
+    
+    
+            var circle_marker_0418d5108e26c47e18c26267ea3c118a = L.circleMarker(
+                [22.2587, 71.1924],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.089014482358238, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_2971bbd1fbbbc04b623e6931c5169bbd = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_f5374d9c2f4f924eba5373f4acbe6126 = $(`<div id="html_f5374d9c2f4f924eba5373f4acbe6126" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Gujarat</h4>                 <b>Enrolments:</b> 280,549<br>                 <b>Updates:</b> 5,020,841<br>                 <b>Child Gap:</b> <span style="color:orange">-0.385</span>             </div>             </div>`)[0];
+                popup_2971bbd1fbbbc04b623e6931c5169bbd.setContent(html_f5374d9c2f4f924eba5373f4acbe6126);
+            
+        
+
+        circle_marker_0418d5108e26c47e18c26267ea3c118a.bindPopup(popup_2971bbd1fbbbc04b623e6931c5169bbd)
+        ;
+
+        
+    
+    
+            var circle_marker_9e01b5ca6ce06d64a86839f38ec56ec0 = L.circleMarker(
+                [29.0588, 76.0856],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 22.99060212723298, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_e158e68c467f57e0a345582e8c7f871e = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_9b01d175485d09ced7f76a88a9a3d930 = $(`<div id="html_9b01d175485d09ced7f76a88a9a3d930" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Haryana</h4>                 <b>Enrolments:</b> 98,252<br>                 <b>Updates:</b> 2,801,594<br>                 <b>Child Gap:</b> <span style="color:orange">-0.241</span>             </div>             </div>`)[0];
+                popup_e158e68c467f57e0a345582e8c7f871e.setContent(html_9b01d175485d09ced7f76a88a9a3d930);
+            
+        
+
+        circle_marker_9e01b5ca6ce06d64a86839f38ec56ec0.bindPopup(popup_e158e68c467f57e0a345582e8c7f871e)
+        ;
+
+        
+    
+    
+            var circle_marker_eddcbdd10d5693c2cd04f879d066fd38 = L.circleMarker(
+                [31.1048, 77.1734],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.53842605342732, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_e43b828f1e203da22c603ebbb6bd0fe6 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_977e4b8f4dbd8814120a3e587d985f01 = $(`<div id="html_977e4b8f4dbd8814120a3e587d985f01" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Himachal Pradesh</h4>                 <b>Enrolments:</b> 17,486<br>                 <b>Updates:</b> 545,448<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.092</span>             </div>             </div>`)[0];
+                popup_e43b828f1e203da22c603ebbb6bd0fe6.setContent(html_977e4b8f4dbd8814120a3e587d985f01);
+            
+        
+
+        circle_marker_eddcbdd10d5693c2cd04f879d066fd38.bindPopup(popup_e43b828f1e203da22c603ebbb6bd0fe6)
+        ;
+
+        
+    
+    
+            var circle_marker_7371881bc3774a7d634f56f90c8ba0b9 = L.circleMarker(
+                [23.6102, 85.2799],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.93486934651463, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_e9e268486e0395fb7719e3f3f01a9285 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_cac34c57a3ecdd85e5b119ce1a1053a5 = $(`<div id="html_cac34c57a3ecdd85e5b119ce1a1053a5" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Jharkhand</h4>                 <b>Enrolments:</b> 157,539<br>                 <b>Updates:</b> 3,427,486<br>                 <b>Child Gap:</b> <span style="color:orange">-0.244</span>             </div>             </div>`)[0];
+                popup_e9e268486e0395fb7719e3f3f01a9285.setContent(html_cac34c57a3ecdd85e5b119ce1a1053a5);
+            
+        
+
+        circle_marker_7371881bc3774a7d634f56f90c8ba0b9.bindPopup(popup_e9e268486e0395fb7719e3f3f01a9285)
+        ;
+
+        
+    
+    
+            var circle_marker_79c7ef496777d6a7815d175cb8e0e5c3 = L.circleMarker(
+                [15.3173, 75.7139],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 24.631969573611975, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_48e8f616564f7d50e6515eb44736c953 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_ab2da747af760b85bf1996d7586287d0 = $(`<div id="html_ab2da747af760b85bf1996d7586287d0" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Karnataka</h4>                 <b>Enrolments:</b> 223,235<br>                 <b>Updates:</b> 4,331,239<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.146</span>             </div>             </div>`)[0];
+                popup_48e8f616564f7d50e6515eb44736c953.setContent(html_ab2da747af760b85bf1996d7586287d0);
+            
+        
+
+        circle_marker_79c7ef496777d6a7815d175cb8e0e5c3.bindPopup(popup_48e8f616564f7d50e6515eb44736c953)
+        ;
+
+        
+    
+    
+            var circle_marker_ab70b98e0546c2c0e650b4bf04d8adba = L.circleMarker(
+                [10.8505, 76.2711],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 22.450566783436937, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_10267d8116e925bb9ac69f484ec24bae = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_65072fe6f805058c16c9329f3e28221a = $(`<div id="html_65072fe6f805058c16c9329f3e28221a" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Kerala</h4>                 <b>Enrolments:</b> 75,002<br>                 <b>Updates:</b> 2,354,682<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.182</span>             </div>             </div>`)[0];
+                popup_10267d8116e925bb9ac69f484ec24bae.setContent(html_65072fe6f805058c16c9329f3e28221a);
+            
+        
+
+        circle_marker_ab70b98e0546c2c0e650b4bf04d8adba.bindPopup(popup_10267d8116e925bb9ac69f484ec24bae)
+        ;
+
+        
+    
+    
+            var circle_marker_06c6b45199c87a1c5787144fecb75055 = L.circleMarker(
+                [22.9734, 78.6569],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 26.220464179986887, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_77501053f14de7a382815ccb339ab25a = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_96fa570aa99f96167a52caf37322fe1d = $(`<div id="html_96fa570aa99f96167a52caf37322fe1d" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Madhya Pradesh</h4>                 <b>Enrolments:</b> 493,970<br>                 <b>Updates:</b> 8,836,709<br>                 <b>Child Gap:</b> <span style="color:orange">-0.233</span>             </div>             </div>`)[0];
+                popup_77501053f14de7a382815ccb339ab25a.setContent(html_96fa570aa99f96167a52caf37322fe1d);
+            
+        
+
+        circle_marker_06c6b45199c87a1c5787144fecb75055.bindPopup(popup_77501053f14de7a382815ccb339ab25a)
+        ;
+
+        
+    
+    
+            var circle_marker_16ace32ef2a7966071c69cb78d594b45 = L.circleMarker(
+                [19.7515, 75.7139],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.637862509722563, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_11d13f301ff99ade7c47b993912672c0 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_11bb1b6e7b50c272f158c5e1dfbe4aba = $(`<div id="html_11bb1b6e7b50c272f158c5e1dfbe4aba" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Maharashtra</h4>                 <b>Enrolments:</b> 369,139<br>                 <b>Updates:</b> 14,280,741<br>                 <b>Child Gap:</b> <span style="color:orange">-0.385</span>             </div>             </div>`)[0];
+                popup_11d13f301ff99ade7c47b993912672c0.setContent(html_11bb1b6e7b50c272f158c5e1dfbe4aba);
+            
+        
+
+        circle_marker_16ace32ef2a7966071c69cb78d594b45.bindPopup(popup_11d13f301ff99ade7c47b993912672c0)
+        ;
+
+        
+    
+    
+            var circle_marker_b9a4da1b5ef90e94f1113ce1b235b54d = L.circleMarker(
+                [24.6637, 93.9063],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.014509391483084, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_9beb81db88fffc553a3c795f175cf72c = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_03054bee92e16895995834bc0aa4e1df = $(`<div id="html_03054bee92e16895995834bc0aa4e1df" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Manipur</h4>                 <b>Enrolments:</b> 13,456<br>                 <b>Updates:</b> 584,136<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.124</span>             </div>             </div>`)[0];
+                popup_9beb81db88fffc553a3c795f175cf72c.setContent(html_03054bee92e16895995834bc0aa4e1df);
+            
+        
+
+        circle_marker_b9a4da1b5ef90e94f1113ce1b235b54d.bindPopup(popup_9beb81db88fffc553a3c795f175cf72c)
+        ;
+
+        
+    
+    
+            var circle_marker_828fdacd94239b1ed36464e7588ea0aa = L.circleMarker(
+                [25.467, 91.3662],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.212321532859495, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_65bbdbf3960635fd4704946c60fed924 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_fbc3ba61563837b5408e9b87feab56ba = $(`<div id="html_fbc3ba61563837b5408e9b87feab56ba" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Meghalaya</h4>                 <b>Enrolments:</b> 109,771<br>                 <b>Updates:</b> 175,004<br>                 <b>Child Gap:</b> <span style="color:orange">-0.266</span>             </div>             </div>`)[0];
+                popup_65bbdbf3960635fd4704946c60fed924.setContent(html_fbc3ba61563837b5408e9b87feab56ba);
+            
+        
+
+        circle_marker_828fdacd94239b1ed36464e7588ea0aa.bindPopup(popup_65bbdbf3960635fd4704946c60fed924)
+        ;
+
+        
+    
+    
+            var circle_marker_7c8a3e4c5e580b5720bb7a74108779ff = L.circleMarker(
+                [23.1645, 92.9376],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 17.374546923575675, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_3d67c591d1a63f7e5bb05d1af0416fc9 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_e48e7416b1a5eb76332c843c59431260 = $(`<div id="html_e48e7416b1a5eb76332c843c59431260" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Mizoram</h4>                 <b>Enrolments:</b> 5,926<br>                 <b>Updates:</b> 162,235<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.068</span>             </div>             </div>`)[0];
+                popup_3d67c591d1a63f7e5bb05d1af0416fc9.setContent(html_e48e7416b1a5eb76332c843c59431260);
+            
+        
+
+        circle_marker_7c8a3e4c5e580b5720bb7a74108779ff.bindPopup(popup_3d67c591d1a63f7e5bb05d1af0416fc9)
+        ;
+
+        
+    
+    
+            var circle_marker_8e35b04e1c96c9000aa4e9f3ef7ac93c = L.circleMarker(
+                [26.1584, 94.5624],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 19.3085133329172, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_bf06a2c8cecb400e16bfd2fd963c6246 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_200f85f0bad2071c67b454a3b05fccb7 = $(`<div id="html_200f85f0bad2071c67b454a3b05fccb7" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Nagaland</h4>                 <b>Enrolments:</b> 15,587<br>                 <b>Updates:</b> 146,384<br>                 <b>Child Gap:</b> <span style="color:orange">-0.345</span>             </div>             </div>`)[0];
+                popup_bf06a2c8cecb400e16bfd2fd963c6246.setContent(html_200f85f0bad2071c67b454a3b05fccb7);
+            
+        
+
+        circle_marker_8e35b04e1c96c9000aa4e9f3ef7ac93c.bindPopup(popup_bf06a2c8cecb400e16bfd2fd963c6246)
+        ;
+
+        
+    
+    
+            var circle_marker_ac8823427cb0e436e12ab5544e4d6a85 = L.circleMarker(
+                [20.9517, 85.0985],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.439684137239126, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_69157abe8751e09ff2866abbd0df1de6 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_b20b9879f94152f04dbbb35586e6f033 = $(`<div id="html_b20b9879f94152f04dbbb35586e6f033" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Odisha</h4>                 <b>Enrolments:</b> 122,987<br>                 <b>Updates:</b> 3,577,025<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.083</span>             </div>             </div>`)[0];
+                popup_69157abe8751e09ff2866abbd0df1de6.setContent(html_b20b9879f94152f04dbbb35586e6f033);
+            
+        
+
+        circle_marker_ac8823427cb0e436e12ab5544e4d6a85.bindPopup(popup_69157abe8751e09ff2866abbd0df1de6)
+        ;
+
+        
+    
+    
+            var circle_marker_d71e4ca0e591ee84a28a4154d29ea44e = L.circleMarker(
+                [31.1471, 75.3412],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 22.496539153475215, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_cba3cf1b890c9667c31979932c159f1c = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_4f8a731b0d5fe4d401ca361d9c677a11 = $(`<div id="html_4f8a731b0d5fe4d401ca361d9c677a11" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Punjab</h4>                 <b>Enrolments:</b> 76,746<br>                 <b>Updates:</b> 2,621,566<br>                 <b>Child Gap:</b> <span style="color:orange">-0.260</span>             </div>             </div>`)[0];
+                popup_cba3cf1b890c9667c31979932c159f1c.setContent(html_4f8a731b0d5fe4d401ca361d9c677a11);
+            
+        
+
+        circle_marker_d71e4ca0e591ee84a28a4154d29ea44e.bindPopup(popup_cba3cf1b890c9667c31979932c159f1c)
+        ;
+
+        
+    
+    
+            var circle_marker_3839b0f98687e0bd0355b114919ecee6 = L.circleMarker(
+                [27.0238, 74.2179],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.522551710405867, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_dc6865b2b13f9c17330081788bec0dff = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_61f4429ddd5b66fddca349059c4c4d33 = $(`<div id="html_61f4429ddd5b66fddca349059c4c4d33" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Rajasthan</h4>                 <b>Enrolments:</b> 348,458<br>                 <b>Updates:</b> 6,812,570<br>                 <b>Child Gap:</b> <span style="color:orange">-0.269</span>             </div>             </div>`)[0];
+                popup_dc6865b2b13f9c17330081788bec0dff.setContent(html_61f4429ddd5b66fddca349059c4c4d33);
+            
+        
+
+        circle_marker_3839b0f98687e0bd0355b114919ecee6.bindPopup(popup_dc6865b2b13f9c17330081788bec0dff)
+        ;
+
+        
+    
+    
+            var circle_marker_2746e9ae4350fe89066bd509b8f4d099 = L.circleMarker(
+                [27.533, 88.5122],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.399684814793972, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_87b13e39becbab565fd36bea872da6f0 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_d1c71f53160befc86dbc64426ed05ef3 = $(`<div id="html_d1c71f53160befc86dbc64426ed05ef3" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Sikkim</h4>                 <b>Enrolments:</b> 2,207<br>                 <b>Updates:</b> 43,160<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.165</span>             </div>             </div>`)[0];
+                popup_87b13e39becbab565fd36bea872da6f0.setContent(html_d1c71f53160befc86dbc64426ed05ef3);
+            
+        
+
+        circle_marker_2746e9ae4350fe89066bd509b8f4d099.bindPopup(popup_87b13e39becbab565fd36bea872da6f0)
+        ;
+
+        
+    
+    
+            var circle_marker_3df478a0c5b62837edc622b716b75151 = L.circleMarker(
+                [11.1271, 78.6569],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 24.609934605008778, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_2de5b203db6b4ba22428b6a5a617bb11 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_2c466424cda4788d6aa0d9e12eab900e = $(`<div id="html_2c466424cda4788d6aa0d9e12eab900e" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Tamil Nadu</h4>                 <b>Enrolments:</b> 220,789<br>                 <b>Updates:</b> 6,910,345<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.114</span>             </div>             </div>`)[0];
+                popup_2de5b203db6b4ba22428b6a5a617bb11.setContent(html_2c466424cda4788d6aa0d9e12eab900e);
+            
+        
+
+        circle_marker_3df478a0c5b62837edc622b716b75151.bindPopup(popup_2de5b203db6b4ba22428b6a5a617bb11)
+        ;
+
+        
+    
+    
+            var circle_marker_76e55d63728f87e60951731a5f25f036 = L.circleMarker(
+                [18.1124, 79.0193],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 23.574664620443958, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_936f4c9dc98167c7defaaa47395a0188 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_04d5935d94f7db5345e040e9c429707e = $(`<div id="html_04d5935d94f7db5345e040e9c429707e" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Telangana</h4>                 <b>Enrolments:</b> 131,574<br>                 <b>Updates:</b> 3,367,562<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.149</span>             </div>             </div>`)[0];
+                popup_936f4c9dc98167c7defaaa47395a0188.setContent(html_04d5935d94f7db5345e040e9c429707e);
+            
+        
+
+        circle_marker_76e55d63728f87e60951731a5f25f036.bindPopup(popup_936f4c9dc98167c7defaaa47395a0188)
+        ;
+
+        
+    
+    
+            var circle_marker_6bd0f1302a4dfeaf71d4100feceee4a5 = L.circleMarker(
+                [23.9408, 91.9882],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 18.66263659705817, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_754fca3cafb1af3d808b2fbd6204589a = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_0e4f9035481eaceb77811298a440bed3 = $(`<div id="html_0e4f9035481eaceb77811298a440bed3" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Tripura</h4>                 <b>Enrolments:</b> 11,285<br>                 <b>Updates:</b> 430,168<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.073</span>             </div>             </div>`)[0];
+                popup_754fca3cafb1af3d808b2fbd6204589a.setContent(html_0e4f9035481eaceb77811298a440bed3);
+            
+        
+
+        circle_marker_6bd0f1302a4dfeaf71d4100feceee4a5.bindPopup(popup_754fca3cafb1af3d808b2fbd6204589a)
+        ;
+
+        
+    
+    
+            var circle_marker_457e32a92b0a9031161f0b17c37a3c61 = L.circleMarker(
+                [26.8467, 80.9462],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 27.667938290376426, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_79927610bda69545b39dd4f7b3ec00bb = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_820c4d9a80b916cc1f9cc5faacc7c150 = $(`<div id="html_820c4d9a80b916cc1f9cc5faacc7c150" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Uttar Pradesh</h4>                 <b>Enrolments:</b> 1,018,629<br>                 <b>Updates:</b> 18,120,063<br>                 <b>Child Gap:</b> <span style="color:orange">-0.259</span>             </div>             </div>`)[0];
+                popup_79927610bda69545b39dd4f7b3ec00bb.setContent(html_820c4d9a80b916cc1f9cc5faacc7c150);
+            
+        
+
+        circle_marker_457e32a92b0a9031161f0b17c37a3c61.bindPopup(popup_79927610bda69545b39dd4f7b3ec00bb)
+        ;
+
+        
+    
+    
+            var circle_marker_4e0776ad82c48fd55021c7645e347278 = L.circleMarker(
+                [30.0668, 79.0193],
+                {"bubblingMouseEvents": true, "color": "yellow", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 21.074777695770727, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_87dde45f2517e277a23c71a8993db018 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_76cac933994d2072b79741a593eba79c = $(`<div id="html_76cac933994d2072b79741a593eba79c" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>Uttarakhand</h4>                 <b>Enrolments:</b> 37,698<br>                 <b>Updates:</b> 1,228,400<br>                 <b>Child Gap:</b> <span style="color:yellow">-0.189</span>             </div>             </div>`)[0];
+                popup_87dde45f2517e277a23c71a8993db018.setContent(html_76cac933994d2072b79741a593eba79c);
+            
+        
+
+        circle_marker_4e0776ad82c48fd55021c7645e347278.bindPopup(popup_87dde45f2517e277a23c71a8993db018)
+        ;
+
+        
+    
+    
+            var circle_marker_1f632fd9ca973e0308128dbe0ab93470 = L.circleMarker(
+                [22.9868, 87.855],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.7, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 25.67100993130185, "stroke": true, "weight": 3}
+            ).addTo(map_fa1493a69c427e96828de0555a6caeaa);
+        
+    
+        var popup_a1cc527ff3ae0fc9a920b542fb650050 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_9a2332bff8fd8b12cb0a1d59712b10a6 = $(`<div id="html_9a2332bff8fd8b12cb0a1d59712b10a6" style="width: 100.0%; height: 100.0%;">             <div style="width:200px">                 <h4>West Bengal</h4>                 <b>Enrolments:</b> 375,308<br>                 <b>Updates:</b> 6,396,824<br>                 <b>Child Gap:</b> <span style="color:orange">-0.325</span>             </div>             </div>`)[0];
+                popup_a1cc527ff3ae0fc9a920b542fb650050.setContent(html_9a2332bff8fd8b12cb0a1d59712b10a6);
+            
+        
+
+        circle_marker_1f632fd9ca973e0308128dbe0ab93470.bindPopup(popup_a1cc527ff3ae0fc9a920b542fb650050)
+        ;
+
+        
+    
+</script>
+</html>
