@@ -80,6 +80,7 @@
             margin: 0;
             background: linear-gradient(to right, #4cc9f0, #4361ee);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -282,14 +283,17 @@
             <div class="border-top border-white-10 my-3 mx-3"></div>
             <div class="px-3 text-uppercase text-white-50 small fw-bold mb-2">Modules</div>
 
-            <a href="#" class="text-white-50">
+            <a href="{% url 'module_detail' 'enrolment' %}"
+                class="{% if request.resolver_match.url_name == 'module_detail' and 'enrolment' in request.path %}active{% endif %}">
                 <i class="bi bi-person-badge"></i> Enrolment
             </a>
-            <a href="#" class="text-white-50">
+            <a href="{% url 'module_detail' 'demographic' %}"
+                class="{% if request.resolver_match.url_name == 'module_detail' and 'demographic' in request.path %}active{% endif %}">
                 <i class="bi bi-people"></i> Demographic
             </a>
-            <a href="#" class="text-white-50">
-                <i class="bi bi-eye"></i> Biometric
+            <a href="{% url 'module_detail' 'biometric' %}"
+                class="{% if request.resolver_match.url_name == 'module_detail' and 'biometric' in request.path %}active{% endif %}">
+                <i class="bi bi-fingerprint"></i> Biometric
             </a>
 
             <div class="mt-auto px-3 pb-3 position-absolute bottom-0 w-100">
@@ -312,6 +316,12 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'clusters' %}">Clusters</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'insights' %}">Insights</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'module_detail' 'enrolment' %}">Enrolment</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link"
+                            href="{% url 'module_detail' 'demographic' %}">Demographic</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'module_detail' 'biometric' %}">Biometric</a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -1,0 +1,133 @@
+{% extends 'reports/base.html' %}
+
+{% block title %}{{ display_name }} Analysis - UIDAI Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            {% if module_name == 'biometric' %}
+            <i class="bi bi-fingerprint text-warning me-2"></i>
+            {% elif module_name == 'demographic' %}
+            <i class="bi bi-people text-success me-2"></i>
+            {% else %}
+            <i class="bi bi-person-badge text-primary me-2"></i>
+            {% endif %}
+            {{ display_name }} Analysis
+        </h1>
+        <p class="lead">Detailed analysis of {{ display_name|lower }} data across all districts</p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row mb-4">
+        {% for key, value in kpis.items %}
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card metric-card border-left-{% cycle 'primary' 'success' 'warning' 'info' %} h-100">
+                <div class="card-body">
+                    <div class="metric-label text-muted">{{ key|title }}</div>
+                    <div class="metric-value">
+                        {% if value < 1 and value> 0 %}
+                            {{ value|floatformat:4 }}
+                            {% elif value > 1000000 %}
+                            {{ value|floatformat:0 }}
+                            {% else %}
+                            {{ value|floatformat:2 }}
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">No KPIs available for this module.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Concentration Metrics -->
+    {% if concentration_table %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="m-0"><i class="bi bi-bar-chart-steps me-2"></i>Concentration Metrics by State</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        {{ concentration_table|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- District Clusters & Anomalies -->
+    <div class="row mb-4">
+        <!-- Clusters -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
+                    <h6 class="m-0"><i class="bi bi-diagram-3 me-2"></i>District Clusters</h6>
+                    {% if total_clusters %}
+                    <span class="badge bg-light text-primary">{{ total_clusters }} districts</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        {% if clusters_table %}
+                        {{ clusters_table|safe }}
+                        {% else %}
+                        <p class="text-muted text-center p-4">No cluster data available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Anomalies -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark d-flex justify-content-between">
+                    <h6 class="m-0"><i class="bi bi-lightning me-2"></i>Top Anomalies</h6>
+                    {% if total_anomalies %}
+                    <span class="badge bg-dark text-warning">{{ total_anomalies }} detected</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        {% if anomalies_table %}
+                        {{ anomalies_table|safe }}
+                        {% else %}
+                        <p class="text-muted text-center p-4">No anomaly data available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volatility Metrics -->
+    {% if volatility_table %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white d-flex justify-content-between">
+                    <h6 class="m-0"><i class="bi bi-activity me-2"></i>Volatility Metrics (Top 20)</h6>
+                    {% if total_volatility %}
+                    <span class="badge bg-light text-info">{{ total_volatility }} districts analyzed</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        {{ volatility_table|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

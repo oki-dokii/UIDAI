@@ -51,7 +51,7 @@ This project delivers a **comprehensive, multi-layered analytical system** for t
 |--------|-------|-------------|
 | **Total Enrolments** | 5.4 Million | New Aadhaar registrations |
 | **Total Updates** | 119 Million | Demo (49M) + Bio (70M) |
-| **Update-to-Enrolment Ratio** | **21.9x** | System is update-driven |
+| **Update-to-Enrolment Ratio** | **21.9x*** | System is update-driven |
 | **Child Share in Enrolments** | 97.5% | Adults are saturated |
 | **Child Share in Updates** | ~30% | Gap exists |
 
@@ -73,6 +73,8 @@ This project delivers a **comprehensive, multi-layered analytical system** for t
    - 1.6% Mature (high both)
 
 5. **📊 Concentration**: Top 50 districts = 21-24% of all activity
+
+> ⚠️ **Data Caveat**: *The 21.9x ratio is based on available sample data. Enrolment records represent a partial sample while update data is more complete. State-level ratios may vary significantly.
 
 ---
 
@@ -107,6 +109,31 @@ This project delivers a **comprehensive, multi-layered analytical system** for t
 - **Features**: 29 engineered features
 - **ML**: K-Means clustering, anomaly detection
 - **Plots**: 10 visualizations
+
+### 6️⃣ Geospatial Analysis (`geospatial_plots/`) 🆕
+- **Focus**: State-level geographic patterns
+- **Key Outputs**:
+  - `01_update_intensity_map.png` - State intensity heatmap
+  - `02_child_gap_map.png` - Child attention gap by state
+  - `03_state_performance_matrix.png` - Bubble chart
+  - `04_india_choropleth.png` - Geographic choropleth
+
+### 7️⃣ Predictive Forecasting (`forecast_plots/`) 🆕
+- **Focus**: 6-month projections using Prophet ML
+- **Key Outputs**:
+  - `01_enrolment_forecast.png` - Enrolment trajectory
+  - `02_updates_forecast.png` - Updates projection
+  - `03_declining_districts.png` - Districts at risk
+  - `04_forecast_summary.png` - Combined dashboard
+
+### 8️⃣ Actionable Insights (`actionable_insights/`) 🆕
+- **Focus**: Specific policy recommendations
+- **Key Outputs**:
+  - `top_20_child_gap_districts.csv` - Priority intervention list
+  - `01_worst_child_gaps.png` - Visual priority ranking
+  - `02_child_gap_trend.png` - Trend over time
+  - `03_cluster_profiles.png` - Enhanced cluster analysis
+  - `priority_recommendations.csv` - Actionable table
 
 ---
 

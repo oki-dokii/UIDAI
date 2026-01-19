@@ -339,3 +339,119 @@ def insights(request):
 def chart_data_api(request):
     """API endpoint for chart data."""
     return JsonResponse(get_chart_data())
+
+
+def load_module_data(module_name):
+    """Load all data for a specific module."""
+    module_path = DATA_DIR / module_name
+    data = {
+        'kpis': {},
+        'clusters': pd.DataFrame(),
+        'anomalies': pd.DataFrame(),
+        'volatility': pd.DataFrame(),
+        'concentration': pd.DataFrame()
+    }
+    
+    try:
+        # Load KPIs
+        kpis_path = module_path / 'kpis.csv'
+        if kpis_path.exists():
+            df = pd.read_csv(kpis_path)
+            data['kpis'] = df.iloc[0].to_dict()
+        
+        # Load clusters
+        clusters_path = module_path / 'district_clusters.csv'
+        if clusters_path.exists():
+            data['clusters'] = pd.read_csv(clusters_path)
+        
+        # Load anomalies
+        anomalies_path = module_path / 'anomalies.csv'
+        if anomalies_path.exists():
+            data['anomalies'] = pd.read_csv(anomalies_path)
+        
+        # Load volatility
+        volatility_path = module_path / 'volatility_metrics.csv'
+        if volatility_path.exists():
+            data['volatility'] = pd.read_csv(volatility_path)
+        
+        # Load concentration
+        concentration_path = module_path / 'concentration_metrics.csv'
+        if concentration_path.exists():
+            data['concentration'] = pd.read_csv(concentration_path)
+            
+    except Exception as e:
+        print(f"Error loading module data for {module_name}: {e}")
+    
+    return data
+
+
+def module_detail(request, module_name):
+    """View for individual analysis modules (biometric, demographic, enrolment)."""
+    
+    # Map URL slug to folder name
+    module_map = {
+        'biometric': 'biometric_analysis',
+        'demographic': 'demographic_analysis',
+        'enrolment': 'enrolment_analysis'
+    }
+    
+    # Display names
+    display_names = {
+        'biometric': 'Biometric Updates',
+        'demographic': 'Demographic Updates',
+        'enrolment': 'Enrolments'
+    }
+    
+    folder_name = module_map.get(module_name)
+    if not folder_name:
+        return render(request, 'reports/404.html', {'message': 'Module not found'})
+    
+    # Load module data
+    module_data = load_module_data(folder_name)
+    
+    # Prepare context
+    context = {
+        'module_name': module_name,
+        'display_name': display_names.get(module_name, module_name.title()),
+        'kpis': module_data['kpis'],
+    }
+    
+    # Clusters table (top 50)
+    if not module_data['clusters'].empty:
+        context['clusters_table'] = module_data['clusters'].head(50).to_html(
+            classes='table table-hover table-sm',
+            index=False,
+            float_format=lambda x: f'{x:.4f}' if isinstance(x, float) else x
+        )
+        context['total_clusters'] = len(module_data['clusters'])
+    
+    # Anomalies table (top 20)
+    if not module_data['anomalies'].empty:
+        anomalies = module_data['anomalies'].sort_values('zscore', key=abs, ascending=False).head(20)
+        context['anomalies_table'] = anomalies.to_html(
+            classes='table table-hover table-sm',
+            index=False,
+            float_format=lambda x: f'{x:.2f}' if isinstance(x, float) else x
+        )
+        context['total_anomalies'] = len(module_data['anomalies'])
+    
+    # Volatility table (top 20)
+    if not module_data['volatility'].empty:
+        volatility = module_data['volatility'].sort_values('cv', ascending=False).head(20)
+        context['volatility_table'] = volatility.to_html(
+            classes='table table-hover table-sm',
+            index=False,
+            float_format=lambda x: f'{x:.4f}' if isinstance(x, float) else x
+        )
+        context['total_volatility'] = len(module_data['volatility'])
+    
+    # Concentration table
+    if not module_data['concentration'].empty:
+        context['concentration_table'] = module_data['concentration'].to_html(
+            classes='table table-hover table-sm',
+            index=False,
+            float_format=lambda x: f'{x:.4f}' if isinstance(x, float) else x
+        )
+    
+    return render(request, 'reports/module_detail.html', context)
+

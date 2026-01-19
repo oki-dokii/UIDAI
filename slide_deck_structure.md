@@ -1,130 +1,208 @@
-# UIDAI Data Hackathon 2026 - Slide Deck Structure
+# UIDAI Data Hackathon 2026 - Enhanced Slide Deck Structure
 
-## Recommended Presentation (10 Slides)
+## Presentation Guidelines
+- **10 slides maximum** (one insight per slide)
+- **Large visuals, minimal text**
+- Lead with geospatial map (wow factor)
+- Close with forecast (forward-looking)
 
 ---
 
-### Slide 1: Title & Problem Framing
-**Title**: Unlocking Societal Trends in Aadhaar Enrolment and Updates
+## Slide 1: Title & Hook
+**Title**: Unlocking Societal Trends in Aadhaar Data
+
+**Hook Stat** (massive font):
+> "For every 1 new Aadhaar, there are 22 updates"
+
+**Visual**: India choropleth map (background, faded)
 
 **Content**:
-- Team name and members
-- Hackathon objective
-- Key question: "How can we extract actionable insights from Aadhaar data?"
+- Team name
+- "124M+ Records Analyzed | 1,038 Districts | Actionable Insights"
 
 ---
 
-### Slide 2: Data Overview
-**Visual**: Data pipeline diagram
+## Slide 2: The Child Attention Gap 🚨
 
-**Content**:
-| Dataset | Records | Key Fields |
-|---------|---------|------------|
-| Enrolment | 1M | Age groups 0-5, 5-17, 18+ |
-| Biometric | 1.8M | Updates by age |
-| Demographic | 2M | Updates by age |
+**Visual**: `/geospatial_plots/02_child_gap_map.png`
 
-- **Coverage**: 53 States/UTs, 1,038 Districts
-- **Total Volume**: 119M updates, 5.4M enrolments
+**Headline**: "Children are 97% of enrolments but only 30% of updates"
+
+**Key Stat**: National average gap: **-0.228**
+
+**Callout**: 20 districts need IMMEDIATE intervention
 
 ---
 
-### Slide 3: Methodology Pipeline
-**Visual**: Flow diagram
+## Slide 3: Geographic Hotspots
 
-```
-Raw Data → Preprocessing → Feature Engineering → Analysis → Insights
-           ↓                    ↓                  ↓
-      Normalization       29 Features        Clustering
-                                             Anomaly Detection
-```
+**Visual**: `/geospatial_plots/04_india_choropleth.png`
 
-**Highlight**: Reproducible Python pipeline, K-means segmentation
+**Headline**: "Not All States Are Equal"
 
----
-
-### Slide 4: Key Insight #1 - Update Concentration
-**Visual**: Pareto/Lorenz Curve (06_pareto_analysis.png)
-
-**Finding**: Top 20% of districts → 58% of all updates
-
-**Action**: Prioritize infrastructure in high-activity districts
+**3 bullets (color-coded)**:
+- 🔴 Critical: Delhi, West Bengal, Dadra & Nagar Haveli
+- 🟠 Severe: 15 states with gap < -0.3
+- 🟢 Model: States with positive gap
 
 ---
 
-### Slide 5: Key Insight #2 - Bio vs Demo Split
-**Visual**: Stacked area chart (01_national_timeseries.png - bottom)
+## Slide 4: Top 20 Priority Districts
 
-**Finding**: 
-- Biometric: 58.6%
-- Demographic: 41.4%
+**Visual**: `/actionable_insights/01_worst_child_gaps.png`
 
-**Action**: Deploy mobile biometric camps in bio-heavy regions
+**Headline**: "Specific Targets for Policy Action"
 
----
+**Table snippet**: Top 5 districts with severity rating
 
-### Slide 6: Key Insight #3 - Age Group Patterns
-**Visual**: Age group stacked chart (08_age_group_analysis.png)
-
-**Finding**: 91% of enrolments are school-age (5-17)
-
-**Action**: Partner with education departments for adult campaigns
+**Callout box**: "Downloadable CSV with all 20 districts"
 
 ---
 
-### Slide 7: District Segmentation
-**Visual**: Cluster scatter plot (05_cluster_analysis.png)
+## Slide 5: District Segmentation (Clusters)
 
-**Content**:
-- 889 districts segmented into 4 behavioral clusters
-- Low Activity | Demo-Heavy | Bio-Heavy | High Activity
+**Visual**: `/actionable_insights/03_cluster_profiles.png`
 
-**Use Case**: Targeted intervention strategies per cluster
+**Headline**: "5 Behavioral Clusters"
 
----
-
-### Slide 8: State-Level Comparison
-**Visual**: State comparison multi-chart (09_state_comparison.png)
-
-**Highlights**:
-- Top states by volume
-- Intensity variations
-- Bio/Demo split by state
+| Cluster | Districts | Action |
+|---------|-----------|--------|
+| 📍 Saturated Urban | 200+ | Maintain infrastructure |
+| 🌱 Emerging Growth | 150+ | Update awareness campaigns |
+| 🔄 Migration Corridors | 180+ | Flexible service delivery |
+| 🏘️ Under-served Rural | 280+ | Mobile camps needed |
+| ⭐ High-Performing | 60+ | Best practice models |
 
 ---
 
-### Slide 9: Monitoring Framework
-**Visual**: KPI Dashboard mockup
+## Slide 6: The Weekend Paradox
 
-| KPI | Value | Alert |
-|-----|-------|-------|
-| Update Intensity | 164.67/1000 | >20% MoM |
-| Bio:Demo Ratio | 58:42 | >15% deviation |
-| Anomaly Rate | 1.1% | >2% daily |
-| Volatile Districts | 100 | Track monthly |
+**Visual**: Bar chart showing weekend vs weekday patterns
+
+**Headline**: "When People Actually Update"
+
+| Service | Weekend Effect |
+|---------|----------------|
+| Enrolments | -34% (institutional) |
+| Demographics | +69% (personal choice) |
+| Biometrics | -31% (operational) |
+
+**Action**: Extend weekend hours for demographic updates
 
 ---
 
-### Slide 10: Recommendations & Next Steps
-**Visual**: Icons for each recommendation
+## Slide 7: Trend Analysis
 
-1. 🏗️ **Infrastructure**: Focus on top 20% districts
-2. 📱 **Mobile Camps**: Target biometric-heavy regions  
-3. 🏫 **School Outreach**: Leverage 91% success rate
-4. 📊 **Dashboards**: Real-time monitoring for 100 volatile districts
-5. ✅ **Quality Assurance**: Investigate 2,383 anomalies
+**Visual**: `/actionable_insights/02_child_gap_trend.png`
 
-**Closing**: Actionable, data-driven decision support for UIDAI
+**Headline**: "Is It Getting Better?"
+
+**Insight**: Monthly trend with slope indicator
+- Negative trend = situation worsening
+- Recommendation based on direction
+
+---
+
+## Slide 8: 6-Month Forecast 📈
+
+**Visual**: `/forecast_plots/04_forecast_summary.png`
+
+**Headline**: "Predictive Analytics for Planning"
+
+**Key Predictions**:
+- Enrolment trajectory (with confidence interval)
+- Update volume projection
+- 134 districts showing >5% monthly decline
+
+**Callout**: "Prophet ML model used for forecasting"
+
+---
+
+## Slide 9: Districts at Risk
+
+**Visual**: `/forecast_plots/03_declining_districts.png`
+
+**Headline**: "20 Districts with Steepest Decline"
+
+**Action**: Pre-emptive resource allocation needed
+
+**Table**: Top 5 declining districts with % decline
+
+---
+
+## Slide 10: Recommendations & KPIs
+
+**No visual** - text focus slide
+
+### Immediate Actions (0-3 months)
+| Priority | Action | Target |
+|----------|--------|--------|
+| 🔴 High | Child update campaigns | 20 districts |
+| 🔴 High | Weekend biometric services | States with -30%+ drop |
+| 🟠 Medium | Mobile camps | Under-served cluster |
+
+### Monitoring KPIs
+1. Update-to-Enrolment Ratio (target: 15-20*)
+2. Child Attention Gap (target: > -0.1)
+3. Weekend Activity Ratio (target: > 0.7)
+4. Under-served District % (target: < 20%)
+
+**Closing statement**: "Data-driven policy for 1.4 billion citizens"
 
 ---
 
 ## Design Tips
 
-- Use **dark theme** with UIDAI orange accent
-- Include **actual plot images** from `analysis_output/plots/`
-- Keep text minimal - let visuals speak
-- Add **source citations**: "Analysis performed on aggregated UIDAI data"
+### Do's ✅
+- Use UIDAI orange accent (#FF6B00)
+- Dark theme for dramatic impact
+- Embed actual plot images
+- One insight per slide
+- Large fonts (minimum 24pt for body)
+
+### Don'ts ❌
+- No walls of text
+- No methodology slides (save for appendix)
+- No more than 3 bullets per slide
+- No generic recommendations
 
 ---
 
-*Slide deck structure for UIDAI Data Hackathon 2026*
+## Appendix Slides (if time permits)
+
+### A1: Methodology
+- Pipeline diagram
+- Data sources
+- ML techniques
+
+### A2: Data Caveats
+- 21.9x ratio based on sample data
+- Age bucket misalignment noted
+- State normalization applied
+
+### A3: Full District Table
+- Sortable CSV available
+- All 1,038 districts
+
+### A4: Dashboard Screenshots
+- Django dashboard preview
+- Interactive features
+
+---
+
+## Files to Include in PPT
+
+| Slide | Image Path |
+|-------|------------|
+| 2 | `geospatial_plots/02_child_gap_map.png` |
+| 3 | `geospatial_plots/04_india_choropleth.png` |
+| 4 | `actionable_insights/01_worst_child_gaps.png` |
+| 5 | `actionable_insights/03_cluster_profiles.png` |
+| 7 | `actionable_insights/02_child_gap_trend.png` |
+| 8 | `forecast_plots/04_forecast_summary.png` |
+| 9 | `forecast_plots/03_declining_districts.png` |
+
+---
+
+*Enhanced slide deck structure for UIDAI Data Hackathon 2026*
+*Updated: January 19, 2026*
