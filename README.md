@@ -141,22 +141,26 @@ This project delivers a **comprehensive, multi-layered analytical system** for t
 
 ```
 UIDAI/
+├── 🖥️ CLI TOOL
+│   └── uidai.py                        # 🆕 Interactive terminal interface
+│
 ├── 📊 ANALYSIS SCRIPTS
 │   ├── integrated_analysis.py         # 🏆 Cross-domain analysis
+│   ├── geospatial_analysis.py         # 🆕 State-level maps
+│   ├── forecast_analysis.py           # 🆕 Prophet ML forecasts
+│   ├── actionable_insights.py         # 🆕 Priority recommendations
 │   ├── biometric_deep_analysis.py     # Biometric focus
 │   ├── demographic_deep_analysis.py   # Demographic focus
-│   ├── enrolment_deep_analysis.py     # Enrolment focus
-│   └── uidai_comprehensive_analysis.py # Original pipeline
+│   └── enrolment_deep_analysis.py     # Enrolment focus
 │
 ├── 📁 OUTPUT FOLDERS
 │   ├── integrated_analysis/           # Cross-domain outputs
-│   │   ├── plots/                     # 6 visualizations
-│   │   ├── integrated_data.csv        # Merged dataset
-│   │   └── README.md                  # Detailed documentation
-│   ├── biometric_analysis/            # Biometric outputs
-│   ├── demographic_analysis/          # Demographic outputs
-│   ├── enrolment_analysis/            # Enrolment outputs
-│   └── analysis_output/               # Comprehensive outputs
+│   ├── geospatial_plots/              # 🆕 4 state-level visualizations
+│   ├── forecast_plots/                # 🆕 Prophet forecast charts
+│   ├── actionable_insights/           # 🆕 Priority district tables
+│   ├── interactive_maps/              # 🆕 Folium HTML maps
+│   ├── state_reports/                 # 🆕 54 state report cards
+│   └── anomalies_detected.csv         # 🆕 Isolation Forest results
 │
 ├── 📂 RAW DATA
 │   ├── api_data_aadhar_enrolment/     # 3 CSVs
@@ -170,9 +174,43 @@ UIDAI/
 │
 └── 📋 CONFIG
     ├── requirements.txt               # Dependencies
-    ├── LICENSE                        # MIT License
-    └── .gitignore
+    └── LICENSE                        # MIT License
 ```
+
+---
+
+## 🖥️ Interactive CLI Tool
+
+Professional command-line interface for terminal-based analysis:
+
+```bash
+# National dashboard with KPIs
+python uidai.py dashboard
+
+# Analyze specific state
+python uidai.py analyze --state "Maharashtra"
+
+# ML-based anomaly detection (Isolation Forest)
+python uidai.py anomalies --method isolation
+
+# View forecast predictions
+python uidai.py forecast
+
+# Generate all 54 state report cards
+python uidai.py report --all
+
+# Create interactive HTML map
+python uidai.py maps
+```
+
+| Command | Description |
+|---------|-------------|
+| `dashboard` | 📊 National KPIs with formatted tables |
+| `analyze` | 🔍 State/district deep-dive |
+| `anomalies` | 🤖 Isolation Forest ML detection |
+| `forecast` | 📈 6-month predictions |
+| `report` | 📄 Auto-generate 54 state reports |
+| `maps` | 🗺️ Interactive Folium HTML map |
 
 ---
 
