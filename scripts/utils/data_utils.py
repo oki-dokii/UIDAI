@@ -24,11 +24,15 @@ def get_base_dir():
 
 def get_data_dirs():
     """Get data directories relative to script location."""
-    base = get_base_dir()
+    # scripts/utils/ -> scripts/ -> UIDAI/UIDAI/ (root)
+    script_dir = get_base_dir()
+    project_root = os.path.dirname(os.path.dirname(script_dir))
+    data_root = os.path.join(project_root, "data")
+    
     return {
-        "biometric": os.path.join(base, "api_data_aadhar_biometric"),
-        "demographic": os.path.join(base, "api_data_aadhar_demographic"),
-        "enrolment": os.path.join(base, "api_data_aadhar_enrolment"),
+        "biometric": os.path.join(data_root, "api_data_aadhar_biometric"),
+        "demographic": os.path.join(data_root, "api_data_aadhar_demographic"),
+        "enrolment": os.path.join(data_root, "api_data_aadhar_enrolment"),
     }
 
 # ============================================================================

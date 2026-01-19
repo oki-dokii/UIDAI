@@ -28,11 +28,14 @@ warnings.filterwarnings('ignore')
 # CONFIGURATION
 # ============================================================================
 
-# Directories
-DATA_DIR_ENROL = 'api_data_aadhar_enrolment'
-DATA_DIR_BIO = 'api_data_aadhar_biometric'
-DATA_DIR_DEMO = 'api_data_aadhar_demographic'
-OUTPUT_DIR = 'plots_final'
+# Directories - Using relative paths for portability
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # Parent directory (UIDAI/)
+DATA_DIR = os.path.join(BASE_DIR, "data")
+DATA_DIR_ENROL = os.path.join(DATA_DIR, "api_data_aadhar_enrolment")
+DATA_DIR_BIO = os.path.join(DATA_DIR, "api_data_aadhar_biometric")
+DATA_DIR_DEMO = os.path.join(DATA_DIR, "api_data_aadhar_demographic")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "plots_final")
 
 # Visual theme
 sns.set_style("whitegrid")

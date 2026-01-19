@@ -22,11 +22,13 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 # CONFIGURATION - Using relative paths for portability
 # ============================================================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ENROL_DIR = os.path.join(BASE_DIR, "api_data_aadhar_enrolment")
-DEMO_DIR = os.path.join(BASE_DIR, "api_data_aadhar_demographic")
-BIO_DIR = os.path.join(BASE_DIR, "api_data_aadhar_biometric")
-OUTPUT_DIR = os.path.join(BASE_DIR, "integrated_analysis")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # Parent directory (UIDAI/)
+DATA_DIR = os.path.join(BASE_DIR, "data")
+ENROL_DIR = os.path.join(DATA_DIR, "api_data_aadhar_enrolment")
+DEMO_DIR = os.path.join(DATA_DIR, "api_data_aadhar_demographic")
+BIO_DIR = os.path.join(DATA_DIR, "api_data_aadhar_biometric")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "integrated_analysis")
 PLOTS_DIR = os.path.join(OUTPUT_DIR, "plots")
 
 # Import comprehensive data utilities

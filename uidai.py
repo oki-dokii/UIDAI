@@ -37,7 +37,126 @@ import numpy as np
 # CONFIGURATION
 # ============================================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(SCRIPT_DIR, "integrated_analysis", "integrated_data.csv")
+# Navigate up to project root from scripts/ if needed, but this script is in project root
+# Actually, wait, checking file path: /Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/uidai.py
+# The user said uidai.py is the CLI entry point.
+# "New Top-Level Structure: The main subdirectories directly under the project root are now data/, docs/, outputs/, scripts/, and tests/."
+# It seems uidai.py is at the root.
+# If uidai.py is at /UIDAI/UIDAI/uidai.py:
+# SCRIPT_DIR will be /UIDAI/UIDAI/
+# OUTPUTS_DIR should be os.path.join(SCRIPT_DIR, "outputs") - THIS IS CORRECT if outputs is at root.
+# DATA_FILE should be os.path.join(SCRIPT_DIR, "outputs", "integrated_analysis", "integrated_data.csv") - THIS IS CORRECT if outputs is at root.
+# Wait, let me re-verify the "New Top-Level Structure".
+# The user said: "The main subdirectories directly under the project root are now data/, docs/, outputs/, scripts/, and tests/."
+# And "uidai.py" is usually at the root of the project to be run easily.
+# If uidai.py is at root (UIDAI/UIDAI/uidai.py), then:
+# outputs/ is a sibling, so os.path.join(SCRIPT_DIR, "outputs") works.
+# But previously in the truncated context, I saw:
+# "uidai.py (CLI Entry Point): ... DATA_FILE = os.path.join(SCRIPT_DIR, "outputs", "integrated_analysis", "integrated_data.csv") ... These paths are currently relative to SCRIPT_DIR (which is UIDAI/UIDAI/). The outputs directory is now a sibling of scripts, not a child."
+# This implies scripts were moved to scripts/ folder?
+# Let me check where uidai.py IS currently.
+# file:///Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/uidai.py
+# So it IS at the root.
+# And outputs is at /Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/outputs
+# So SCRIPT_DIR is .../UIDAI/UIDAI
+# and OUTPUTS_DIR = os.path.join(SCRIPT_DIR, 'outputs') -> .../UIDAI/UIDAI/outputs. This seems CORRECT.
+# Maybe I misread "The outputs directory is now a sibling of scripts, not a child."
+# Ah, if the *other* scripts are in scripts/, they are children of root.
+# But uidai.py is AT root.
+# So existing code in uidai.py:
+# SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# DATA_FILE = os.path.join(SCRIPT_DIR, "outputs", "integrated_analysis", "integrated_data.csv")
+# OUTPUTS_DIR = os.path.join(SCRIPT_DIR, "outputs")
+# This ACTUALLY looks correct for a file at the project root.
+# Let me double check if there's anything else wrong.
+# If I move uidai.py to scripts/ then it would be wrong. But it's at root.
+# However, the user said "Refractor Paths in Python Scripts: uidai.py: Adjust DATA_FILE and OUTPUTS_DIR to correctly reference the outputs/ directory from the script's location within scripts/"
+# WAIT. The user prompt said: "uidai.py: Adjust DATA_FILE and OUTPUTS_DIR to correctly reference the outputs/ directory from the script's location within scripts/."
+# Does the user WANT uidai.py to be in scripts/? Or is it already there?
+# The path I just viewed is `/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/uidai.py`. It is NOT in `scripts/`.
+# But maybe the intention is that `uidai.py` SHOULD look for things as if they are in the new structure.
+# If the structure is:
+# UIDAI/
+#   data/
+#   outputs/
+#   scripts/
+#   uidai.py
+# Then `os.path.join(SCRIPT_DIR, "outputs")` is correct.
+# BUT, looking at the previous analysis of `uidai.py`:
+# "These paths are currently relative to SCRIPT_DIR... The outputs directory is now a sibling of scripts, not a child."
+# This comment was likely about the *other* scripts in `scripts/` folder which were using `BASE_DIR` as their own dir.
+# But wait, looking at my own task list: "uidai.py: Adjust DATA_FILE and OUTPUTS_DIR to correctly reference the outputs/ directory from the script's location within scripts/."
+# This sounds like `uidai.py` might be MEANT to be in `scripts/`?
+# OR, maybe the user implies I should be careful.
+# Let's assume `uidai.py` stays at root.
+# However, I should check if `integrated_analysis.py` saves to `outputs/integrated_analysis/integrated_data.csv`.
+# My edit to `integrated_analysis.py` was:
+# OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "integrated_analysis")
+# where BASE_DIR was parent of script dir.
+# If `integrated_analysis.py` is in `UIDAI/UIDAI/scripts/`, then `BASE_DIR` is `UIDAI/UIDAI/`.
+# So `OUTPUT_DIR` is `UIDAI/UIDAI/outputs/integrated_analysis`.
+# So the file is at `UIDAI/UIDAI/outputs/integrated_analysis/integrated_data.csv`.
+# In `uidai.py` (at `UIDAI/UIDAI/lines`), SCRIPT_DIR is `UIDAI/UIDAI/`.
+# `DATA_FILE = os.path.join(SCRIPT_DIR, "outputs", "integrated_analysis", "integrated_data.csv")`
+# This resolves to `UIDAI/UIDAI/outputs/integrated_analysis/integrated_data.csv`.
+# THIS SEEMS CORRECT.
+# So why did I think it needed update?
+# Maybe the implementation of `load_data` or other things need verification?
+# Let's verify `tests/test_data_integrity.py`. It is at `UIDAI/UIDAI/tests/test_data_integrity.py`.
+# `BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"` (Hardcoded absolute path).
+# This DEFINITELY needs to be relative.
+# And `data_dir = os.path.join(BASE_DIR, "api_data_aadhar_biometric")`.
+# If `BASE_DIR` is `UIDAI/UIDAI`, this looks for `UIDAI/UIDAI/api_data_aadhar_biometric`.
+# But the data is now in `UIDAI/UIDAI/data/api_data_aadhar_biometric`.
+# So this needs change.
+
+# Let's look at `uidai.py` paths again just to be absolutely sure.
+# Line 41: `OUTPUTS_DIR = os.path.join(SCRIPT_DIR, "outputs")` -> `UIDAI/UIDAI/outputs`.
+# The maps command uses `output_dir = os.path.join(OUTPUTS_DIR, "interactive_maps")` -> `UIDAI/UIDAI/outputs/interactive_maps`.
+# If `uidai.py` is at root, these paths are correct.
+# BUT, the hardcoded nature of `DATA_FILE` relying on `SCRIPT_DIR` is fine for a root script.
+# Maybe I should just make it consistent with the others?
+# "uidai.py ... Adjust DATA_FILE and OUTPUTS_DIR to correctly reference the outputs/ directory from the script's location within scripts/."
+# This instruction is confusing if `uidai.py` is at root.
+# Unless... the user moved simple scripts to `scripts/` and left `uidai.py` at root?
+# The user's prompt says: "`uidai.py` (CLI Entry Point): ... These paths are currently relative to SCRIPT_DIR ... The `outputs` directory is now a sibling of `scripts`, not a child."
+# It seems the previous analysis MISTAKENLY thought `uidai.py` was in `scripts/` or that `outputs` was expected to be a child of `scripts`?
+# Actually, if `uidai.py` was in `scripts/`, then `SCRIPT_DIR` would be `.../scripts`.
+# Then `os.path.join(SCRIPT_DIR, "outputs")` would be `.../scripts/outputs`.
+# But we want `.../outputs`.
+# So if `uidai.py` IS in `scripts/`, we need `../outputs`.
+# But `file` tool says it is at `/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/uidai.py`.
+# So it is NOT in `scripts/`.
+# So the code `os.path.join(SCRIPT_DIR, "outputs")` is CORRECT for being at root.
+# However, I should check if `uidai.py` uses any `scripts/` modules.
+# It doesn't seem to import local modules other than standard ones.
+# It shells out to run scripts?
+# Lines 7-11 Usage says `python uidai.py analyze ...`.
+# Wait, `load_data` reads `DATA_FILE`.
+# `dashboard` uses `load_data`.
+# `analyze` uses `load_data`.
+# `anomalies` uses `load_data`.
+# `forecast` CHECKS for `OUTPUTS_DIR/forecast_plots/declining_districts.csv`.    
+# `report` SAVES to `OUTPUTS_DIR/state_reports`.
+# `maps` SAVES to `OUTPUTS_DIR/interactive_maps`.
+# all these seem fine IF `uidai.py` is at root.
+# The `README.md` update is the main thing then.
+# AND `tests/test_data_integrity.py` definitely needs `data/` path fix.
+
+# Let's verify `tests/test_data_integrity.py` path fix.
+# It has `BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"`
+# And `data_dir = os.path.join(BASE_DIR, "api_data_aadhar_biometric")`
+# It should be `data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_biometric")`
+# And `BASE_DIR` should be relative.
+# `TEST_DIR = os.path.dirname(os.path.abspath(__file__))`
+# `BASE_DIR = os.path.dirname(TEST_DIR)` -> `UIDAI/UIDAI`
+
+# Let's fix `tests/test_data_integrity.py`.
+# And I'll assume `uidai.py` is fine, but I'll double check if `integrated_analysis.py` or others use hardcoded paths that I might have missed? No I updated them.
+
+# I should also check `scripts/utils/validate_data.py` if it exists.
+# The user mentioned checking "Utility Scripts".
+# Let me list the `scripts/utils` directory.
 
 console = Console()
 app = typer.Typer(
@@ -371,7 +490,7 @@ def anomalies(
     console.print(table)
     
     # Save anomalies
-    output_path = os.path.join(SCRIPT_DIR, "anomalies_detected.csv")
+    output_path = os.path.join(OUTPUTS_DIR, "anomalies_detected.csv")
     anomalies_df.to_csv(output_path, index=False)
     console.print(f"\n[dim]Saved to: {output_path}[/dim]")
 
@@ -387,7 +506,7 @@ def forecast():
     ))
     
     # Check if forecast data exists
-    forecast_dir = os.path.join(SCRIPT_DIR, "forecast_plots")
+    forecast_dir = os.path.join(OUTPUTS_DIR, "forecast_plots")
     declining_file = os.path.join(forecast_dir, "declining_districts.csv")
     
     if os.path.exists(declining_file):
@@ -435,7 +554,7 @@ def report(
     """📄 Generate state-level report cards."""
     
     df = load_data()
-    output_dir = os.path.join(SCRIPT_DIR, "state_reports")
+    output_dir = os.path.join(OUTPUTS_DIR, "state_reports")
     os.makedirs(output_dir, exist_ok=True)
     
     if all_states:
@@ -542,7 +661,7 @@ def maps():
         raise typer.Exit(1)
     
     df = load_data()
-    output_dir = os.path.join(SCRIPT_DIR, "interactive_maps")
+    output_dir = os.path.join(OUTPUTS_DIR, "interactive_maps")
     os.makedirs(output_dir, exist_ok=True)
     
     # Create state-level summary

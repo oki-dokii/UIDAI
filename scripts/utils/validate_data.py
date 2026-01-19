@@ -14,12 +14,13 @@ from datetime import datetime
 
 def count_rows_per_dataset():
     """Count rows in each dataset."""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data_dir = os.path.join(base_dir, "data")
     
     datasets = {
-        'biometric': os.path.join(base_dir, 'api_data_aadhar_biometric'),
-        'demographic': os.path.join(base_dir, 'api_data_aadhar_demographic'),
-        'enrolment': os.path.join(base_dir, 'api_data_aadhar_enrolment'),
+        'biometric': os.path.join(data_dir, 'api_data_aadhar_biometric'),
+        'demographic': os.path.join(data_dir, 'api_data_aadhar_demographic'),
+        'enrolment': os.path.join(data_dir, 'api_data_aadhar_enrolment'),
     }
     
     row_counts = {}
@@ -36,12 +37,13 @@ def count_rows_per_dataset():
 
 def check_date_ranges():
     """Check date ranges for each dataset."""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data_dir = os.path.join(base_dir, "data")
     
     datasets = {
-        'biometric': os.path.join(base_dir, 'api_data_aadhar_biometric'),
-        'demographic': os.path.join(base_dir, 'api_data_aadhar_demographic'),
-        'enrolment': os.path.join(base_dir, 'api_data_aadhar_enrolment'),
+        'biometric': os.path.join(data_dir, 'api_data_aadhar_biometric'),
+        'demographic': os.path.join(data_dir, 'api_data_aadhar_demographic'),
+        'enrolment': os.path.join(data_dir, 'api_data_aadhar_enrolment'),
     }
     
     date_ranges = {}
@@ -70,19 +72,20 @@ def check_date_ranges():
 
 def check_value_scale():
     """Check sum of values in each dataset."""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    data_dir = os.path.join(base_dir, "data")
     
     datasets = {
         'biometric': (
-            os.path.join(base_dir, 'api_data_aadhar_biometric'),
+            os.path.join(data_dir, 'api_data_aadhar_biometric'),
             ['bio_age_5_17', 'bio_age_17_']
         ),
         'demographic': (
-            os.path.join(base_dir, 'api_data_aadhar_demographic'),
+            os.path.join(data_dir, 'api_data_aadhar_demographic'),
             ['demo_age_5_17', 'demo_age_17_']
         ),
         'enrolment': (
-            os.path.join(base_dir, 'api_data_aadhar_enrolment'),
+            os.path.join(data_dir, 'api_data_aadhar_enrolment'),
             ['age_0_5', 'age_5_17', 'age_18_greater']
         ),
     }

@@ -16,14 +16,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Base directory
-BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"
+# Base directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class TestDataLoading(unittest.TestCase):
     """Test data loading and file existence."""
     
     def test_biometric_data_exists(self):
         """Check biometric data files exist."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_biometric")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_biometric")
         self.assertTrue(os.path.exists(data_dir), "Biometric data directory missing")
         csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
         self.assertGreater(len(csv_files), 0, "No biometric CSV files found")
@@ -31,7 +32,7 @@ class TestDataLoading(unittest.TestCase):
     
     def test_demographic_data_exists(self):
         """Check demographic data files exist."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_demographic")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_demographic")
         self.assertTrue(os.path.exists(data_dir), "Demographic data directory missing")
         csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
         self.assertGreater(len(csv_files), 0, "No demographic CSV files found")
@@ -39,7 +40,7 @@ class TestDataLoading(unittest.TestCase):
     
     def test_enrolment_data_exists(self):
         """Check enrolment data files exist."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_enrolment")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_enrolment")
         self.assertTrue(os.path.exists(data_dir), "Enrolment data directory missing")
         csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
         self.assertGreater(len(csv_files), 0, "No enrolment CSV files found")
@@ -47,7 +48,7 @@ class TestDataLoading(unittest.TestCase):
     
     def test_biometric_schema(self):
         """Validate biometric CSV schema."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_biometric")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_biometric")
         csv_file = [f for f in os.listdir(data_dir) if f.endswith('.csv')][0]
         df = pd.read_csv(os.path.join(data_dir, csv_file), nrows=10)
         
@@ -58,7 +59,7 @@ class TestDataLoading(unittest.TestCase):
     
     def test_demographic_schema(self):
         """Validate demographic CSV schema."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_demographic")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_demographic")
         csv_file = [f for f in os.listdir(data_dir) if f.endswith('.csv')][0]
         df = pd.read_csv(os.path.join(data_dir, csv_file), nrows=10)
         
@@ -69,7 +70,7 @@ class TestDataLoading(unittest.TestCase):
     
     def test_enrolment_schema(self):
         """Validate enrolment CSV schema."""
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_enrolment")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_enrolment")
         csv_file = [f for f in os.listdir(data_dir) if f.endswith('.csv')][0]
         df = pd.read_csv(os.path.join(data_dir, csv_file), nrows=10)
         
@@ -84,7 +85,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_biometric_outputs_exist(self):
         """Check biometric analysis outputs."""
-        output_dir = os.path.join(BASE_DIR, "biometric_analysis")
+        output_dir = os.path.join(BASE_DIR, "outputs", "biometric_analysis")
         self.assertTrue(os.path.exists(output_dir), "Biometric output directory missing")
         
         required_files = ['district_clusters.csv', 'anomalies.csv', 'kpis.csv', 'README.md']
@@ -95,7 +96,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_demographic_outputs_exist(self):
         """Check demographic analysis outputs."""
-        output_dir = os.path.join(BASE_DIR, "demographic_analysis")
+        output_dir = os.path.join(BASE_DIR, "outputs", "demographic_analysis")
         self.assertTrue(os.path.exists(output_dir), "Demographic output directory missing")
         
         required_files = ['district_clusters.csv', 'anomalies.csv', 'kpis.csv', 'README.md']
@@ -106,7 +107,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_enrolment_outputs_exist(self):
         """Check enrolment analysis outputs."""
-        output_dir = os.path.join(BASE_DIR, "enrolment_analysis")
+        output_dir = os.path.join(BASE_DIR, "outputs", "enrolment_analysis")
         self.assertTrue(os.path.exists(output_dir), "Enrolment output directory missing")
         
         required_files = ['district_clusters.csv', 'anomalies.csv', 'kpis.csv', 'README.md']
@@ -117,7 +118,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_integrated_outputs_exist(self):
         """Check integrated analysis outputs."""
-        output_dir = os.path.join(BASE_DIR, "integrated_analysis")
+        output_dir = os.path.join(BASE_DIR, "outputs", "integrated_analysis")
         self.assertTrue(os.path.exists(output_dir), "Integrated output directory missing")
         
         required_files = ['integrated_data.csv', 'district_clusters.csv', 'kpis.csv', 'README.md']
@@ -128,7 +129,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_biometric_plots_exist(self):
         """Check biometric plots."""
-        plots_dir = os.path.join(BASE_DIR, "biometric_analysis", "plots")
+        plots_dir = os.path.join(BASE_DIR, "outputs", "biometric_analysis", "plots")
         self.assertTrue(os.path.exists(plots_dir), "Biometric plots directory missing")
         
         png_files = [f for f in os.listdir(plots_dir) if f.endswith('.png')]
@@ -137,7 +138,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_demographic_plots_exist(self):
         """Check demographic plots."""
-        plots_dir = os.path.join(BASE_DIR, "demographic_analysis", "plots")
+        plots_dir = os.path.join(BASE_DIR, "outputs", "demographic_analysis", "plots")
         self.assertTrue(os.path.exists(plots_dir), "Demographic plots directory missing")
         
         png_files = [f for f in os.listdir(plots_dir) if f.endswith('.png')]
@@ -146,7 +147,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_enrolment_plots_exist(self):
         """Check enrolment plots."""
-        plots_dir = os.path.join(BASE_DIR, "enrolment_analysis", "plots")
+        plots_dir = os.path.join(BASE_DIR, "outputs", "enrolment_analysis", "plots")
         self.assertTrue(os.path.exists(plots_dir), "Enrolment plots directory missing")
         
         png_files = [f for f in os.listdir(plots_dir) if f.endswith('.png')]
@@ -155,7 +156,7 @@ class TestOutputFiles(unittest.TestCase):
     
     def test_integrated_plots_exist(self):
         """Check integrated plots."""
-        plots_dir = os.path.join(BASE_DIR, "integrated_analysis", "plots")
+        plots_dir = os.path.join(BASE_DIR, "outputs", "integrated_analysis", "plots")
         self.assertTrue(os.path.exists(plots_dir), "Integrated plots directory missing")
         
         png_files = [f for f in os.listdir(plots_dir) if f.endswith('.png')]
@@ -168,7 +169,7 @@ class TestDataQuality(unittest.TestCase):
     
     def test_biometric_clusters_quality(self):
         """Validate biometric clusters data."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "biometric_analysis", "district_clusters.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "biometric_analysis", "district_clusters.csv"))
         
         self.assertGreater(len(df), 0, "Empty clusters file")
         self.assertIn('cluster', df.columns, "Missing cluster column")
@@ -178,7 +179,7 @@ class TestDataQuality(unittest.TestCase):
     
     def test_demographic_clusters_quality(self):
         """Validate demographic clusters data."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "demographic_analysis", "district_clusters.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "demographic_analysis", "district_clusters.csv"))
         
         self.assertGreater(len(df), 0, "Empty clusters file")
         self.assertIn('cluster', df.columns, "Missing cluster column")
@@ -187,7 +188,7 @@ class TestDataQuality(unittest.TestCase):
     
     def test_enrolment_clusters_quality(self):
         """Validate enrolment clusters data."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "enrolment_analysis", "district_clusters.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "enrolment_analysis", "district_clusters.csv"))
         
         self.assertGreater(len(df), 0, "Empty clusters file")
         self.assertIn('cluster', df.columns, "Missing cluster column")
@@ -195,7 +196,7 @@ class TestDataQuality(unittest.TestCase):
     
     def test_integrated_data_quality(self):
         """Validate integrated data."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "integrated_analysis", "integrated_data.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "integrated_analysis", "integrated_data.csv"))
         
         self.assertGreater(len(df), 0, "Empty integrated file")
         
@@ -215,7 +216,7 @@ class TestDataQuality(unittest.TestCase):
         modules = ['biometric_analysis', 'demographic_analysis', 'enrolment_analysis', 'integrated_analysis']
         
         for module in modules:
-            kpi_path = os.path.join(BASE_DIR, module, "kpis.csv")
+            kpi_path = os.path.join(BASE_DIR, "outputs", module, "kpis.csv")
             df = pd.read_csv(kpi_path)
             self.assertGreater(len(df.columns), 3, f"Too few KPIs in {module}")
             print(f"  ✓ {module}: {len(df.columns)} KPIs defined")
@@ -226,7 +227,7 @@ class TestMetricsCalculation(unittest.TestCase):
     
     def test_biometric_minor_share_range(self):
         """Minor share should be between 0 and 1."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "biometric_analysis", "district_clusters.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "biometric_analysis", "district_clusters.csv"))
         
         if 'minor_share' in df.columns:
             self.assertTrue((df['minor_share'] >= 0).all(), "Minor share < 0")
@@ -235,7 +236,7 @@ class TestMetricsCalculation(unittest.TestCase):
     
     def test_demographic_minor_share_range(self):
         """Demo minor share should be between 0 and 1."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "demographic_analysis", "district_clusters.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "demographic_analysis", "district_clusters.csv"))
         
         if 'demo_minor_share' in df.columns:
             self.assertTrue((df['demo_minor_share'] >= 0).all(), "Demo minor share < 0")
@@ -244,7 +245,7 @@ class TestMetricsCalculation(unittest.TestCase):
     
     def test_integrated_intensity_positive(self):
         """Update intensity should be non-negative."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "integrated_analysis", "integrated_data.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "integrated_analysis", "integrated_data.csv"))
         
         if 'demo_intensity' in df.columns:
             self.assertTrue((df['demo_intensity'] >= 0).all(), "Demo intensity < 0")
@@ -254,7 +255,7 @@ class TestMetricsCalculation(unittest.TestCase):
     
     def test_child_attention_gap_range(self):
         """Child attention gap should be between -1 and 1."""
-        df = pd.read_csv(os.path.join(BASE_DIR, "integrated_analysis", "integrated_data.csv"))
+        df = pd.read_csv(os.path.join(BASE_DIR, "outputs", "integrated_analysis", "integrated_data.csv"))
         
         if 'child_attention_gap' in df.columns:
             valid_gap = df['child_attention_gap'].between(-1, 1)
@@ -268,7 +269,7 @@ class TestScriptExecution(unittest.TestCase):
     
     def test_biometric_script_syntax(self):
         """Check biometric script has no syntax errors."""
-        script_path = os.path.join(BASE_DIR, "biometric_deep_analysis.py")
+        script_path = os.path.join(BASE_DIR, "scripts", "biometric_deep_analysis.py")
         self.assertTrue(os.path.exists(script_path), "Script not found")
         
         with open(script_path, 'r') as f:
@@ -282,7 +283,7 @@ class TestScriptExecution(unittest.TestCase):
     
     def test_demographic_script_syntax(self):
         """Check demographic script has no syntax errors."""
-        script_path = os.path.join(BASE_DIR, "demographic_deep_analysis.py")
+        script_path = os.path.join(BASE_DIR, "scripts", "demographic_deep_analysis.py")
         self.assertTrue(os.path.exists(script_path), "Script not found")
         
         with open(script_path, 'r') as f:
@@ -296,7 +297,7 @@ class TestScriptExecution(unittest.TestCase):
     
     def test_enrolment_script_syntax(self):
         """Check enrolment script has no syntax errors."""
-        script_path = os.path.join(BASE_DIR, "enrolment_deep_analysis.py")
+        script_path = os.path.join(BASE_DIR, "scripts", "enrolment_deep_analysis.py")
         self.assertTrue(os.path.exists(script_path), "Script not found")
         
         with open(script_path, 'r') as f:
@@ -310,7 +311,7 @@ class TestScriptExecution(unittest.TestCase):
     
     def test_integrated_script_syntax(self):
         """Check integrated script has no syntax errors."""
-        script_path = os.path.join(BASE_DIR, "integrated_analysis.py")
+        script_path = os.path.join(BASE_DIR, "scripts", "integrated_analysis.py")
         self.assertTrue(os.path.exists(script_path), "Script not found")
         
         with open(script_path, 'r') as f:
@@ -354,7 +355,7 @@ class TestDocumentation(unittest.TestCase):
         modules = ['biometric_analysis', 'demographic_analysis', 'enrolment_analysis', 'integrated_analysis']
         
         for module in modules:
-            path = os.path.join(BASE_DIR, module, "README.md")
+            path = os.path.join(BASE_DIR, "outputs", module, "README.md")
             self.assertTrue(os.path.exists(path), f"README missing in {module}")
         
         print(f"  ✓ All {len(modules)} module READMEs present")

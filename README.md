@@ -263,14 +263,14 @@ Child Attention Gap = (Child Share in Updates) - (Child Share in Enrolments)
 
 | Update Intensity | Child Attention Gap |
 |:----------------:|:-------------------:|
-| ![Intensity](geospatial_plots/01_update_intensity_map.png) | ![Gap](geospatial_plots/02_child_gap_map.png) |
+| ![Intensity](outputs/geospatial_plots/01_update_intensity_map.png) | ![Gap](outputs/geospatial_plots/02_child_gap_map.png) |
 
 ### 🌐 Interactive Map
 
 Open in browser for **zoom, pan, and hover** interactivity:
 
 ```bash
-open interactive_maps/india_child_gap_map.html
+open outputs/interactive_maps/india_child_gap_map.html
 ```
 
 Features:
@@ -286,7 +286,7 @@ Features:
 
 | Enrolment Forecast | Updates Forecast |
 |:------------------:|:----------------:|
-| ![Enrol](forecast_plots/01_enrolment_forecast.png) | ![Updates](forecast_plots/02_updates_forecast.png) |
+| ![Enrol](outputs/forecast_plots/01_enrolment_forecast.png) | ![Updates](outputs/forecast_plots/02_updates_forecast.png) |
 
 ### 🚨 Districts at Risk
 
@@ -296,7 +296,7 @@ Features:
 python uidai.py forecast
 ```
 
-> 📁 Full list: `forecast_plots/declining_districts.csv`
+> 📁 Full list: `outputs/forecast_plots/declining_districts.csv`
 
 ---
 
@@ -365,41 +365,57 @@ Found 52 anomalous districts (5.0% of total)
 ```
 UIDAI/
 │
-├── 🖥️ CLI TOOL
-│   └── uidai.py                        # Interactive terminal interface
+├── 🖥️  MAIN ENTRY POINT
+│   └── uidai.py                           # CLI tool with 6 commands
 │
-├── 📊 ANALYSIS SCRIPTS
-│   ├── integrated_analysis.py          # 🏆 Cross-domain analysis
-│   ├── geospatial_analysis.py          # State-level maps
-│   ├── forecast_analysis.py            # Prophet ML forecasts
-│   ├── actionable_insights.py          # Priority recommendations
-│   ├── biometric_deep_analysis.py      # Biometric focus
-│   ├── demographic_deep_analysis.py    # Demographic focus
-│   ├── enrolment_deep_analysis.py      # Enrolment focus
-│   └── validate_data.py                # Data quality checks
+├── 📂  DATA (12 CSV files, 124M+ records)
+│   ├── api_data_aadhar_enrolment/         # 3 CSVs → 4.4M records
+│   ├── api_data_aadhar_demographic/       # 5 CSVs → 47M records
+│   └── api_data_aadhar_biometric/         # 4 CSVs → 69M records
 │
-├── 📁 OUTPUT FOLDERS
-│   ├── integrated_analysis/            # Cross-domain outputs & plots
-│   ├── geospatial_plots/               # 4 state-level visualizations
-│   ├── forecast_plots/                 # Prophet forecast charts
-│   ├── actionable_insights/            # Priority district tables
-│   ├── interactive_maps/               # Folium HTML maps
-│   ├── state_reports/                  # 54 auto-generated report cards
-│   └── anomalies_detected.csv          # Isolation Forest results
+├── 📊  SCRIPTS (Analysis Logic)
+│   ├── scripts/
+│   │   ├── integrated_analysis.py         # 🏆 Cross-domain integration
+│   │   ├── geospatial_analysis.py         # State-level choropleth maps
+│   │   ├── forecast_analysis.py           # Prophet 6-month forecasts
+│   │   ├── actionable_insights.py         # Priority recommendations
+│   │   ├── biometric_deep_analysis.py     # Biometric patterns
+│   │   ├── demographic_deep_analysis.py   # Demographic patterns
+│   │   ├── enrolment_deep_analysis.py     # Enrolment patterns
+│   │   └── uidai_comprehensive_analysis.py# Original combined pipeline
+│   │
+│   └── scripts/utils/
+│       ├── validate_data.py               # Data quality & integrity checks
+│       ├── data_utils.py                  # State normalization, deduplication
+│       └── viz_utils.py                   # Enhanced plotting functions
 │
-├── 📂 RAW DATA
-│   ├── api_data_aadhar_enrolment/      # 3 CSVs
-│   ├── api_data_aadhar_demographic/    # 5 CSVs
-│   └── api_data_aadhar_biometric/      # 4 CSVs
+├── 📁  OUTPUTS
+│   ├── outputs/
+│   │   ├── integrated_analysis/           # Cross-domain results
+│   │   ├── geospatial_plots/              # Geographic visualizations
+│   │   ├── forecast_plots/                # Prophet ML forecasts
+│   │   ├── actionable_insights/           # Priority recommendations
+│   │   ├── interactive_maps/              # Browser-based maps
+│   │   ├── state_reports/                 # Auto-generated reports
+│   │   ├── biometric_analysis/            # Bio-specific outputs
+│   │   ├── demographic_analysis/          # Demo-specific outputs
+│   │   ├── enrolment_analysis/            # Enrol-specific outputs
+│   │   ├── analysis_output/               # Comprehensive outputs
+│   │   └── anomalies_detected.csv         # Isolation Forest results
 │
-├── 📄 DOCUMENTATION
-│   ├── executive_summary.md            # Hackathon submission
-│   ├── technical_appendix.md           # Methodology details
-│   └── slide_deck_structure.md         # Presentation guide
+├── 📄  DOCUMENTATION
+│   ├── docs/
+│   │   ├── detailed_methodology.md
+│   │   └── slide_deck_structure.md
+│   ├── README.md                          # This file
+│   └── LICENSE                            # MIT License
 │
-└── 📋 CONFIG
-    ├── requirements.txt                # Dependencies
-    └── LICENSE                         # MIT License
+├── 🧪  TESTS
+│   └── tests/                             # Data integrity & metric tests
+│
+└── ⚙️  CONFIG
+    ├── requirements.txt                   # pip dependencies
+    └── .gitignore                         # Git exclusions
 ```
 
 ---
@@ -409,20 +425,20 @@ UIDAI/
 ### National Overview
 
 <p align="center">
-  <img src="integrated_analysis/plots/01_national_overview.png" alt="National Overview" width="800"/>
+  <img src="outputs/integrated_analysis/plots/01_national_overview.png" alt="National Overview" width="800"/>
 </p>
 
 ### Cross-Dataset Comparison
 
 | State Comparison | Cluster Analysis |
 |:----------------:|:----------------:|
-| ![States](integrated_analysis/plots/02_state_comparison.png) | ![Clusters](integrated_analysis/plots/05_cross_domain_clusters.png) |
+| ![States](outputs/integrated_analysis/plots/02_state_comparison.png) | ![Clusters](outputs/integrated_analysis/plots/05_cross_domain_clusters.png) |
 
 ### Child Gap Analysis
 
 | Gap Distribution | Trend Over Time |
 |:----------------:|:---------------:|
-| ![Gap](integrated_analysis/plots/04_child_gap_analysis.png) | ![Trend](actionable_insights/02_child_gap_trend.png) |
+| ![Gap](outputs/integrated_analysis/plots/04_child_gap_analysis.png) | ![Trend](outputs/actionable_insights/02_child_gap_trend.png) |
 
 ---
 

@@ -6,13 +6,15 @@ import seaborn as sns
 import glob
 
 # Configuration - Using relative paths for portability
-DATA_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # Parent directory (UIDAI/)
+DATA_DIR = os.path.join(BASE_DIR, "data")
 DIRS = {
-    "biometric": os.path.join(DATA_BASE_DIR, "api_data_aadhar_biometric"),
-    "demographic": os.path.join(DATA_BASE_DIR, "api_data_aadhar_demographic"),
-    "enrolment": os.path.join(DATA_BASE_DIR, "api_data_aadhar_enrolment"),
+    "biometric": os.path.join(DATA_DIR, "api_data_aadhar_biometric"),
+    "demographic": os.path.join(DATA_DIR, "api_data_aadhar_demographic"),
+    "enrolment": os.path.join(DATA_DIR, "api_data_aadhar_enrolment"),
 }
-OUTPUT_DIR = os.path.join(DATA_BASE_DIR, "aadhaar_plots")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "aadhaar_plots")
 
 def load_data(directory, dataset_name):
     """Loads all CSV files from a directory into a single DataFrame."""

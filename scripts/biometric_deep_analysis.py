@@ -19,8 +19,10 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-DATA_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/api_data_aadhar_biometric"
-OUTPUT_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/biometric_analysis"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)  # Parent directory (UIDAI/)
+DATA_DIR = os.path.join(BASE_DIR, "data", "api_data_aadhar_biometric")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "biometric_analysis")
 PLOTS_DIR = os.path.join(OUTPUT_DIR, "plots")
 
 # State name normalization

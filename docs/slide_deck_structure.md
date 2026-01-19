@@ -24,7 +24,7 @@
 
 ## Slide 2: The Child Attention Gap 🚨
 
-**Visual**: `/geospatial_plots/02_child_gap_map.png`
+**Visual**: `/outputs/geospatial_plots/02_child_gap_map.png`
 
 **Headline**: "Children are 97% of enrolments but only 30% of updates"
 
@@ -36,7 +36,7 @@
 
 ## Slide 3: Geographic Hotspots
 
-**Visual**: `/geospatial_plots/04_india_choropleth.png`
+**Visual**: `/outputs/geospatial_plots/04_india_choropleth.png`
 
 **Headline**: "Not All States Are Equal"
 
@@ -49,7 +49,7 @@
 
 ## Slide 4: Top 20 Priority Districts
 
-**Visual**: `/actionable_insights/01_worst_child_gaps.png`
+**Visual**: `/outputs/actionable_insights/01_worst_child_gaps.png`
 
 **Headline**: "Specific Targets for Policy Action"
 
@@ -61,7 +61,7 @@
 
 ## Slide 5: District Segmentation (Clusters)
 
-**Visual**: `/actionable_insights/03_cluster_profiles.png`
+**Visual**: `/outputs/actionable_insights/03_cluster_profiles.png`
 
 **Headline**: "5 Behavioral Clusters"
 
@@ -93,7 +93,7 @@
 
 ## Slide 7: Trend Analysis
 
-**Visual**: `/actionable_insights/02_child_gap_trend.png`
+**Visual**: `/outputs/actionable_insights/02_child_gap_trend.png`
 
 **Headline**: "Is It Getting Better?"
 
@@ -105,7 +105,7 @@
 
 ## Slide 8: 6-Month Forecast 📈
 
-**Visual**: `/forecast_plots/04_forecast_summary.png`
+**Visual**: `/outputs/forecast_plots/04_forecast_summary.png`
 
 **Headline**: "Predictive Analytics for Planning"
 
@@ -120,7 +120,7 @@
 
 ## Slide 9: Districts at Risk
 
-**Visual**: `/forecast_plots/03_declining_districts.png`
+**Visual**: `/outputs/forecast_plots/03_declining_districts.png`
 
 **Headline**: "20 Districts with Steepest Decline"
 
@@ -190,13 +190,13 @@
 
 | Slide | Image Path |
 |-------|------------|
-| 2 | `geospatial_plots/02_child_gap_map.png` |
-| 3 | `geospatial_plots/04_india_choropleth.png` |
-| 4 | `actionable_insights/01_worst_child_gaps.png` |
-| 5 | `actionable_insights/03_cluster_profiles.png` |
-| 7 | `actionable_insights/02_child_gap_trend.png` |
-| 8 | `forecast_plots/04_forecast_summary.png` |
-| 9 | `forecast_plots/03_declining_districts.png` |
+| 2 | `outputs/geospatial_plots/02_child_gap_map.png` |
+| 3 | `outputs/geospatial_plots/04_india_choropleth.png` |
+| 4 | `outputs/actionable_insights/01_worst_child_gaps.png` |
+| 5 | `outputs/actionable_insights/03_cluster_profiles.png` |
+| 7 | `outputs/actionable_insights/02_child_gap_trend.png` |
+| 8 | `outputs/forecast_plots/04_forecast_summary.png` |
+| 9 | `outputs/forecast_plots/03_declining_districts.png` |
 
 ---
 

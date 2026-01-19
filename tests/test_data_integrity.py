@@ -12,8 +12,7 @@ import numpy as np
 import unittest
 from datetime import datetime
 
-BASE_DIR = "/Users/ayushpatel/Documents/Projects/UIDAI/UIDAI"
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class TestBiometricDataIntegrity(unittest.TestCase):
     """Test biometric data integrity."""
@@ -22,7 +21,7 @@ class TestBiometricDataIntegrity(unittest.TestCase):
     def setUpClass(cls):
         """Load biometric data once."""
         import glob
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_biometric")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_biometric")
         files = glob.glob(os.path.join(data_dir, "*.csv"))
         dfs = [pd.read_csv(f) for f in files]
         cls.df = pd.concat(dfs, ignore_index=True)
@@ -78,7 +77,7 @@ class TestDemographicDataIntegrity(unittest.TestCase):
     def setUpClass(cls):
         """Load demographic data once."""
         import glob
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_demographic")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_demographic")
         files = glob.glob(os.path.join(data_dir, "*.csv"))
         dfs = [pd.read_csv(f) for f in files]
         cls.df = pd.concat(dfs, ignore_index=True)
@@ -113,7 +112,7 @@ class TestEnrolmentDataIntegrity(unittest.TestCase):
     def setUpClass(cls):
         """Load enrolment data once."""
         import glob
-        data_dir = os.path.join(BASE_DIR, "api_data_aadhar_enrolment")
+        data_dir = os.path.join(BASE_DIR, "data", "api_data_aadhar_enrolment")
         files = glob.glob(os.path.join(data_dir, "*.csv"))
         dfs = [pd.read_csv(f) for f in files]
         cls.df = pd.concat(dfs, ignore_index=True)
@@ -153,7 +152,7 @@ class TestCrossDatasetConsistency(unittest.TestCase):
         
         date_ranges = {}
         for dataset in ['biometric', 'demographic', 'enrolment']:
-            data_dir = os.path.join(BASE_DIR, f"api_data_aadhar_{dataset}")
+            data_dir = os.path.join(BASE_DIR, "data", f"api_data_aadhar_{dataset}")
             files = glob.glob(os.path.join(data_dir, "*.csv"))
             df = pd.read_csv(files[0])
             df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y', errors='coerce')
@@ -172,7 +171,7 @@ class TestCrossDatasetConsistency(unittest.TestCase):
         
         state_sets = {}
         for dataset in ['biometric', 'demographic', 'enrolment']:
-            data_dir = os.path.join(BASE_DIR, f"api_data_aadhar_{dataset}")
+            data_dir = os.path.join(BASE_DIR, "data", f"api_data_aadhar_{dataset}")
             files = glob.glob(os.path.join(data_dir, "*.csv"))
             df = pd.read_csv(files[0])
             state_sets[dataset] = set(df['state'].dropna().unique())

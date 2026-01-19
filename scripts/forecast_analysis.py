@@ -37,8 +37,9 @@ except ImportError:
 # CONFIGURATION
 # ============================================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE = os.path.join(SCRIPT_DIR, "integrated_analysis", "integrated_data.csv")
-OUTPUT_DIR = os.path.join(SCRIPT_DIR, "forecast_plots")
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+DATA_FILE = os.path.join(BASE_DIR, "outputs", "integrated_analysis", "integrated_data.csv")
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs", "forecast_plots")
 
 # Forecast parameters
 FORECAST_MONTHS = 6
