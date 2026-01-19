@@ -13,10 +13,29 @@ Usage:
 
 import os
 import sys
+import time
 import warnings
 from typing import Optional
+from functools import wraps
 
 warnings.filterwarnings('ignore')
+
+# ============================================================================
+# VERSION & BRANDING
+# ============================================================================
+__version__ = "1.0.0"
+
+ASCII_BANNER = r"""
+    _   _   ___   ___     _     ___ 
+   | | | | |_ _| |   \   /_\   |_ _|
+   | |_| |  | |  | |) | / _ \   | | 
+    \___/  |___| |___/ /_/ \_\ |___|
+                                    
+   ╔═══════════════════════════════════════════════════╗
+   ║  DATA HACKATHON 2026                              ║
+   ║  Unlocking Societal Trends in Aadhaar             ║
+   ╚═══════════════════════════════════════════════════╝
+"""
 
 # Rich imports for beautiful terminal output
 from rich.console import Console
@@ -37,6 +56,8 @@ import numpy as np
 # CONFIGURATION
 # ============================================================================
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE = os.path.join(SCRIPT_DIR, "outputs", "integrated_analysis", "integrated_data.csv")
+OUTPUTS_DIR = os.path.join(SCRIPT_DIR, "outputs")
 # Navigate up to project root from scripts/ if needed, but this script is in project root
 # Actually, wait, checking file path: /Users/ayushpatel/Documents/Projects/UIDAI/UIDAI/uidai.py
 # The user said uidai.py is the CLI entry point.
@@ -159,11 +180,50 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Let me list the `scripts/utils` directory.
 
 console = Console()
+
+
+def timed_command(func):
+    """Decorator to add timing to commands."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start_time
+        console.print(f"\n[dim]⏱️  Completed in {elapsed:.2f}s[/dim]")
+        return result
+    return wrapper
+
+
+def version_callback(value: bool):
+    if value:
+        console.print(f"[bold blue]UIDAI CLI[/bold blue] version [green]{__version__}[/green]")
+        raise typer.Exit()
+
+
+def banner_callback(ctx: typer.Context):
+    """Display ASCII banner before any command."""
+    if ctx.invoked_subcommand is not None:
+        console.print(f"[bold cyan]{ASCII_BANNER}[/bold cyan]")
+
+
 app = typer.Typer(
     name="uidai",
     help="🎯 UIDAI Data Hackathon 2026 - Interactive Analysis CLI",
-    add_completion=False
+    add_completion=False,
+    callback=banner_callback
 )
+
+
+@app.callback(invoke_without_command=True)
+def main(
+    ctx: typer.Context,
+    version: bool = typer.Option(None, "--version", "-v", callback=version_callback, is_eager=True, help="Show version")
+):
+    """UIDAI Data Hackathon 2026 - Interactive CLI for Aadhaar Analysis."""
+    if ctx.invoked_subcommand is None:
+        console.print(f"[bold cyan]{ASCII_BANNER}[/bold cyan]")
+        console.print("[yellow]Run 'python uidai.py --help' to see available commands.[/yellow]")
+        raise typer.Exit()
 
 # ============================================================================
 # DATA LOADING
@@ -183,6 +243,7 @@ def load_data():
 # ============================================================================
 
 @app.command()
+@timed_command
 def dashboard():
     """📊 Display national-level dashboard with key metrics."""
     
@@ -277,6 +338,7 @@ def dashboard():
 
 
 @app.command()
+@timed_command
 def analyze(
     state: str = typer.Option(None, "--state", "-s", help="Filter by state name"),
     district: str = typer.Option(None, "--district", "-d", help="Filter by district name"),
@@ -388,6 +450,7 @@ def analyze(
 
 
 @app.command()
+@timed_command
 def anomalies(
     method: str = typer.Option("isolation", "--method", "-m", help="Detection method: zscore, iqr, isolation"),
     top: int = typer.Option(20, "--top", "-n", help="Number of anomalies to show")
@@ -496,6 +559,7 @@ def anomalies(
 
 
 @app.command()
+@timed_command
 def forecast():
     """📈 Display 6-month forecasts and declining districts."""
     
@@ -547,6 +611,7 @@ def forecast():
 
 
 @app.command()
+@timed_command
 def report(
     state: str = typer.Option(None, "--state", "-s", help="Generate report for specific state"),
     all_states: bool = typer.Option(False, "--all", "-a", help="Generate reports for all states")
@@ -643,6 +708,7 @@ def report(
 
 
 @app.command()
+@timed_command
 def maps():
     """🗺️ Generate interactive HTML maps (opens in browser)."""
     

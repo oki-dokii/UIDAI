@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIDAI Hackathon 2026 - Killer Slide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 40px;
+        }
+        
+        .slide {
+            width: 1200px;
+            height: 675px; /* 16:9 aspect ratio */
+            background: linear-gradient(145deg, #1e3a5f 0%, #0d2137 100%);
+            border-radius: 20px;
+            padding: 50px 60px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ED7D31, #ff9a56, #ED7D31);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 14px;
+            color: #ED7D31;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #fff, #a8d8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+        
+        .tagline span {
+            color: #ED7D31;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px 35px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .stat-number.orange {
+            color: #ED7D31;
+        }
+        
+        .stat-number.red {
+            color: #ff4d4d;
+        }
+        
+        .stat-number.blue {
+            color: #4da6ff;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, rgba(237, 125, 49, 0.2), rgba(237, 125, 49, 0.1));
+            border-left: 4px solid #ED7D31;
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            max-width: 600px;
+        }
+        
+        .insight-box p {
+            font-size: 20px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .bottom-bar {
+            position: absolute;
+            bottom: 30px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+        
+        .districts-preview {
+            position: absolute;
+            right: 60px;
+            top: 180px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 20px;
+            width: 280px;
+        }
+        
+        .districts-title {
+            font-size: 14px;
+            color: #ED7D31;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .district-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+        }
+        
+        .district-row:last-child {
+            border-bottom: none;
+        }
+        
+        .district-name {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .district-gap {
+            color: #ff4d4d;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="header">
+            <div class="logo">UIDAI DATA HACKATHON 2026</div>
+            <div class="logo">Team: Ayush Patel</div>
+        </div>
+        
+        <div class="title">Unlocking Societal Trends in Aadhaar</div>
+        
+        <div class="tagline">
+            For every <span>1 new Aadhaar</span>,<br>
+            there are <span>22 updates</span>.<br>
+            But children are being left behind.
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-number orange">21.9x</div>
+                <div class="stat-label">Update:Enrol Ratio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number red">-0.228</div>
+                <div class="stat-label">Child Attention Gap</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number blue">20</div>
+                <div class="stat-label">Critical Districts</div>
+            </div>
+        </div>
+        
+        <div class="insight-box">
+            <p>"Children form 97.5% of new enrolments but only ~30% of updates. We identify 20 priority districts where children are slipping through the digital safety net."</p>
+        </div>
+        
+        <div class="districts-preview">
+            <div class="districts-title">🚨 Top 5 Priority Districts</div>
+            <div class="district-row">
+                <span class="district-name">North East, Delhi</span>
+                <span class="district-gap">-1.000</span>
+            </div>
+            <div class="district-row">
+                <span class="district-name">Jhajjar, Haryana</span>
+                <span class="district-gap">-1.000</span>
+            </div>
+            <div class="district-row">
+                <span class="district-name">Kendrapara, Odisha</span>
+                <span class="district-gap">-1.000</span>
+            </div>
+            <div class="district-row">
+                <span class="district-name">Namakkal, TN</span>
+                <span class="district-gap">-1.000</span>
+            </div>
+            <div class="district-row">
+                <span class="district-name">Kushi Nagar, UP</span>
+                <span class="district-gap">-0.991</span>
+            </div>
+        </div>
+        
+        <div class="bottom-bar">
+            <span>124M+ Records | 1,041 Districts | 3 ML Models</span>
+            <span>Python • Pandas • Scikit-learn • Prophet • Rich CLI</span>
+        </div>
+    </div>
+</body>
+</html>
