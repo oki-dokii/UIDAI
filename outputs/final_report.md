@@ -15,7 +15,7 @@ figureCaption: true
 \vspace*{3cm}
 
 \begin{center}
-{\Huge \textbf{Team Bhole Choture}} \\[1.2cm]
+{\Huge \textbf{UIDAI\_10609}} \\[1.2cm]
 
 {\Large \textit{UIDAI Datathon Submission}} \\[1.5cm]
 
@@ -40,8 +40,13 @@ Datathon Analytical Track
 
 \newpage
 
+\tableofcontents
+
+\newpage
+
 # Monitoring Administrative Interaction Patterns in Aadhaar
 ## A Forensic Analytical Audit of Enrolment and Update Systems
+
 
 ---
 
@@ -59,21 +64,7 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 ---
 
-## Table of Contents
 
-1. [Data and Methodological Framing](#1-data-and-methodological-framing)
-2. [National System Dynamics](#2-national-system-dynamics)
-3. [Demographic Service Patterns](#3-demographic-service-patterns)
-4. [Child Service Gaps](#4-child-service-gaps)
-5. [Spatial and Temporal Patterns](#5-spatial-and-temporal-patterns)
-6. [Demographic Update Analysis](#6-demographic-update-analysis)
-7. [Integrated Synthesis](#7-integrated-synthesis)
-8. [Interpretation Guardrails](#8-interpretation-guardrails)
-9. [Forecast and Decline Analysis](#9-forecast-and-decline-analysis)
-10. [System Performance Matrix](#10-system-performance-matrix)
-11. [Conclusion](#11-conclusion)
-12. [Glossary](#glossary)
-13. [Corrections Log](#corrections-log)
 
 ---
 
@@ -874,20 +865,378 @@ All interpretations remain subject to methodological limitations and definitiona
 
 **Coefficient of Variation (CV)**: Ratio of standard deviation to mean, measuring relative variability. Values >1.0 indicate high volatility.
 
----
+\newpage
 
-## Corrections Log
+# Appendix A: Key Implementation Code
 
-| # | Original Statement | Corrected Statement | Justification |
-|---|-------------------|---------------------|---------------|
-| 1 | "52 states/UTs" | "36 states/UTs" | Corrected administrative division count (28 States + 8 UTs). |
-| 2 | "47.3 million transactions" | "124.5 million transactions" | Updated to reflect full dataset volume (including Sep-Dec data). |
-| 3 | "Biometric updates dominating at 85%" | "Biometric updates comprising 56%" | Corrected bias calculation based on full dataset. |
-| 4 | "Post-August activity cessation" | "Record-breaking activity in Q4" | Corrected narrative; "cessation" was an artifact of missing August data. |
-| 5 | "Tuesday 5x Monday volume" | "Tuesday 1.7x Monday (Saturday Dominant)" | Corrected exaggerated ratio; correctly identified Saturday as peak day. |
-| 6 | "Child Gap -0.67 (Severe)" | "Child Gap -0.22 (Moderate)" | Corrected magnitude of deficit based on verified audit findings. |
-| 7 | "Declining Districts" analysis | "Data Gap Artifact" | Clarified that "decline" visuals reflect the missing August data, not actual system performance. |
+The following scripts were developed to perform the geospatial analysis and forensic auditing of the UIDAI dataset.
 
-**Note on Preserved Elements**: All image links, file paths, URLs, and heading structures were preserved. Corrections focused strictly on factual accuracy regarding temporal trends, volumes, and magnitudes.
+## A.1. Enhanced District Map Generator (`generate_complete_district_map.py`)
 
----
+This script handles the core data aggregation, metric calculation (including Child Attention Gap), and interactive verification map generation.
+
+```python
+#!/usr/bin/env python3
+"""
+UIDAI Data Hackathon 2026 - ENHANCED DISTRICT MAP GENERATOR
+Creates interactive folium map with ALL districts from the dataset.
+Includes data cleaning, name standardization, and comprehensive geocoding.
+"""
+
+import pandas as pd
+import folium
+from folium import plugins
+import os
+import numpy as np
+import re
+import json
+
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
+OUTPUT_DIR = "outputs/interactive_maps"
+OUTPUT_FILE = "india_child_gap_map_complete.html"
+
+# [Standardization Mappings Omitted for Brevity - See full source]
+STATE_NAME_MAPPING = {
+    'Orissa': 'Odisha',
+    # ... (full mapping in source)
+    'Uttaranchal': 'Uttarakhand',
+}
+
+# [State Centroids Omitted]
+STATE_COORDS = { 'Andaman And Nicobar Islands': (11.7401, 92.6586), ... }
+
+# ============================================================================
+# COORDINATE LOADING
+# ============================================================================
+COORD_FILE = "data/all_district_coordinates.json"
+ALL_COORDS = {}
+
+def load_coordinates():
+    """Load comprehensive district coordinates from JSON."""
+    global ALL_COORDS
+    if os.path.exists(COORD_FILE):
+        with open(COORD_FILE, 'r') as f:
+            ALL_COORDS = json.load(f)
+        print(f"Loaded {len(ALL_COORDS)} district coordinates")
+    else:
+        print("WARNING: Coordinate file not found!")
+
+def get_coordinates(state, district):
+    """Get coordinates for a district using value from JSON."""
+    key = f"{state}|{district}"
+    if key in ALL_COORDS:
+        return ALL_COORDS[key]
+    
+    # Try case-insensitive matching
+    for k, v in ALL_COORDS.items():
+        if k.lower() == key.lower():
+            return v
+    
+    # Fall back to state centroid
+    if state in STATE_COORDS:
+        base_lat, base_lng = STATE_COORDS[state]
+        np.random.seed(hash(f"{state}_{district}") % 2**32)
+        return (base_lat + np.random.uniform(-0.5, 0.5), base_lng + np.random.uniform(-0.5, 0.5))
+    return None
+
+# ============================================================================
+# DATA LOADING AND CLEANING
+# ============================================================================
+def standardize_name(name, mapping):
+    if pd.isna(name): return name
+    name = str(name).strip()
+    return mapping.get(name, name)
+
+def clean_district_name(district):
+    if pd.isna(district): return district
+    district = str(district).strip()
+    district = re.sub(r'\s*\*+$', '', district)
+    return re.sub(r'\s+', ' ', district)
+
+def load_all_data():
+    print("Loading enrolment and update data...")
+    # [File loading logic]
+    return enrol_df, bio_df, demo_df
+
+def calculate_district_metrics(enrol_df, bio_df, demo_df):
+    """Calculate metrics for each district."""
+    # [Aggregation logic]
+    
+    # Critical Metric Calculation
+    merged['child_gap'] = merged['bio_child_share'] - 0.5
+    
+    # Fallbacks for missing biometric data
+    mask_no_bio = merged['total_bio'] == 0
+    merged.loc[mask_no_bio, 'child_gap'] = merged.loc[mask_no_bio, 'demo_child_share'] - 0.5
+    
+    return merged
+
+def create_interactive_map(district_data):
+    """Create interactive folium map with risk segmentation."""
+    india_map = folium.Map(location=[22.5, 82.5], zoom_start=5, tiles='cartodbpositron')
+    
+    # [Layer logic and legend creation]
+    
+    return india_map
+
+def main():
+    load_coordinates()
+    enrol_df, bio_df, demo_df = load_all_data()
+    district_data = calculate_district_metrics(enrol_df, bio_df, demo_df)
+    india_map = create_interactive_map(district_data)
+    india_map.save(os.path.join(OUTPUT_DIR, OUTPUT_FILE))
+
+if __name__ == "__main__":
+    main()
+```
+
+## A.2. District Geocoding Utility (`geocode_districts.py`)
+
+This utility resolves the data quality issue relative to district locations by querying the OpenStreetMap Nominatim API for all 1,132 unique state-district pairs.
+
+```python
+#!/usr/bin/env python3
+"""
+UIDAI Data Hackathon 2026 - DISTRICT GEOCODING SCRIPT
+Geocodes all districts from the dataset using geopy/Nominatim.
+"""
+
+import pandas as pd
+import json
+import os
+import time
+from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
+
+# Rate limiting - Nominatim requires 1 request per second max
+RATE_LIMIT_SECONDS = 1.1
+
+def geocode_district(geolocator, district, state, retries=3):
+    """Geocode a single district with multiple search strategies."""
+    search_queries = [
+        f"{district} District, {state}, India",
+        f"{district}, {state}, India",
+        f"{district} city, {state}, India",
+        f"{district}, India",
+    ]
+    
+    for query in search_queries:
+        try:
+            location = geolocator.geocode(query, timeout=10)
+            if location:
+                lat, lon = location.latitude, location.longitude
+                if 6.0 <= lat <= 37.0 and 68.0 <= lon <= 98.0:
+                    return (round(lat, 4), round(lon, 4))
+        except Exception as e:
+            print(f"Error: {e}")
+            time.sleep(2)
+    return None
+
+def geocode_all_districts(districts):
+    geolocator = Nominatim(user_agent="uidai_hackathon_2026_district_mapper")
+    coordinates = {}
+    
+    for i, (state, district) in enumerate(districts):
+        # [Geocoding loop with rate limiting]
+        coords = geocode_district(geolocator, district, state)
+        if coords:
+            coordinates[f"{state}|{district}"] = list(coords)
+        time.sleep(RATE_LIMIT_SECONDS)
+            
+    return coordinates
+
+if __name__ == "__main__":
+    main()
+```
+
+\newpage
+
+## A.3. Comprehensive Analysis Logic (`uidai_comprehensive_analysis.py`)
+
+This script implements the core forensic logic, including clustering, anomaly detection, and feature engineering.
+
+```python
+def engineer_features(df):
+    """Create all analytical features."""
+    df = df.copy()
+    
+    # ------ BASE TOTALS ------
+    df['total_enrolments'] = df['age_0_5'] + df['age_5_17'] + df['age_18_greater']
+    df['total_bio_updates'] = df['bio_age_5_17'] + df['bio_age_17_']
+    df['total_demo_updates'] = df['demo_age_5_17'] + df['demo_age_17_']
+    df['total_updates'] = df['total_bio_updates'] + df['total_demo_updates']
+    
+    # ------ INTENSITY RATIOS ------
+    df['update_intensity'] = np.where(df['total_enrolments'] > 0, df['total_updates'] / df['total_enrolments'], 0)
+    df['bio_intensity'] = np.where(df['total_enrolments'] > 0, df['total_bio_updates'] / df['total_enrolments'], 0)
+    
+    # ------ COMPOSITION METRICS ------
+    df['bio_share'] = np.where(df['total_updates'] > 0, df['total_bio_updates'] / df['total_updates'], 0)
+    
+    return df
+
+def segment_districts(df, k_range=(2, 8)):
+    """Segment districts into behavioral clusters with validated k selection."""
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.metrics import silhouette_score
+    
+    # Aggregate to district level
+    district_agg = df.groupby(['state', 'district']).agg({
+        'total_enrolments': 'sum', 'total_updates': 'sum',
+        'update_intensity': 'mean', 'bio_share': 'mean'
+    }).reset_index()
+    
+    features = ['update_intensity', 'bio_share']
+    X = district_agg[features].values
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
+    # Find optimal k using silhouette score
+    best_k = 4
+    best_score = -1
+    for k in range(k_range[0], k_range[1] + 1):
+        kmeans = KMeans(n_clusters=k, random_state=42).fit(X_scaled)
+        score = silhouette_score(X_scaled, kmeans.labels_)
+        if score > best_score:
+            best_k = k
+            best_score = score
+            
+    # Final clustering
+    kmeans = KMeans(n_clusters=best_k, random_state=42).fit(X_scaled)
+    district_agg['cluster'] = kmeans.labels_
+    return district_agg
+
+def detect_anomalies(df, method='combined', zscore_threshold=3):
+    """Detect anomalous districts using Z-score and IQR methods."""
+    df = df.copy()
+    
+    # Z-score based detection
+    df['is_zscore_anomaly'] = abs(df['update_intensity_zscore']) > zscore_threshold
+    
+    # IQR-based detection
+    q75 = df['update_intensity'].quantile(0.75)
+    q25 = df['update_intensity'].quantile(0.25)
+    iqr = q75 - q25
+    upper_bound = q75 + (1.5 * iqr)
+    df['is_iqr_anomaly'] = df['update_intensity'] > upper_bound
+    
+    return df[df['is_zscore_anomaly'] | df['is_iqr_anomaly']]
+```
+
+\newpage
+
+## A.4. Biometric Pattern Analysis (`biometric_deep_analysis.py`)
+
+Focuses on age-group dynamics and temporal patterns in biometric updates, critical for identifying child-specific trends.
+
+```python
+def analyze_temporal_patterns(national_date, district_date):
+    """Analyze temporal operational patterns."""
+    results = {}
+    
+    # 1. Weekend vs Weekday
+    weekend_stats = national_date.groupby('is_weekend')['total_bio'].agg(['mean', 'sum']).reset_index()
+    weekend_mean = weekend_stats[weekend_stats['is_weekend'] == True]['mean'].values[0]
+    weekday_mean = weekend_stats[weekend_stats['is_weekend'] == False]['mean'].values[0]
+    weekend_drop = (weekday_mean - weekend_mean) / weekday_mean * 100
+    
+    results['weekend_drop'] = weekend_drop
+    
+    # 2. Day of week pattern
+    dow_pattern = national_date.groupby('day_of_week')['total_bio'].mean()
+    results['dow_pattern'] = dow_pattern
+    
+    return results
+
+def calculate_concentration_metrics(df):
+    """Calculate Gini coefficient to measure service inequality."""
+    
+    def gini_coefficient(values):
+        values = np.array(values)
+        if len(values) < 2 or np.sum(values) == 0: return 0
+        sorted_values = np.sort(values)
+        n = len(sorted_values)
+        cumsum = np.cumsum(sorted_values)
+        return (2 * np.sum((np.arange(1, n+1) * sorted_values))) / (n * cumsum[-1]) - (n + 1) / n
+    
+    # Calculate Gini per state (pincode concentration)
+    state_gini = df.groupby('state')['total_bio'].apply(gini_coefficient).reset_index()
+    state_gini.columns = ['state', 'gini_coefficient']
+    
+    return state_gini
+
+def analyze_age_patterns(df, district_date):
+    """Identify districts with anomalous child update ratios."""
+    # Districts with minor_share > 0.5
+    district_agg = df.groupby(['state', 'district']).agg({
+        'bio_age_5_17': 'sum', 'total_bio': 'sum'
+    }).reset_index()
+    
+    district_agg['minor_share'] = district_agg['bio_age_5_17'] / district_agg['total_bio']
+    high_minor_districts = district_agg[district_agg['minor_share'] > 0.5]
+    
+    return high_minor_districts
+```
+
+\newpage
+
+## A.5. Demographic Anomaly Detection (`demographic_deep_analysis.py`)
+
+Analyzes demographic update patterns to identify structural breaks and outliers in service delivery.
+
+```python
+def analyze_spatial_patterns(df, district_agg, concentration):
+    """Analyze spatial and structural patterns."""
+    results = {}
+    
+    # 1. Concentration analysis
+    high_concentration = concentration[concentration['gini_district'] > 0.5]
+    
+    # 2. Top/Bottom districts
+    top_50 = district_agg.nlargest(50, 'total_demo')
+    
+    # Calculate share
+    top_50_share = top_50['total_demo'].sum() / district_agg['total_demo'].sum() * 100
+    
+    results['concentration'] = concentration
+    results['top_50_share'] = top_50_share
+    return results
+
+def detect_anomalies(district_date, national_date):
+    """Detect temporal anomalies and structural breaks."""
+    
+    # Z-score based detection at district level
+    mean_val = district_date['total_demo'].mean()
+    std_val = district_date['total_demo'].std()
+    district_date['zscore'] = (district_date['total_demo'] - mean_val) / std_val
+    
+    anomalies = district_date[abs(district_date['zscore']) > 3]
+    
+    # Monthly structural breaks using MoM change
+    national_monthly = national_date.groupby('month')['total_demo'].sum()
+    mom_change = national_monthly.pct_change() * 100
+    structural_breaks = mom_change[abs(mom_change) > 30]
+    
+    return anomalies, structural_breaks
+
+def cluster_districts(district_agg, volatility):
+    """Cluster districts into operational segments."""
+    from sklearn.cluster import KMeans
+    
+    cluster_data = district_agg.merge(volatility[['state', 'district', 'cv_volume']], on=['state', 'district'])
+    X = cluster_data[['total_demo', 'demo_minor_share', 'cv_volume']].values
+    
+    # Log transform volume
+    X[:, 0] = np.log1p(X[:, 0])
+    
+    kmeans = KMeans(n_clusters=5, random_state=42).fit(X)
+    cluster_data['cluster'] = kmeans.labels_
+    
+    return cluster_data
+```
+
+
+

@@ -11,6 +11,7 @@ from folium import plugins
 import os
 import numpy as np
 import re
+import json
 
 # ============================================================================
 # CONFIGURATION
@@ -108,70 +109,43 @@ STATE_COORDS = {
 }
 
 # Major district coordinates
-DISTRICT_COORDS = {
-    # Metros
-    ('Maharashtra', 'Mumbai'): (19.0760, 72.8777),
-    ('Maharashtra', 'Mumbai Suburban'): (19.1136, 72.8697),
-    ('Maharashtra', 'Pune'): (18.5204, 73.8567),
-    ('Maharashtra', 'Nagpur'): (21.1458, 79.0882),
-    ('Maharashtra', 'Thane'): (19.2183, 72.9781),
-    ('Delhi', 'New Delhi'): (28.6139, 77.2090),
-    ('Delhi', 'North Delhi'): (28.7545, 77.1173),
-    ('Delhi', 'South Delhi'): (28.5245, 77.1855),
-    ('Delhi', 'East Delhi'): (28.6687, 77.3103),
-    ('Delhi', 'West Delhi'): (28.6519, 77.0467),
-    ('Delhi', 'Central Delhi'): (28.6508, 77.2227),
-    ('Delhi', 'North West Delhi'): (28.7372, 77.0731),
-    ('Delhi', 'North East Delhi'): (28.7279, 77.2688),
-    ('Delhi', 'South West Delhi'): (28.5725, 77.0429),
-    ('Delhi', 'South East Delhi'): (28.5460, 77.2728),
-    ('Delhi', 'Shahdara'): (28.6681, 77.2951),
-    ('Karnataka', 'Bengaluru Urban'): (12.9716, 77.5946),
-    ('Karnataka', 'Bengaluru Rural'): (13.2257, 77.4024),
-    ('Tamil Nadu', 'Chennai'): (13.0827, 80.2707),
-    ('Telangana', 'Hyderabad'): (17.3850, 78.4867),
-    ('West Bengal', 'Kolkata'): (22.5726, 88.3639),
-    ('Gujarat', 'Ahmedabad'): (23.0225, 72.5714),
-    ('Gujarat', 'Surat'): (21.1702, 72.8311),
-    ('Rajasthan', 'Jaipur'): (26.9124, 75.7873),
-    ('Uttar Pradesh', 'Lucknow'): (26.8467, 80.9462),
-    ('Madhya Pradesh', 'Bhopal'): (23.2599, 77.4126),
-    ('Madhya Pradesh', 'Indore'): (22.7196, 75.8577),
-    ('Bihar', 'Patna'): (25.5941, 85.1376),
-    ('Jharkhand', 'Ranchi'): (23.3441, 85.3096),
-    ('Odisha', 'Bhubaneswar'): (20.2961, 85.8245),
-    ('Assam', 'Guwahati'): (26.1445, 91.7362),
-    ('Kerala', 'Thiruvananthapuram'): (8.5241, 76.9366),
-    ('Kerala', 'Ernakulam'): (9.9816, 76.2999),
-    ('Kerala', 'Kozhikode'): (11.2588, 75.7804),
-    ('Andhra Pradesh', 'Visakhapatnam'): (17.6868, 83.2185),
-    ('Andhra Pradesh', 'Vijayawada'): (16.5062, 80.6480),
-    ('Punjab', 'Ludhiana'): (30.9010, 75.8573),
-    ('Punjab', 'Amritsar'): (31.6340, 74.8723),
-    ('Haryana', 'Gurugram'): (28.4595, 77.0266),
-    ('Haryana', 'Faridabad'): (28.4089, 77.3178),
-    ('Uttar Pradesh', 'Kanpur Nagar'): (26.4499, 80.3319),
-    ('Uttar Pradesh', 'Varanasi'): (25.3176, 82.9739),
-    ('Uttar Pradesh', 'Agra'): (27.1767, 78.0081),
-    ('Uttar Pradesh', 'Ghaziabad'): (28.6692, 77.4538),
-    ('Uttar Pradesh', 'Noida'): (28.5355, 77.3910),
-    ('Uttar Pradesh', 'Gautam Buddha Nagar'): (28.5355, 77.3910),
-    ('Uttar Pradesh', 'Meerut'): (28.9845, 77.7064),
-    ('Uttar Pradesh', 'Prayagraj'): (25.4358, 81.8463),
-    ('Uttar Pradesh', 'Aligarh'): (27.8974, 78.0880),
-    ('Chandigarh', 'Chandigarh'): (30.7333, 76.7794),
-    ('Goa', 'North Goa'): (15.5469, 73.7897),
-    ('Goa', 'South Goa'): (15.1215, 74.0849),
-    # Northeast
-    ('Arunachal Pradesh', 'Itanagar'): (27.0844, 93.6053),
-    ('Manipur', 'Imphal East'): (24.8074, 94.0275),
-    ('Manipur', 'Imphal West'): (24.8033, 93.9174),
-    ('Meghalaya', 'East Khasi Hills'): (25.5788, 91.8933),
-    ('Mizoram', 'Aizawl'): (23.7271, 92.7176),
-    ('Nagaland', 'Kohima'): (25.6586, 94.1055),
-    ('Sikkim', 'Gangtok'): (27.3389, 88.6065),
-    ('Tripura', 'West Tripura'): (23.9408, 91.3115),
-}
+# ============================================================================
+# COORDINATE LOADING
+# ============================================================================
+COORD_FILE = "data/all_district_coordinates.json"
+ALL_COORDS = {}
+
+def load_coordinates():
+    """Load comprehensive district coordinates from JSON."""
+    global ALL_COORDS
+    if os.path.exists(COORD_FILE):
+        with open(COORD_FILE, 'r') as f:
+            ALL_COORDS = json.load(f)
+        print(f"Loaded {len(ALL_COORDS)} district coordinates")
+    else:
+        print("WARNING: Coordinate file not found!")
+
+def get_coordinates(state, district):
+    """Get coordinates for a district using value from JSON."""
+    # Try exact match "State|District"
+    key = f"{state}|{district}"
+    if key in ALL_COORDS:
+        return ALL_COORDS[key]
+    
+    # Try case-insensitive matching if exact fail
+    for k, v in ALL_COORDS.items():
+        if k.lower() == key.lower():
+            return v
+    
+    # Fall back to state centroid with jitter
+    if state in STATE_COORDS:
+        base_lat, base_lng = STATE_COORDS[state]
+        np.random.seed(hash(f"{state}_{district}") % 2**32)
+        lat_offset = np.random.uniform(-0.5, 0.5) # Reduced jitter
+        lng_offset = np.random.uniform(-0.5, 0.5)
+        return (base_lat + lat_offset, base_lng + lng_offset)
+    
+    return None
 
 # ============================================================================
 # DATA LOADING AND CLEANING
@@ -294,28 +268,6 @@ def calculate_district_metrics(enrol_df, bio_df, demo_df):
     
     print(f"Calculated metrics for {len(merged)} districts")
     return merged
-
-def get_coordinates(state, district):
-    """Get coordinates for a district."""
-    # Check exact state-district match
-    key = (state, district)
-    if key in DISTRICT_COORDS:
-        return DISTRICT_COORDS[key]
-    
-    # Check just district name in DISTRICT_COORDS
-    for (s, d), coords in DISTRICT_COORDS.items():
-        if d.lower() == district.lower():
-            return coords
-    
-    # Fall back to state centroid with jitter
-    if state in STATE_COORDS:
-        base_lat, base_lng = STATE_COORDS[state]
-        np.random.seed(hash(f"{state}_{district}") % 2**32)
-        lat_offset = np.random.uniform(-1.0, 1.0)
-        lng_offset = np.random.uniform(-1.0, 1.0)
-        return (base_lat + lat_offset, base_lng + lng_offset)
-    
-    return None
 
 def get_gap_color(gap):
     """Get color based on child attention gap."""
@@ -467,6 +419,9 @@ def main():
     print("=" * 60)
     
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    # Load coordinates
+    load_coordinates()
     
     # Load data
     enrol_df, bio_df, demo_df = load_all_data()
