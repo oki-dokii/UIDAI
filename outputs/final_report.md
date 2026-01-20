@@ -63,7 +63,7 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 ### Data Scope
 
-**Coverage**: 52 states/UTs, 993 districts, 19,742 pincodes  
+**Coverage**: 36 states/UTs, 993 districts, 19,742 pincodes  
 **Period**: March–December 2025 (9-10 months)  
 **Transactions**: 47.3M demographic updates, 4.6M minor updates, supplemental biometric and enrolment data  
 **Resolution**: District-week aggregation with monthly rollups
@@ -301,7 +301,7 @@ All twenty concentrate within 0.05-unit range despite rank ordering. Homogeneity
 
 ![](outputs/geospatial_plots/02_child_gap_map_enhanced.png)
 
-*Bootstrap confidence intervals show 33 of 36 jurisdictions with negative gaps excluding zero, indicating systematic rather than random patterns.*
+*Bootstrap confidence intervals show 33 of 36 states/UTs with negative gaps excluding zero, indicating systematic rather than random patterns.*
 
 Severity ranges from Dadra/Nagar Haveli/Daman/Diu (-0.82) to Tamil Nadu (+0.24). Large states (UP -0.56, Maharashtra -0.54, Rajasthan -0.52) demonstrate severe compositional inequity is not limited to small/remote jurisdictions. Three positive-gap outliers (Tamil Nadu, Chhattisgarh, Arunachal Pradesh) warrant investigation for measurement artifacts, definitional differences, or genuine structural differences.
 
@@ -658,7 +658,7 @@ Provides context for forecast models' synchronized spike predictions. If histori
 
 Interstate variation ranges near-zero to >1,000 updates/1,000 enrolments. Several states show suspiciously round numbers (exactly 20 billion, 10 billion)—flagged with red borders and hatching. Likely represent data quality issues: placeholder values, aggregation artifacts, measurement errors.
 
-**Data quality report**: 18.5% of intensity values exhibit suspicious characteristics; mean quality score 82.6/100. Twelve of 54 states flagged. Prevalence necessitates caution interpreting intensity patterns, particularly for flagged values.
+**Data quality report**: 18.5% of intensity values exhibit suspicious characteristics; mean quality score 82.6/100. Twelve of 36 states/UTs flagged. Prevalence necessitates caution interpreting intensity patterns, particularly for flagged values.
 
 **Fundamental ambiguity**: High intensity may indicate (1) system saturation with routine corrections, OR (2) genuine expansion activity with new populations accessing services. Cannot distinguish from transaction counts alone without operational data on update type categorization.
 
@@ -794,9 +794,22 @@ All interpretations remain subject to methodological limitations and definitiona
 - **Condensed Length**: ~50 pages  
 - **Data Window**: March–December 2025 (9-10 months)
 - **Transaction Volume**: 47.3M demographic updates, 4.6M minor updates
-- **Geographic Coverage**: 52 States/UTs, 993 Districts, 19,742 Pincodes
+- **Geographic Coverage**: 36 States/UTs, 993 Districts, 19,742 Pincodes
 - **Images Retained**: All 43 visualizations at original positions
 - **Analytical Constraints**: No causal claims; no normative evaluation; no individual-level inference
 - **Generated**: January 2026
+
+---
+
+## Corrections Log
+
+| # | Original Statement | Corrected Statement | Justification |
+|---|-------------------|---------------------|---------------|
+| 1 | "52 states/UTs" (Line 66, Data Scope) | "36 states/UTs" | India has 28 states and 8 union territories, totaling 36 administrative divisions as of 2025. |
+| 2 | "33 of 36 jurisdictions" (Line 304) | "33 of 36 states/UTs" | Clarified terminology to match correct count of India's administrative divisions. |
+| 3 | "Twelve of 54 states flagged" (Line 660) | "Twelve of 36 states/UTs flagged" | India has 36 states/UTs, not 54. The original number was factually incorrect. |
+| 4 | "52 States/UTs" (Line 797, Document Metadata) | "36 States/UTs" | Corrected to reflect India's actual 28 states + 8 union territories = 36 administrative divisions. |
+
+**Note on Preserved Elements**: All image links, file paths, URLs, heading structure, and Markdown formatting were preserved exactly as in the original document. Only factual numerical errors regarding India's administrative divisions were corrected.
 
 ---
