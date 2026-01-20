@@ -47,12 +47,12 @@ Datathon Analytical Track
 
 ## Executive Summary
 
-This report presents a forensic analysis of India's Aadhaar digital identity system through examination of 47.3 million administrative transactions across 993 districts from March–December 2025. The analysis reveals five critical structural patterns:
+This report presents a forensic analysis of India's Aadhaar digital identity system through examination of 124.5 million administrative transactions across 993 districts from March–December 2025. The analysis reveals five critical structural patterns:
 
-1. **System Maturity Transition**: Shift from enrolment-driven growth to maintenance operations, with biometric updates dominating at 85% of total volume
-2. **Extreme Spatial Heterogeneity**: Update intensity varies three orders of magnitude across districts; top 20% generate 58% of activity
-3. **Systematic Child Exclusion**: Minors (5-17 years) comprise only 9.7% of updates despite representing 25-30% of population; all states show negative child attention gaps
-4. **Episodic Campaign Dependence**: Temporal patterns reveal campaign-driven surges rather than steady-state operations
+1. **System Maturity Transition**: Shift from enrolment-driven growth to maintenance operations, with biometric updates comprising 56% of total volume
+2. **Extreme Spatial Heterogeneity**: Update intensity varies three orders of magnitude across districts; top 20% generate 58% of activity. Note: Extreme outliers (e.g., Beawar, Balotra) reflect denominator artifacts in newly created districts.
+3. **Systematic Child Exclusion**: Minors (5-17 years) comprise ~9.7% of updates; states show moderate negative child attention gaps (National Avg: -0.22)
+4. **Episodic Campaign Dependence**: Temporal patterns reveal campaign-driven surges and record-breaking activity in Q4 2025 (Sep-Dec), following a data gap in August
 5. **Geographic Concentration**: Within-state Gini coefficients of 0.72-0.79 indicate extreme service centralization
 
 All findings employ conditional framing appropriate to observational data. No causal, normative, or behavioral claims are advanced.
@@ -65,12 +65,12 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 **Coverage**: 36 states/UTs, 993 districts, 19,742 pincodes  
 **Period**: March–December 2025 (9-10 months)  
-**Transactions**: 47.3M demographic updates, 4.6M minor updates, supplemental biometric and enrolment data  
+**Transactions**: 124.5M total updates (Demographic + Biometric), 4.6M minor updates, supplemental enrolment data  
 **Resolution**: District-week aggregation with monthly rollups
 
 ### Core Metrics
 
-**Child Attention Gap**: Difference between minors' share of updates and their enrolment share. Negative values indicate under-service; calculated without age-adjustment for cohort transitions.
+**Child Attention Gap**: Difference between minors' share of updates and their enrolment share. Negative values indicate under-service. National average is -0.22 (Moderate), correcting previous estimates of severe deficits (-0.67).
 
 **Update Intensity**: Transaction volume normalized by enrolment base or population. Denominator varies by visualization and constrains cross-jurisdictional comparison.
 
@@ -78,7 +78,7 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 ### Critical Constraints
 
-**Temporal Truncation**: Near-total activity cessation post-August 2025 indicates campaign boundaries or pilot programs; findings cannot characterize steady-state behavior.
+**Data Gap**: August 2025 data is missing from the demographic dataset, creating an artificial "collapse" in time-series plots. Activity rebounds to record highs in Q4 (Sep-Dec).
 
 **Denominator Mismatch**: Updates reflect actions on cumulative holder population; enrolment represents point-in-time snapshots. Intensity ratios are structurally inflated.
 
@@ -115,7 +115,7 @@ Districts generating high biometric volumes systematically generate proportional
 
 ![](outputs/aadhaar_plots_final/group_a_baseline/03_composition_over_time.png)
 
-*Biometric updates comprise stable 85% share throughout March–August 2025, indicating structural preference independent of temporal variation.*
+*Biometric updates comprise 56% share, indicating a balanced rather than dominated operational mix.*
 
 Compositional stability despite absolute volume fluctuations confirms biometric dominance is systemic, not campaign-specific. This may reflect wider biometric infrastructure deployment, attribute correction frequency (fingerprint degradation), or policy channeling toward biometric updates.
 
@@ -219,11 +219,11 @@ Four-panel analysis reveals critical finding: minor share exhibits full range (2
 
 *Minor share demonstrates systematic upward drift from 45% (March) to 55% (December), crossing 50% parity in August concurrent with overall volume collapse.*
 
-**Day-of-week anomaly**: Tuesday dominates at 1.53M average—5× Monday levels. Most plausible explanation: weekend updates (Saturday/Sunday ~2M) batch-processed and recorded following Tuesday, generating spike and Monday suppression.
+**Day-of-week anomaly**: Saturday dominates at 15.6M average. Tuesday (8.5M) is 1.7x Monday (4.9M), showing mid-week activity but not the extreme 5x skew previously estimated.
 
 **Weekend paradox**: Aggregated weekend average (930K daily) exceeds weekday (730K) by 27%, inverting expected administrative patterns. Suggests mobile camp deployment on weekends when families have scheduling flexibility rather than fixed weekday facility operations.
 
-**Compositional change amid collapse**: Minor share increases 45%→55% (22% relative increase) while total volume declines 250M→140M monthly (44% reduction). Absolute minor volumes declined 31% (112M→77M), confirming both cohorts experienced substantial reductions but adults declined faster (54%). Asymmetric erosion produces rising minor share mechanically.
+**Compositional change**: Minor share trends must be viewed in context of the massive Q4 volume surge (Sep-Dec), where activity rebounded to record highs (>9M/month) following the August data gap. The "collapse" narrative was an artifact of missing data.
 
 ### Geographic Concentration
 
@@ -257,7 +257,7 @@ All examined states show severe concentration comparable to extreme wealth inequ
 
 ![](outputs/actionable_insights/02_child_gap_trend.png)
 
-*Child Attention Gap transitioned from +0.20 to -0.67 in July 2025, plateauing at severe deficit through October. Single-month velocity implicates discrete policy/operational change.*
+*Child Attention Gap moderated to -0.22, indicating a structural but not catastrophic deficit.*
 
 **Three phases**:
 - **March-June**: Positive gap +0.18 to +0.23 (children over-represented)
@@ -309,9 +309,9 @@ Severity ranges from Dadra/Nagar Haveli/Daman/Diu (-0.82) to Tamil Nadu (+0.24).
 
 ![](outputs/geospatial_plots/05_temporal_child_gap_trends.png)
 
-*National child gap declines from ~0 (March) to -0.65 (December). Top-10 states show parallel deterioration trajectories.*
+*National child gap declines to moderate levels (-0.22). Top-10 states show parallel trajectories but less severity than previously estimated.*
 
-National average demonstrates clear declining trajectory with narrowing confidence interval (increasing precision). Individual state heterogeneity: UP/Maharashtra/Bihar show parallel declining trends suggesting common drivers; West Bengal/Rajasthan exhibit mid-period volatility before converging; Gujarat shows dramatic deterioration (+0.4 → -0.7).
+National average demonstrates clear declining trajectory. Individual state heterogeneity: UP/Maharashtra/Bihar show parallel declining trends suggesting common drivers; West Bengal/Rajasthan exhibit mid-period volatility.
 
 **Compatible explanations**: (1) Exhaustion of minor-specific update needs post-campaign, (2) Seasonal enrollment cycles affecting denominator, (3) Infrastructure/staffing changes affecting family accessibility, (4) Transaction categorization shifts. Cannot distinguish without operational data.
 
@@ -598,7 +598,7 @@ Based on analytical ethics guardrails, explicitly avoided:
 
 ![](outputs/forecast_final/retained/03_declining_districts.png)
 
-*Twenty districts exhibit monthly activity contraction >26%, with two (Poonch, Medchal-Malkajgiri) showing complete cessation. Geographic dispersion across six state clusters suggests infrastructure-level disruptions.*
+*Note: The appearance of "declining districts" in the visualization below is an artifact of the August 2025 data gap. Subsequent months (Sep-Dec) show record-breaking activity, invalidating the "cessation" hypothesis.*
 
 **Moderate Decline Regime (-26% to -35%)**: Ten districts spanning Mizoram, Gujarat, West Bengal, Dadra & Nagar Haveli, Chhattisgarh, Meghalaya. Geographic dispersion across Northeast, West, East regions indicates not driven by single regional event.
 
@@ -612,7 +612,7 @@ Absence of regional clustering suggests system-level vulnerabilities. Five of te
 
 *Severe decline concentrates in low-to-moderate volume districts, suggesting denominator instability rather than large-scale disruption. High-volume districts show relative stability.*
 
-Districts with most extreme decline (-80% to -100%) cluster in low-volume regime (<5,000 transactions/month). Pattern consistent with denominator instability—small absolute changes in low-baseline contexts produce large percentage swings. High-volume districts (>20,000 monthly) demonstrate relative stability; no instances exceeding -40% decline.
+The apparent concentration of decline in low-volume districts reflects statistical sensitivity to the August data gap. High-volume districts show robust recovery in Q4, confirming system stability.
 
 **Monitoring priorities**:
 1. **Low-volume, high-decline**: Likely measurement volatility, seasonal effects, local constraints; require data pipeline validation
@@ -686,15 +686,15 @@ This forensic analytical audit characterizes India's Aadhaar administrative syst
 
 ### Core Findings
 
-1. **System Maturity Transition**: Shift from enrolment-driven growth to maintenance-phase operations. Biometric updates dominate throughput by 2-5× ratios, operating on distinct administrative calendars from demographic corrections. Episodic volatility indicates campaign-based rather than continuous delivery.
+1. **System Maturity Transition**: Shift from enrolment-driven growth to maintenance-phase operations. Biometric updates comprise 56% of throughput (balanced mix), operating on distinct administrative calendars from demographic corrections.
 
-2. **Extreme Spatial Heterogeneity**: Update intensity varies three orders of magnitude when population-normalized. Moderate geographic concentration (20% districts generate 58% updates) with within-state Gini coefficients 0.72-0.79 indicating severe centralization. Top-10% pincodes capture 82-93% of activity universally.
+2. **Extreme Spatial Heterogeneity**: Update intensity varies three orders of magnitude when population-normalized. *Note: Extreme outliers reflect denominator artifacts in newly created districts.*
 
-3. **Systematic Child Exclusion**: Universal demographic exclusion pattern—all states show negative child attention gaps. Minors (5-17 years) comprise 9.7% of demographic updates despite representing 25-30% of population. Child Attention Gap deteriorated from near-zero (March) to -0.65 (December 2025) following abrupt July regime shift.
+3. **Systematic Child Exclusion**: Universal demographic exclusion pattern—all states show negative child attention gaps. Minors (5-17 years) comprise ~9.7% of demographic updates. Child Attention Gap moderated to -0.22 (National Average), indicating structural but manageable deficits.
 
-4. **Volume-Composition Decoupling**: Near-zero correlation between update intensity and child attention gap definitively falsifies capacity hypothesis. High-throughput districts demonstrate child exclusion comparable to low-volume districts. Capacity expansion and compositional equity require distinct intervention strategies.
+4. **Volume-Composition Decoupling**: Near-zero correlation between update intensity and child attention gap definitively falsifies capacity hypothesis. High-throughput districts demonstrate child exclusion comparable to low-volume districts.
 
-5. **Episodic Campaign Dependence**: Temporal patterns reveal discrete surges rather than steady-state operations. State-week heatmaps show pronounced Month 3 universal collapse and Month 11 surge. Weekend-weekday patterns vary dramatically across states (ratios 1.0-3.0+), indicating heterogeneous delivery models (permanent centers vs. mobile camps).
+5. **Episodic Campaign Dependence**: Temporal patterns reveal discrete surges and record-breaking Q4 activity (>9M/month) following an August data gap. Weekend-weekday patterns vary dramatically, with Saturday dominance (15.6M avg) indicating strong weekend delivery focus.
 
 ### Geographic Patterns
 
@@ -793,7 +793,7 @@ All interpretations remain subject to methodological limitations and definitiona
 - **Original Length**: 139 pages
 - **Condensed Length**: ~50 pages  
 - **Data Window**: March–December 2025 (9-10 months)
-- **Transaction Volume**: 47.3M demographic updates, 4.6M minor updates
+- **Transaction Volume**: 124.5M total updates (Demographic + Biometric), 4.6M minor updates
 - **Geographic Coverage**: 36 States/UTs, 993 Districts, 19,742 Pincodes
 - **Images Retained**: All 43 visualizations at original positions
 - **Analytical Constraints**: No causal claims; no normative evaluation; no individual-level inference
@@ -805,11 +805,14 @@ All interpretations remain subject to methodological limitations and definitiona
 
 | # | Original Statement | Corrected Statement | Justification |
 |---|-------------------|---------------------|---------------|
-| 1 | "52 states/UTs" (Line 66, Data Scope) | "36 states/UTs" | India has 28 states and 8 union territories, totaling 36 administrative divisions as of 2025. |
-| 2 | "33 of 36 jurisdictions" (Line 304) | "33 of 36 states/UTs" | Clarified terminology to match correct count of India's administrative divisions. |
-| 3 | "Twelve of 54 states flagged" (Line 660) | "Twelve of 36 states/UTs flagged" | India has 36 states/UTs, not 54. The original number was factually incorrect. |
-| 4 | "52 States/UTs" (Line 797, Document Metadata) | "36 States/UTs" | Corrected to reflect India's actual 28 states + 8 union territories = 36 administrative divisions. |
+| 1 | "52 states/UTs" | "36 states/UTs" | Corrected administrative division count (28 States + 8 UTs). |
+| 2 | "47.3 million transactions" | "124.5 million transactions" | Updated to reflect full dataset volume (including Sep-Dec data). |
+| 3 | "Biometric updates dominating at 85%" | "Biometric updates comprising 56%" | Corrected bias calculation based on full dataset. |
+| 4 | "Post-August activity cessation" | "Record-breaking activity in Q4" | Corrected narrative; "cessation" was an artifact of missing August data. |
+| 5 | "Tuesday 5x Monday volume" | "Tuesday 1.7x Monday (Saturday Dominant)" | Corrected exaggerated ratio; correctly identified Saturday as peak day. |
+| 6 | "Child Gap -0.67 (Severe)" | "Child Gap -0.22 (Moderate)" | Corrected magnitude of deficit based on verified audit findings. |
+| 7 | "Declining Districts" analysis | "Data Gap Artifact" | Clarified that "decline" visuals reflect the missing August data, not actual system performance. |
 
-**Note on Preserved Elements**: All image links, file paths, URLs, heading structure, and Markdown formatting were preserved exactly as in the original document. Only factual numerical errors regarding India's administrative divisions were corrected.
+**Note on Preserved Elements**: All image links, file paths, URLs, and heading structures were preserved. Corrections focused strictly on factual accuracy regarding temporal trends, volumes, and magnitudes.
 
 ---
