@@ -737,14 +737,14 @@ def maps():
         'child_attention_gap': 'mean'
     }).reset_index()
     
-    # State coordinates (approximate centers)
+    # State coordinates (ALL 36 States & UTs of India)
     state_coords = {
+        # States
         'Andhra Pradesh': [15.9129, 79.7400],
         'Arunachal Pradesh': [28.2180, 94.7278],
         'Assam': [26.2006, 92.9376],
         'Bihar': [25.0961, 85.3131],
         'Chhattisgarh': [21.2787, 81.8661],
-        'Delhi': [28.7041, 77.1025],
         'Goa': [15.2993, 74.1240],
         'Gujarat': [22.2587, 71.1924],
         'Haryana': [29.0588, 76.0856],
@@ -768,6 +768,39 @@ def maps():
         'Uttar Pradesh': [26.8467, 80.9462],
         'Uttarakhand': [30.0668, 79.0193],
         'West Bengal': [22.9868, 87.8550],
+        # Union Territories
+        'Andaman and Nicobar': [11.7401, 92.6586],
+        'Andaman & Nicobar': [11.7401, 92.6586],
+        'Chandigarh': [30.7333, 76.7794],
+        'Dadra and Nagar Haveli': [20.1809, 73.0169],
+        'Dadra & Nagar Haveli': [20.1809, 73.0169],
+        'Daman and Diu': [20.4283, 72.8397],
+        'Daman & Diu': [20.4283, 72.8397],
+        'Delhi': [28.7041, 77.1025],
+        'NCT of Delhi': [28.7041, 77.1025],
+        'Jammu and Kashmir': [33.7782, 76.5762],
+        'Jammu & Kashmir': [33.7782, 76.5762],
+        'Ladakh': [34.1526, 77.5771],
+        'Lakshadweep': [10.5667, 72.6417],
+        'Puducherry': [11.9416, 79.8083],
+        'Pondicherry': [11.9416, 79.8083],
+        # Common variations found in data
+        'Orissa': [20.9517, 85.0985],
+        'Chattisgarh': [21.2787, 81.8661],
+        'Chhatisgarh': [21.2787, 81.8661],
+        'Tamilnadu': [11.1271, 78.6569],
+        'Pondichery': [11.9416, 79.8083],
+        'Andaman And Nicobar Islands': [11.7401, 92.6586],
+        'Dadra And Nagar Haveli': [20.1809, 73.0169],
+        'Dadra And Nagar Haveli And Daman And Diu': [20.1809, 73.0169],
+        'The Dadra And Nagar Haveli And Daman And Diu': [20.1809, 73.0169],
+        'Daman And Diu': [20.4283, 72.8397],
+        'Jammu And Kashmir': [33.7782, 76.5762],
+        'Uttaranchal': [30.0668, 79.0193],
+        'West  Bengal': [22.9868, 87.8550],
+        'West Bangal': [22.9868, 87.8550],
+        'Westbengal': [22.9868, 87.8550],
+        'West Bengli': [22.9868, 87.8550],
     }
     
     with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
