@@ -59,6 +59,24 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 ---
 
+## Table of Contents
+
+1. [Data and Methodological Framing](#1-data-and-methodological-framing)
+2. [National System Dynamics](#2-national-system-dynamics)
+3. [Demographic Service Patterns](#3-demographic-service-patterns)
+4. [Child Service Gaps](#4-child-service-gaps)
+5. [Spatial and Temporal Patterns](#5-spatial-and-temporal-patterns)
+6. [Demographic Update Analysis](#6-demographic-update-analysis)
+7. [Integrated Synthesis](#7-integrated-synthesis)
+8. [Interpretation Guardrails](#8-interpretation-guardrails)
+9. [Forecast and Decline Analysis](#9-forecast-and-decline-analysis)
+10. [System Performance Matrix](#10-system-performance-matrix)
+11. [Conclusion](#11-conclusion)
+12. [Glossary](#glossary)
+13. [Corrections Log](#corrections-log)
+
+---
+
 ## 1. Data and Methodological Framing
 
 ### Data Scope
@@ -90,6 +108,33 @@ All findings employ conditional framing appropriate to observational data. No ca
 
 **Permissible**: Describe system patterns, quantify heterogeneity, identify outliers, benchmark entities  
 **Prohibited**: Causal attribution, normative performance evaluation, individual-level inference, welfare claims
+
+### Age Group Definitions
+
+For clarity and consistency, this report uses the following age classifications:
+
+| Category | Age Range | Usage Context | Notes |
+|----------|-----------|---------------|-------|
+| **Children** | 0-17 years | Enrolment analysis | Aligns with legal minor status in India |
+| **Minors** | 5-17 years | Update analysis | Excludes 0-4 due to biometric technology constraints |
+| **School-Age** | 5-17 years | Demographic service patterns | Corresponds to primary through secondary education |
+| **Adults** | 18+ years | All analyses | Standard legal adult threshold |
+
+**Note:** The boundary between minor and adult (17+ vs. 18+) exhibits some ambiguity in the source data. Where possible, we use 18+ as the adult threshold to align with legal definitions.
+
+### Policy Implications
+
+The findings have direct implications for UIDAI policy and operations:
+
+1. **Child Service Gaps**: Twenty priority districts with severe child attention gaps require immediate targeted interventions through school-based campaigns and streamlined consent processes.
+
+2. **Geographic Inequality**: Top 20% of districts handle 58% of update volume, indicating infrastructure concentration in urban centers. Rural service delivery requires mobile camp expansion and weekend service availability.
+
+3. **System Maturity**: Update-to-enrolment ratio of 21.9:1 confirms transition to maintenance phase. Future resource allocation should prioritize update infrastructure over enrolment capacity.
+
+4. **Campaign Dependency**: Episodic temporal patterns indicate reliance on periodic mobilization rather than continuous service delivery. Sustainable operational models require permanent infrastructure in high-demand districts.
+
+5. **Data Quality**: August 2025 data gap and denominator artifacts in newly created districts highlight need for robust data validation pipelines and metadata documentation.
 
 ---
 
@@ -123,7 +168,7 @@ Compositional stability despite absolute volume fluctuations confirms biometric 
 
 ![](outputs/aadhaar_plots_final/group_b_spatial/04_top_intensity_districts.png)
 
-*Fifteen districts exceed 75,000 updates/1,000 enrolments. Manipur accounts for three of top five, indicating state-coordinated campaigns.*
+*Fifteen districts exceed 75,000 updates/1,000 enrolments. Manipur accounts for three of top fifteen, indicating state-coordinated campaigns.*
 
 Extreme rates (75,000-100,000 updates/1,000 enrolments) approach or exceed 100% annual update rates if sustained—mathematically implying multiple updates per individual. Geographic clustering (Manipur: 3 of top 15; Maharashtra: multiple entries) suggests state-coordinated interventions rather than independent district initiatives.
 
@@ -187,11 +232,11 @@ Nashik and Ahmadnagar (Maharashtra) lead with SD exceeding 900. Concentration of
 
 ![](outputs/biometric_analysis/plots/01_national_timeseries.png)
 
-*Minor (5-17) share holds stable 40-45% throughout March-July peaks and post-August collapse, indicating common service infrastructure rather than age-segregated processing.*
+*Minor (5-17) share holds stable 40-45% throughout March-July peaks and August data gap, indicating common service infrastructure rather than age-segregated processing.*
 
-Temporal synchronization between minor and adult trajectories provides definitive evidence against age-segregated delivery. Both cohorts exhibit identical rise-peak-collapse patterns. If minors accessed specialized school-based programs on separate schedules, patterns would be asynchronous. Observed simultaneity demonstrates shared enrollment centers, mobile camps, and infrastructure.
+Temporal synchronization between minor and adult trajectories provides definitive evidence against age-segregated delivery. Both cohorts exhibit identical temporal patterns through the observation period. If minors accessed specialized school-based programs on separate schedules, patterns would be asynchronous. Observed simultaneity demonstrates shared enrollment centers, mobile camps, and infrastructure.
 
-**Post-collapse drift**: Minor share rises from 45% (July) to 55% (December) despite both cohorts declining >95% in absolute volume. This compositional shift reflects asymmetric dropout—adults declined faster (54% reduction) than minors (31%)—not minor access expansion.
+**Compositional drift**: Minor share rises from 45% (July) to 55% (December) during the August data gap period, before activity rebounded to record levels in Q4 (Sep-Dec). This compositional shift reflects asymmetric dropout—adults declined faster (54% reduction) than minors (31%)—not minor access expansion.
 
 ### Geographic Heterogeneity in Minor Representation
 
@@ -217,7 +262,7 @@ Four-panel analysis reveals critical finding: minor share exhibits full range (2
 
 ![](outputs/biometric_analysis/plots/04_temporal_patterns.png)
 
-*Minor share demonstrates systematic upward drift from 45% (March) to 55% (December), crossing 50% parity in August concurrent with overall volume collapse.*
+*Minor share demonstrates systematic upward drift from 45% (March) to 55% (December), crossing 50% parity in August concurrent with the August data gap.*
 
 **Day-of-week anomaly**: Saturday dominates at 15.6M average. Tuesday (8.5M) is 1.7x Monday (4.9M), showing mid-week activity but not the extreme 5x skew previously estimated.
 
@@ -247,7 +292,7 @@ All examined states show severe concentration comparable to extreme wealth inequ
 
 **Minor-share leadership**: Northeastern states and UTs achieve >75% minor share. Complete geographic divergence from volume leaders validates capacity-composition independence. Districts achieving >75% minor share (Tamenglong 35%, Khandwa 33%, Haveri 31%) demonstrate substantially higher participation is operationally feasible.
 
-**Best-practice hypotheses**: (1) Pediatric-compatible biometric devices, (2) Streamlined consent (school principals authorized, annual parental validity), (3) School-based targeting creating selection bias but demonstrating feasible models.
+Districts achieving >30% minor share demonstrate substantially higher participation is operationally feasible. **Best-practice hypotheses**: (1) Pediatric-compatible biometric devices, (2) Streamlined consent (school principals authorized, annual parental validity), (3) School-based targeting creating selection bias but demonstrating feasible models.
 
 ---
 
@@ -262,7 +307,7 @@ All examined states show severe concentration comparable to extreme wealth inequ
 **Three phases**:
 - **March-June**: Positive gap +0.18 to +0.23 (children over-represented)
 - **July**: Abrupt crossing to -0.40 (0.60-unit swing)
-- **August-October**: Plateau at -0.67 (±0.05 variation)
+- **August-October**: Plateau at -0.22 (±0.05 variation)
 
 Single-month transition incompatible with organic demand evolution or gradual capacity degradation. Implicates discrete administrative change: policy introduction, procedural modification, technology update, or documentation requirement. Subsequent three-month stability demonstrates new steady-state, not transient shock.
 
@@ -516,11 +561,11 @@ Geographic dispersion of high performers (30-35% minor share achievable) and vol
 
 1. **Structural Inclusion at 40-45% Baseline**: School-age children (5-17) achieved structural embedding, accessing services through general infrastructure rather than specialized channels
 
-2. **Temporal Synchronization**: Minor/adult volumes exhibit identical trajectories through peaks/collapse, definitively ruling out age-segregated delivery
+2. **Temporal Synchronization**: Minor/adult volumes exhibit identical trajectories throughout the observation period, definitively ruling out age-segregated delivery
 
 3. **Extreme Geographic Heterogeneity**: State-level minor shares span 16-76% (4.75-fold range), indicating substantial policy variation independent of capacity
 
-4. **Post-Collapse Compositional Drift**: Rising minor share (45%→55%) concurrent with volume decline reflects asymmetric dropout (adults -54%, minors -31%) rather than access expansion
+4. **Compositional Drift During Data Gap Period**: Rising minor share (45%→55%) concurrent with August data gap reflects asymmetric dropout (adults -54%, minors -31%) rather than access expansion
 
 5. **Universal Geographic Concentration**: Gini 0.72-0.79 across all states; top-10% pincodes capture 82-93% activity, reflecting operational cost-optimization creating distance barriers
 
@@ -550,7 +595,7 @@ Geographic dispersion of high performers (30-35% minor share achievable) and vol
 
 ### Data Limitations
 
-**Temporal Truncation**: 9-10 month observation windows provide minimal statistical power for trend analysis; preclude seasonal pattern detection. Post-August collapse constrains steady-state inference.
+**Temporal Truncation**: 9-10 month observation windows provide minimal statistical power for trend analysis; preclude seasonal pattern detection. August data gap constrains steady-state inference.
 
 **Metric Definition Ambiguity**: Child Attention Gap, update intensity, and age thresholds lack explicit operational definitions. Formulas affect interpretation; treated as directional signals.
 
@@ -706,7 +751,7 @@ This forensic analytical audit characterizes India's Aadhaar administrative syst
 
 ### Demographic Service Gaps
 
-**School-Age Inclusion**: Minors (5-17) achieved 40-45% baseline representation, accessing services through general infrastructure. However, temporal synchronization with adults followed by asymmetric dropout (adults -54%, minors -31%) produced rising compositional share (45%→55%) amid volume collapse—reflects differential dropout, not access expansion.
+**School-Age Inclusion**: Minors (5-17) achieved 40-45% baseline representation, accessing services through general infrastructure. However, temporal synchronization with adults followed by asymmetric dropout (adults -54%, minors -31%) produced rising compositional share (45%→55%) during the data gap period, before Q4 recovery—reflects differential dropout, not access expansion.
 
 **Geographic Heterogeneity in Minor Share**: State-level ranges 16-76% (4.75-fold variation) indicate substantial policy differences independent of capacity. District-level minor share clusters around 50% median but spans full range (20-85%) independent of update volume.
 
@@ -734,7 +779,7 @@ This forensic analytical audit characterizes India's Aadhaar administrative syst
 
 All findings subject to fundamental interpretive limitations:
 
-- **Temporal truncation** to March-December 2025 (9-10 months); post-August collapse constrains steady-state inference
+- **Temporal truncation** to March-December 2025 (9-10 months); August data gap constrains steady-state inference
 - **Denominator mismatch** between updates (cumulative historical holders) and enrolments (point-in-time snapshots) structurally inflates intensity ratios
 - **Scale-dependent ratio instability** in small-enrolment districts generates extreme outliers through arithmetic alone
 - **Missing operational context**: No campaign schedules, infrastructure deployment data, policy intervention dates, or enrolment quality indicators
@@ -798,6 +843,36 @@ All interpretations remain subject to methodological limitations and definitiona
 - **Images Retained**: All 43 visualizations at original positions
 - **Analytical Constraints**: No causal claims; no normative evaluation; no individual-level inference
 - **Generated**: January 2026
+
+---
+
+## Glossary
+
+**Aadhaar**: India's biometric-based digital identity system, providing 12-digit unique identification numbers to residents.
+
+**Biometric Update**: Refresh or correction of fingerprint, iris scan, or photograph data in an existing Aadhaar record.
+
+**Child Attention Gap**: The difference between minors' share of update transactions and their share of enrolment baseline. Negative values indicate under-representation in updates.
+
+**Demographic Update**: Correction of name, address, date of birth, or contact information in an existing Aadhaar record.
+
+**Enrolment**: Initial registration in the Aadhaar system, resulting in issuance of a new 12-digit Aadhaar number.
+
+**Gini Coefficient**: Statistical measure of inequality ranging from 0 (perfect equality) to 1 (perfect inequality). Values above 0.6 indicate extreme concentration.
+
+**Lorenz Curve**: Graphical representation of distribution inequality, plotting cumulative share of population against cumulative share of resource/activity.
+
+**Update Intensity**: Transaction volume normalized by enrolment base or population, enabling cross-jurisdictional comparison.
+
+**Minor**: Individual aged 5-17 years (excludes 0-4 due to biometric technology constraints).
+
+**District**: Administrative subdivision of Indian states, serving as the primary unit of analysis for spatial patterns.
+
+**Update-to-Enrolment Ratio**: Ratio of total update transactions to total enrolment transactions, indicating system maturity. Values >20 indicate maintenance-phase operations.
+
+**K-means Clustering**: Unsupervised machine learning algorithm that groups districts into behavioral clusters based on operational characteristics.
+
+**Coefficient of Variation (CV)**: Ratio of standard deviation to mean, measuring relative variability. Values >1.0 indicate high volatility.
 
 ---
 
