@@ -93,36 +93,42 @@ function updateSidebarState(activeSectionId) {
     navItems.forEach(item => {
         const itemTarget = item.dataset.section;
 
-        // Reset all to clean inactive state
-        item.classList.remove('bg-blue-50/50', 'dark:bg-blue-900/20', 'border-l-4', 'border-blue-500', 'active');
-        item.classList.add('hover:bg-slate-50', 'dark:hover:bg-slate-800/50', 'border-l-4', 'border-transparent', 'hover:border-slate-300', 'dark:hover:border-slate-600');
+        // Helper functions from previous scope (or defined here)
+        // Re-implementing for clarity/scope safety
+        const setInactive = (el) => {
+            activeClasses.forEach(c => el.classList.remove(c));
+            inactiveClasses.forEach(c => el.classList.add(c));
+            const icon = el.querySelector('i');
+            if (icon) {
+                icon.classList.remove('text-blue-600', 'dark:text-blue-400');
+                icon.classList.add('text-slate-400');
+            }
+            const text = el.querySelector('span');
+            if (text) {
+                text.classList.remove('text-slate-800', 'dark:text-white', 'font-bold');
+                text.classList.add('text-slate-600', 'dark:text-slate-300');
+            }
+        };
 
-        const icon = item.querySelector('i');
-        if (icon) {
-            icon.classList.remove('text-blue-600', 'dark:text-blue-400');
-            icon.classList.add('text-slate-400');
-        }
-
-        const text = item.querySelector('span');
-        if (text) {
-            text.classList.remove('text-slate-800', 'dark:text-white', 'font-bold');
-            text.classList.add('text-slate-600', 'dark:text-slate-300');
-        }
-
-        // Apply active styles ONLY if it matches activeSectionId
-        if (itemTarget === activeSectionId) {
-            item.classList.remove('hover:bg-slate-50', 'dark:hover:bg-slate-800/50', 'border-transparent', 'hover:border-slate-300', 'dark:hover:border-slate-600');
-            item.classList.add('bg-blue-50/50', 'dark:bg-blue-900/20', 'border-blue-500', 'active');
-
+        const setActive = (el) => {
+            inactiveClasses.forEach(c => el.classList.remove(c));
+            activeClasses.forEach(c => el.classList.add(c));
+            const icon = el.querySelector('i');
             if (icon) {
                 icon.classList.remove('text-slate-400');
                 icon.classList.add('text-blue-600', 'dark:text-blue-400');
             }
-
+            const text = el.querySelector('span');
             if (text) {
                 text.classList.remove('text-slate-600', 'dark:text-slate-300');
                 text.classList.add('text-slate-800', 'dark:text-white', 'font-bold');
             }
+        };
+
+        if (itemTarget === activeSectionId) {
+            setActive(item);
+        } else {
+            setInactive(item);
         }
     });
 }
@@ -790,52 +796,28 @@ function initModals() {
 
 function openImageModal(src, alt, desc = '') {
     const modal = document.getElementById('imageModal');
+    const img = document.getElementById('modalImage');
     const caption = document.getElementById('modalCaption');
+
+    img.src = src;
+    img.alt = alt;
 
     // Rich Caption
     caption.innerHTML = `
-        <div class="flex flex-col gap-6 max-w-4xl mx-auto items-center">
-             <div class="w-full flex justify-end">
-                <button onclick="closeImageModal()" class="text-slate-400 hover:text-white transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            <div class="w-full bg-black/20 rounded-xl overflow-hidden shadow-2xl border border-white/10 p-2">
-                 <img src="${src}" alt="${alt}" class="w-full h-auto max-h-[70vh] object-contain mx-auto rounded-lg">
-            </div>
-            <div class="w-full text-left space-y-4 bg-slate-900/80 p-8 rounded-xl backdrop-blur-sm border border-white/10">
-                <h3 class="text-3xl font-display font-bold text-white mb-2 border-b border-white/10 pb-4">${alt}</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300 leading-relaxed">
-                    <div class="col-span-2 space-y-4">
-                         <h4 class="text-blue-400 uppercase tracking-widest text-xs font-bold mb-2">Detailed Analysis</h4>
-                         <p class="text-lg text-white font-medium">${desc}</p>
-                         <p>This visualization highlights critical operational metrics derived from the latest audit cycle. The data indicates significant variance in district-level performance, particularly in high-density urban clusters where update velocity has outpaced enrolment rates by factor of 3x.</p>
-                         <p>Key anomalies detected include sudden throughput spikes in Q3, likely correlated with the mandatory biometric update mandates for the 5-15 age bracket.</p>
-                    </div>
-                    <div class="space-y-4 text-sm border-l border-white/10 pl-8">
-                        <h4 class="text-emerald-400 uppercase tracking-widest text-xs font-bold mb-2">Strategic Implications</h4>
-                        <ul class="space-y-2 list-disc pl-4 marker:text-emerald-500">
-                            <li>Immediate resource reallocation recommended for flagged districts.</li>
-                            <li>Targeted camps required to address child enrolment gaps.</li>
-                            <li>Audit trail verification suggested for volatility hotspots.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="flex flex-col gap-1">
+            <span class="text-lg font-bold text-gray-900">${alt}</span>
+            ${desc ? `<span class="text-sm text-gray-500">${desc}</span>` : ''}
         </div>
     `;
 
-    modal.classList.add('flex');
-    modal.classList.remove('hidden');
+    modal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
 function closeImageModal() {
     const modal = document.getElementById('imageModal');
     if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        modal.classList.remove('active');
         document.body.style.overflow = '';
     }
 }

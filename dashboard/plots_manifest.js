@@ -3,31 +3,7 @@
 // Only includes explicitly tagged analytical outputs
 
 window.plotsManifest = [
-    {
-        "category": "Actionable Insights",
-        "folder": "actionable_insights",
-        "description": "High-priority findings requiring immediate operational attention.",
-        "context": {
-            "what": "Critical efficiency gaps and service anomalies.",
-            "why": "Direct input for immediate district-level intervention.",
-            "when": "Review Daily"
-        },
-        "plots": [
-            {
-                "id": "insight_01",
-                "title": "Critical Child Gap Regions",
-                "path": "assets/curated_plots/01_worst_child_gaps.png",
-                "featured": true,
-                "desc": "Districts with >20% deficit in child biometric updates requiring immediate targeted camps."
-            },
-            {
-                "id": "insight_02",
-                "title": "Child Gap Trend Analysis",
-                "path": "assets/curated_plots/02_child_gap_trend.png",
-                "desc": "Worrying trend of widening child update gaps over the last 3 quarters."
-            }
-        ]
-    },
+
     {
         "category": "System Baseline",
         "folder": "aadhaar_plots_final",
@@ -78,7 +54,7 @@ window.plotsManifest = [
             { "id": "demo_10", "title": "Minor Update Hubs", "path": "assets/curated_plots/core_10_top_districts_minor.png", "featured": true, "desc": "Districts with highest proportion of updates for <18 age group." },
             { "id": "demo_11", "title": "Volatility Hotspots", "path": "assets/curated_plots/core_11_volatile_districts.png", "desc": "Regions exhibiting highly erratic demographic update patterns." },
             { "id": "hi_03", "title": "Weekend Gini Scatter", "path": "assets/curated_plots/high_impact_03_weekend_gini_scatter.png", "desc": "Correlation between weekend service availability and inequality." },
-            { "id": "hi_05", "title": "MoM Growth Heatmap", "path": "assets/curated_plots/high_impact_05_mom_growth_heatmap.png", "desc": "Month-over-Month growth rates visualizing regional acceleration." },
+
             { "id": "hi_06", "title": "Service Lorenz Curves", "path": "assets/curated_plots/high_impact_06_lorenz_curves.png", "desc": "Cumulative distribution showing moderate inequality in service access." },
             { "id": "hi_07", "title": "Spike Detection", "path": "assets/curated_plots/high_impact_07_spike_detection.png", "desc": "Automated detection of sudden anomalous surges in requests." },
             { "id": "core_02", "title": "Monthly Minor Share", "path": "assets/curated_plots/core_02_monthly_minor_share.png", "desc": "Seasonal fluctuations in minor updates correlated with school cycles." },
@@ -113,7 +89,7 @@ window.plotsManifest = [
             "when": "Logistics Planning"
         },
         "plots": [
-            { "id": "geo_02", "title": "Child Gap Map", "path": "assets/curated_plots/02_child_gap_map.png", "featured": true, "desc": "Geographic clustering of child service deficits across the north-east belt." },
+
             { "id": "geo_08", "title": "Seasonal Patterns", "path": "assets/curated_plots/08_seasonal_patterns.png", "desc": "Mapping the impact of harvest/monsoon seasons on operations." },
             { "id": "geo_10", "title": "Lorenz Inequality Map", "path": "assets/curated_plots/10_lorenz_curve_inequality.png", "desc": "Geospatial view of service distribution efficiency." },
             { "id": "geo_11", "title": "Gini Coefficient Analysis", "path": "assets/curated_plots/11_gini_coefficient_analysis.png", "desc": "Statistical inequality metrics by state." },
@@ -145,14 +121,14 @@ window.plotsManifest = [
             "when": "Ad-Hoc Deep Dive"
         },
         "plots": [
-            { "id": "int_01", "title": "Demo vs Bio Trends", "path": "assets/curated_plots/core_01_demo_vs_bio_monthly.png", "featured": true, "desc": "Comparative analysis of the two primary service arms." },
-            { "id": "int_08", "title": "Demographic Intensity Heatmap", "path": "assets/curated_plots/core_08_demo_intensity_heatmap.png", "desc": "Heatmap of demographic update frequency per capita." },
-            { "id": "int_06", "title": "Minor Share Scatter", "path": "assets/curated_plots/core_06_minor_share_scatter.png", "desc": "Correlation analysis of minor vs adult update patterns." },
+
+
+
             { "id": "int_07", "title": "Unified District Clusters", "path": "assets/curated_plots/core_07_district_clusters.png", "desc": "Holistic district segmentation based on all signals." },
             { "id": "spec_01", "title": "System Shift Ratio", "path": "assets/curated_plots/01_system_shift_ratio.png", "desc": "Quantifying the transition from growth to maintenance." },
             { "id": "spec_02", "title": "Invisible Economy (Weekend)", "path": "assets/curated_plots/02_invisible_economy_weekend_patterns.png", "desc": "Weekend activity patterns revealing informal sector access." },
             { "id": "spec_04", "title": "Healthcare Deserts", "path": "assets/curated_plots/04_healthcare_deserts_infant_gaps.png", "desc": "Correlation between healthcare access and infant enrolment." },
-            { "id": "spec_bonus", "title": "Bonus: Child Attention Gap", "path": "assets/curated_plots/bonus_child_attention_gap.png", "desc": "Special analysis of the child attention gap metric." }
+
         ]
     }
 ];
