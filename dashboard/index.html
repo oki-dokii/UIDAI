@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIDAI Aadhaar Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-fingerprint"></i>
+                <span>UIDAI Analytics</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="overview">
+                <i class="fas fa-chart-line"></i>
+                <span>Overview</span>
+            </li>
+            <li class="nav-item" data-section="temporal">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Temporal Analysis</span>
+            </li>
+            <li class="nav-item" data-section="spatial">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>Spatial Patterns</span>
+            </li>
+            <li class="nav-item" data-section="demographic">
+                <i class="fas fa-users"></i>
+                <span>Demographics</span>
+            </li>
+            <li class="nav-item" data-section="clusters">
+                <i class="fas fa-project-diagram"></i>
+                <span>District Clusters</span>
+            </li>
+            <li class="nav-item" data-section="advanced">
+                <i class="fas fa-atom"></i>
+                <span>Advanced Analytics</span>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="version-info">
+                <span>UIDAI Datathon 2026</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1 class="page-title">Aadhaar Administrative Analytics</h1>
+                <span class="subtitle">Forensic Analysis of Enrolment & Update Patterns</span>
+            </div>
+            <div class="header-right">
+                <div class="date-range">
+                    <i class="fas fa-calendar"></i>
+                    <span>12-Month Observation Window</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Sections -->
+        <div class="dashboard-container">
+            
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <div class="section-header">
+                    <h2>System Overview</h2>
+                    <p>National-level administrative interaction patterns and system maturity indicators</p>
+                </div>
+                
+                <!-- Key Metrics Cards -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon blue">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value">2-5x</span>
+                            <span class="metric-label">Biometric to Demographic Ratio</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon green">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value">3 Orders</span>
+                            <span class="metric-label">Regional Intensity Variation</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon orange">
+                            <i class="fas fa-child"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value">5-40%</span>
+                            <span class="metric-label">Child Attention Gap Range</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon purple">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value">4</span>
+                            <span class="metric-label">Administrative Regimes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>Monthly Transaction Volumes: Demographic vs Biometric Updates</h3>
+                        <div class="chart-actions">
+                            <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
+                            <button class="btn-icon" title="Fullscreen"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <img src="../outputs/integrated_analysis/plots_final/core_01_demo_vs_bio_monthly.png" 
+                             alt="Demographic vs Biometric Monthly Trends" 
+                             class="chart-image">
+                    </div>
+                    <div class="chart-footer">
+                        <p class="chart-caption">Biometric updates consistently exceed demographic corrections by 2-5x ratios. Month 3 collapse and Month 9 surge indicate episodic campaign-based operations.</p>
+                    </div>
+                </div>
+
+                <!-- Key Insights -->
+                <div class="insights-panel">
+                    <h3><i class="fas fa-lightbulb"></i> Key Insights</h3>
+                    <ul class="insights-list">
+                        <li>System has transitioned from <strong>enrolment-driven</strong> to <strong>maintenance-phase</strong> operations</li>
+                        <li>Biometric updates dominate system throughput, indicating verification mandates</li>
+                        <li>Temporal volatility suggests <strong>campaign-based</strong> rather than continuous delivery</li>
+                        <li>Month 3 disruption is system-wide, not region-specific</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Temporal Analysis Section -->
+            <section id="temporal" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Temporal Analysis</h2>
+                    <p>Time-series patterns, growth dynamics, and operational stability indicators</p>
+                </div>
+
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Intensity Growth Rate (State × Month)</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/new_01_intensity_growth_rate.png" 
+                                 alt="Growth Rate Heatmap" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Month-over-month growth rates reveal accelerating vs decelerating states and recovery dynamics post-Month 3.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Temporal Stability Index by State</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/new_04_temporal_stability_index.png" 
+                                 alt="Temporal Stability Index" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Coefficient of variation identifies episodic campaign-dependent vs continuous steady-state operations.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Spatial Patterns Section -->
+            <section id="spatial" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Spatial Patterns</h2>
+                    <p>State-level heterogeneity, regional concentration, and geographic disparities</p>
+                </div>
+
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>Top 10 States: Update Intensity (Population-Normalized)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <img src="../outputs/integrated_analysis/plots_final/core_02_state_intensity.png" 
+                             alt="State Intensity Comparison" 
+                             class="chart-image">
+                    </div>
+                    <div class="chart-footer">
+                        <p class="chart-caption">Regional variation spans 3 orders of magnitude when normalized for population, revealing genuine administrative heterogeneity.</p>
+                    </div>
+                </div>
+
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Demographic Update Intensity: State × Month</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_08_demo_intensity_heatmap.png" 
+                                 alt="Demographic Intensity Heatmap" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Universal Month 3 collapse and Month 11 surge alongside extreme state heterogeneity.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Biometric Update Intensity: State × Month</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_09_bio_intensity_heatmap.png" 
+                                 alt="Biometric Intensity Heatmap" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Biometric updates demonstrate operational independence with state-specific campaign calendars.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demographic Section -->
+            <section id="demographic" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Demographic Equity Analysis</h2>
+                    <p>Child attention gaps, age-based exclusion patterns, and equity indicators</p>
+                </div>
+
+                <div class="alert-banner warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <strong>Equity Concern:</strong> Children are systematically under-represented in update processes across ALL states, with deficits ranging from 5-40 percentage points.
+                    </div>
+                </div>
+
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Child Attention Gap by State</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_03_child_gap_state.png" 
+                                 alt="Child Gap by State" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Universal negative gaps indicate structural barriers to child-focused engagement.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Distribution of Child Attention Gap</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_04_gap_distribution.png" 
+                                 alt="Gap Distribution" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Pronounced bimodality indicates policy fragmentation rather than gradual variation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Child Share: Enrolment vs Updates</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_05_child_share_scatter.png" 
+                                 alt="Child Share Scatter" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Near-universal clustering below parity line confirms systematic child exclusion.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Minor Share: Demographic vs Biometric</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/core_06_minor_share_scatter.png" 
+                                 alt="Minor Share Scatter" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Minors face additional barriers in biometric updates relative to demographic corrections.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clusters Section -->
+            <section id="clusters" class="dashboard-section">
+                <div class="section-header">
+                    <h2>District Clustering & Typology</h2>
+                    <p>Administrative regime classification and district-level behavioral patterns</p>
+                </div>
+
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>District Clusters: Enrolment vs Update Intensity</h3>
+                    </div>
+                    <div class="chart-body">
+                        <img src="../outputs/integrated_analysis/plots_final/core_07_district_clusters.png" 
+                             alt="District Clusters" 
+                             class="chart-image">
+                    </div>
+                    <div class="chart-footer">
+                        <p class="chart-caption">K-means clustering identifies 4 archetypal administrative regimes for differentiated monitoring.</p>
+                    </div>
+                </div>
+
+                <!-- Cluster Legend -->
+                <div class="cluster-legend">
+                    <div class="cluster-item">
+                        <span class="cluster-dot" style="background: #1e88e5;"></span>
+                        <div>
+                            <strong>Cluster 0:</strong> Ongoing enrolment frontiers (frontier regions, recent formations)
+                        </div>
+                    </div>
+                    <div class="cluster-item">
+                        <span class="cluster-dot" style="background: #43a047;"></span>
+                        <div>
+                            <strong>Cluster 1-2:</strong> Mature maintenance systems (modal administrative state)
+                        </div>
+                    </div>
+                    <div class="cluster-item">
+                        <span class="cluster-dot" style="background: #fb8c00;"></span>
+                        <div>
+                            <strong>Cluster 3:</strong> High-verification zones (urban centers, enforcement areas)
+                        </div>
+                    </div>
+                    <div class="cluster-item">
+                        <span class="cluster-dot" style="background: #e53935;"></span>
+                        <div>
+                            <strong>Cluster 4:</strong> Dormant/saturated districts (remote areas, completed saturation)
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Analytics Section -->
+            <section id="advanced" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Advanced Analytics</h2>
+                    <p>Cross-domain correlations, coupling analysis, and equity-capacity matrices</p>
+                </div>
+
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Demographic-Biometric Coupling Coefficients</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/new_02_demo_bio_coupling.png" 
+                                 alt="Demo-Bio Coupling" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">Coupling reveals integrated vs siloed verification streams across districts.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Child Gap × Update Intensity Quadrants</h3>
+                        </div>
+                        <div class="chart-body">
+                            <img src="../outputs/integrated_analysis/plots_final/new_03_gap_intensity_quadrants.png" 
+                                 alt="Gap Intensity Quadrants" 
+                                 class="chart-image">
+                        </div>
+                        <div class="chart-footer">
+                            <p class="chart-caption">High-intensity, child-underserved districts are priority intervention targets.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interpretation Warning -->
+                <div class="alert-banner info">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Interpretation Note:</strong> All analyses are descriptive characterizations of administrative interaction structure. Causal attribution and normative evaluation are explicitly avoided.
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
