@@ -1,0 +1,29 @@
+UIDAI GEOSPATIAL DATA QUALITY REPORT
+============================================================
+
+Total Records: 54
+Mean Quality Score: 82.6/100
+Records Below 80: 12
+
+SUSPICIOUS VALUE DETECTION:
+------------------------------------------------------------
+
+total_intensity:
+  Flagged: 10 (18.5%)
+  Round Numbers: 9
+  Outliers: 0
+
+demo_intensity:
+  Flagged: 11 (20.4%)
+  Round Numbers: 9
+  Outliers: 0
+
+bio_intensity:
+  Flagged: 10 (18.5%)
+  Round Numbers: 2
+  Outliers: 0
+
+total_updates:
+  Flagged: 1 (1.9%)
+  Round Numbers: 0
+  Outliers: 0
