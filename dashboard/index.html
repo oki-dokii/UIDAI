@@ -5,192 +5,837 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UIDAI Aadhaar Analytics Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
+
+    <!-- Tailwind CSS (Dev Mode via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#1a73e8', // Brand Blue
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            bg: '#0f172a',    // Slate 900
+                            surface: '#1e293b', // Slate 800
+                            card: '#1e293b',
+                            border: '#334155', // Slate 700
+                        },
+                        glass: {
+                            light: 'rgba(255, 255, 255, 0.7)',
+                            dark: 'rgba(30, 41, 59, 0.7)',
+                            border: 'rgba(255, 255, 255, 0.2)',
+                            text: 'rgba(255,255,255,0.9)'
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'neon': '0 0 10px rgba(26, 115, 232, 0.5)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.4)'
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js & DataTables -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+    <!-- Custom Styles (Legacy support + Animations) -->
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        /* Custom Scrollbar for Webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Glass Utility (easier than pure utility classes sometimes) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            /* Slate 800 with opacity */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Hide Scrollbar for Sidebar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* --- LEGACY COMPATIBILITY LAYER --- */
+        /* Instantly upgrade old sections to new Design System */
+
+        /* Section Headers */
+        .section-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.025em;
+        }
+
+        .dark .section-header h2 {
+            color: #f8fafc;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .dark .section-header p {
+            color: #94a3b8;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .dark .section-header {
+            border-bottom-color: rgba(51, 65, 85, 0.5);
+        }
+
+        /* Chart Containers -> Glass Cards */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dark .chart-container {
+            background: rgba(30, 41, 59, 0.5);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .dark .chart-header {
+            border-bottom-color: rgba(51, 65, 85, 0.3);
+        }
+
+        .chart-header h3 {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1rem;
+        }
+
+        .dark .chart-header h3 {
+            color: #f1f5f9;
+        }
+
+        .chart-body {
+            padding: 1.5rem;
+            background: transparent;
+            width: 100%;
+            position: relative;
+        }
+
+        .chart-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(248, 250, 252, 0.5);
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .dark .chart-footer {
+            background: rgba(15, 23, 42, 0.3);
+            border-top-color: rgba(51, 65, 85, 0.3);
+        }
+
+        .chart-caption {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .dark .chart-caption {
+            color: #94a3b8;
+        }
+
+        .chart-image {
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Buttons */
+        .btn-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dark .btn-icon {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        .btn-icon:hover {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .dark .btn-icon:hover {
+            background: #1e293b;
+            color: #38bdf8;
+        }
+
+        /* Grids */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            .charts-grid.two-column {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ========================================
+   Data Tables (Enhanced)
+   ======================================== */
+        .table-container {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            overflow-x: auto;
+            /* Handle wide tables */
+            box-shadow: var(--shadow-sm);
+            display: none;
+            /* FIX: Hide by default for Tabs */
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .table-container.active {
+            display: block;
+            /* FIX: Show only active tab */
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+        }
+
+        .table-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .dark .table-container {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+        }
+
+        .dark .table-header {
+            background: rgba(30, 41, 59, 0.5);
+            border-bottom-color: var(--dark-border);
+        }
+
+        .dark .table-header h3 {
+            color: var(--white);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 16px 24px;
+            background: var(--gray-50);
+            color: var(--gray-600);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--gray-200);
+            white-space: nowrap;
+            position: sticky;
+            /* PHRASE 2: Sticky Header */
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table th:last-child {
+            text-align: right;
+        }
+
+        .dark .data-table th {
+            background: #1e293b;
+            color: #94a3b8;
+            border-bottom-color: #334155;
+        }
+
+        /* Note: td styles are largely handled by Tailwind in JS now for granular control */
+        .data-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        /* Tab Navigation */
+        .tab-navigation {
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dark .tab-navigation {
+            border-bottom-color: #334155;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 1rem;
+            color: #64748b;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .dark .tab-btn {
+            color: #94a3b8;
+        }
+
+        .tab-btn.active {
+            color: #0284c7;
+            border-bottom-color: #0284c7;
+        }
+
+        .dark .tab-btn.active {
+            color: #38bdf8;
+            border-bottom-color: #38bdf8;
+        }
+    </style>
 </head>
 
-<body>
+<body
+    class="bg-slate-50 text-slate-900 dark:bg-dark-bg dark:text-gray-100 font-sans transition-colors duration-300 antialiased overflow-x-hidden">
+    <script>
+        // Check local storage or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+            // Trigger chart refresh if needed
+            if (typeof refreshData === 'function') refreshData();
+        }
+    </script>
     <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <i class="fas fa-fingerprint"></i>
-                <span>UIDAI Analytics</span>
+    <nav
+        class="fixed top-0 left-0 h-screen w-72 z-50 glass-panel border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col transition-all duration-300 shadow-2xl shadow-blue-900/5">
+
+        <!-- Logo Area -->
+        <div class="px-6 py-8 border-b border-slate-200/50 dark:border-slate-700/50">
+            <div class="flex items-center gap-3 text-slate-900 dark:text-white">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                    <i class="fas fa-fingerprint text-lg"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-display font-bold text-xl tracking-tight leading-none">UIDAI</span>
+                    <span
+                        class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1">Analytics</span>
+                </div>
             </div>
         </div>
-        <ul class="nav-menu">
-            <li class="nav-item active" data-section="overview">
-                <i class="fas fa-chart-line"></i>
-                <span>Overview</span>
-            </li>
-            <li class="nav-item" data-section="temporal">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Temporal Analysis</span>
-            </li>
-            <li class="nav-item" data-section="spatial">
-                <i class="fas fa-map-marked-alt"></i>
-                <span>Spatial Patterns</span>
-            </li>
-            <li class="nav-item" data-section="demographic">
-                <i class="fas fa-users"></i>
-                <span>Demographics</span>
-            </li>
-            <li class="nav-item" data-section="clusters">
-                <i class="fas fa-project-diagram"></i>
-                <span>District Clusters</span>
-            </li>
-            <li class="nav-item" data-section="advanced">
-                <i class="fas fa-atom"></i>
-                <span>Advanced Analytics</span>
-            </li>
-            <li class="nav-item" data-section="data">
-                <i class="fas fa-table"></i>
-                <span>Data Tables</span>
-            </li>
-        </ul>
-        <div class="sidebar-footer">
-            <button class="btn-export" onclick="exportDashboard()">
-                <i class="fas fa-file-export"></i>
-                <span>Export Report</span>
-            </button>
-            <div class="version-info">
-                <span>UIDAI Datathon 2026</span>
+
+        <!-- Navigation Items (Single Source of Truth) -->
+        <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1 no-scrollbar">
+            <div class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-4 mb-2">
+                Core
+                Analysis</div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 active bg-blue-50/50 dark:bg-blue-900/20 border-l-4 border-blue-500"
+                data-section="overview">
+                <i
+                    class="fas fa-th-large text-lg w-6 text-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-800 dark:text-white group-hover:translate-x-1 transition-transform">System
+                    Overview</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="temporal">
+                <i
+                    class="fas fa-clock text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Temporal
+                    Analysis</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="spatial">
+                <i
+                    class="fas fa-map-marked-alt text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Spatial
+                    Patterns</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="demographic">
+                <i
+                    class="fas fa-users text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Demographic
+                    Equity</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="clusters">
+                <i
+                    class="fas fa-project-diagram text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">District
+                    Clusters</span>
+            </div>
+
+            <div class="mt-6 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-4 mb-2">
+                Deep
+                Dive</div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="advanced">
+                <i
+                    class="fas fa-microscope text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Advanced
+                    Analytics</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="outputs">
+                <i
+                    class="fas fa-chart-pie text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Analytical
+                    Outputs</span>
+            </div>
+
+            <div class="nav-item group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-200 border-l-4 border-transparent hover:border-slate-300 dark:hover:border-slate-600"
+                data-section="data">
+                <i
+                    class="fas fa-table text-lg w-6 text-center text-slate-400 group-hover:text-blue-500 transition-colors group-hover:scale-110 transition-transform"></i>
+                <span
+                    class="font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-transform">Data
+                    Explorer</span>
+            </div>
+        </div>
+
+        <!-- User/Footer -->
+        <div class="p-4 border-t border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/30">
+            <div class="flex items-center gap-3 p-2">
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    JD
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-800 dark:text-white truncate">Audit Reviewer</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Admin Access</p>
+                </div>
+                <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                    <i class="fas fa-cog"></i>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <!-- Main Content Wrapper -->
+    <div class="pl-72 transition-all duration-300 min-h-screen">
         <!-- Top Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <h1 class="page-title">Aadhaar Administrative Analytics</h1>
-                <span class="subtitle">Forensic Analysis of Enrolment & Update Patterns</span>
+        <header
+            class="sticky top-0 z-40 px-8 py-5 glass-panel border-b border-slate-200/50 dark:border-slate-700/50 flex items-center justify-between">
+            <div class="flex flex-col">
+                <h1 class="page-title text-2xl font-display font-bold text-slate-900 dark:text-white tracking-tight">
+                    System Overview</h1>
+                <span class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Maintenance & Verification Analysis
+                </span>
             </div>
-            <div class="header-right">
-                <div class="date-range">
-                    <i class="fas fa-calendar"></i>
-                    <span>12-Month Observation Window</span>
+
+            <div class="flex items-center gap-6">
+                <!-- Date Range -->
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <i class="fas fa-calendar text-slate-400"></i>
+                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Last 12 Months</span>
                 </div>
-                <button class="btn-refresh" onclick="refreshData()">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
+
+                <div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleDarkMode()"
+                        class="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+                        title="Toggle Dark Mode">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block text-amber-400"></i>
+                    </button>
+
+                    <button onclick="refreshData()"
+                        class="btn-refresh w-10 h-10 rounded-lg flex items-center justify-center text-primary-600 bg-primary-50 hover:bg-primary-100 dark:bg-primary-900/20 dark:text-primary-400 dark:hover:bg-primary-900/40 transition-all border border-transparent dark:border-primary-500/20 shadow-sm shadow-blue-500/10">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+
+                    <button
+                        class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- Dashboard Sections -->
-        <div class="dashboard-container">
+        <div class="px-8 py-8 space-y-8 pb-20">
 
             <!-- Overview Section -->
-            <section id="overview" class="dashboard-section active">
-                <div class="section-header">
-                    <h2>System Overview</h2>
-                    <p>National-level administrative interaction patterns and system maturity indicators</p>
+            <section id="overview" class="dashboard-section active space-y-6 animate-fade-in">
+                <!-- Section Header -->
+                <div class="flex items-end justify-between border-b border-slate-200/50 dark:border-slate-700/50 pb-4">
+                    <div>
+                        <h2 class="text-xl font-display font-semibold text-slate-800 dark:text-slate-100">System
+                            Throughput</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time indicators of
+                            administrative interaction volume</p>
+                    </div>
+                    <span
+                        class="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">LIVE</span>
                 </div>
 
                 <!-- Key Metrics Cards -->
-                <div class="metrics-grid">
-                    <div class="metric-card" onclick="showMetricDetail('enrolments')">
-                        <div class="metric-icon blue">
-                            <i class="fas fa-user-plus"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                    <!-- Enrolments Card -->
+                    <div class="relative overflow-hidden rounded-2xl p-6 glass-card hover:scale-[1.02] transition-all duration-300 cursor-pointer group border border-white/20 dark:border-slate-700/50 shadow-lg hover:shadow-xl hover:shadow-blue-500/10"
+                        onclick="showMetricDetail('enrolments')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="fas fa-user-plus text-6xl text-blue-600"></i>
                         </div>
-                        <div class="metric-content">
-                            <span class="metric-value" id="total-enrolments">5.44M</span>
-                            <span class="metric-label">Total Enrolments</span>
-                            <span class="metric-trend positive"><i class="fas fa-arrow-up"></i> Active</span>
+                        <div class="flex items-start justify-between">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform">
+                                <i class="fas fa-user-plus text-xl"></i>
+                            </div>
+                            <span
+                                class="px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300">BAU</span>
+                        </div>
+                        <div class="mt-4">
+                            <span
+                                class="block text-4xl font-display font-bold text-slate-800 dark:text-white tracking-tight"
+                                id="total-enrolments">5.44M</span>
+                            <span
+                                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1 block">Total
+                                Enrolments</span>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span
+                                class="flex items-center gap-1 text-emerald-500 font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-lg text-xs">
+                                <i class="fas fa-arrow-up"></i> Active
+                            </span>
+                            <span class="text-xs text-slate-400">Frontier Only</span>
                         </div>
                     </div>
-                    <div class="metric-card" onclick="showMetricDetail('updates')">
-                        <div class="metric-icon green">
-                            <i class="fas fa-sync-alt"></i>
+
+                    <!-- Updates Card (Hero) -->
+                    <div class="relative overflow-hidden rounded-2xl p-6 glass-card hover:scale-[1.02] transition-all duration-300 cursor-pointer group border-l-4 border-emerald-500 shadow-xl hover:shadow-emerald-500/20 bg-gradient-to-br from-white to-emerald-50/50 dark:from-slate-800 dark:to-emerald-900/10"
+                        onclick="showMetricDetail('updates')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="fas fa-sync-alt text-6xl text-emerald-600"></i>
                         </div>
-                        <div class="metric-content">
-                            <span class="metric-value" id="total-updates">119.1M</span>
-                            <span class="metric-label">Total Updates</span>
-                            <span class="metric-trend positive"><i class="fas fa-arrow-up"></i> 21.9x Ratio</span>
+                        <div class="flex items-start justify-between">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:rotate-180 transition-transform duration-700">
+                                <i class="fas fa-sync-alt text-xl"></i>
+                            </div>
+                            <span
+                                class="px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-xs font-bold text-emerald-700 dark:text-emerald-300 animate-pulse">DOMINANT</span>
+                        </div>
+                        <div class="mt-4">
+                            <span
+                                class="block text-4xl font-display font-bold text-slate-900 dark:text-white tracking-tight"
+                                id="total-updates">119.1M</span>
+                            <span
+                                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1 block">Total
+                                Updates</span>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span
+                                class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-100 dark:bg-emerald-900/30 px-2 py-1 rounded-lg text-xs">
+                                <i class="fas fa-arrow-up"></i> 21.9x Scale
+                            </span>
+                            <span class="text-xs text-slate-400">vs Enrolments</span>
                         </div>
                     </div>
-                    <div class="metric-card" onclick="showMetricDetail('demographic')">
-                        <div class="metric-icon orange">
-                            <i class="fas fa-id-card"></i>
+
+                    <!-- Demographic Card -->
+                    <div class="relative overflow-hidden rounded-2xl p-6 glass-card hover:scale-[1.02] transition-all duration-300 cursor-pointer group border border-white/20 dark:border-slate-700/50 shadow-lg hover:shadow-xl hover:shadow-orange-500/10"
+                        onclick="showMetricDetail('demographic')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="fas fa-id-card text-6xl text-orange-600"></i>
                         </div>
-                        <div class="metric-content">
-                            <span class="metric-value" id="demo-updates">49.3M</span>
-                            <span class="metric-label">Demographic Updates</span>
-                            <span class="metric-subtext">41.4% of updates</span>
+                        <div class="flex items-start justify-between">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-orange-50 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:-translate-y-1 transition-transform">
+                                <i class="fas fa-id-card text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span
+                                class="block text-4xl font-display font-bold text-slate-800 dark:text-white tracking-tight"
+                                id="demo-updates">49.3M</span>
+                            <span
+                                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1 block">Demographic
+                                Updates</span>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-sm font-semibold text-orange-600 dark:text-orange-400">41.4%</span>
+                            <div class="h-1.5 flex-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-orange-500 rounded-full" style="width: 41.4%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="metric-card" onclick="showMetricDetail('biometric')">
-                        <div class="metric-icon purple">
-                            <i class="fas fa-fingerprint"></i>
+
+                    <!-- Biometric Card -->
+                    <div class="relative overflow-hidden rounded-2xl p-6 glass-card hover:scale-[1.02] transition-all duration-300 cursor-pointer group border border-white/20 dark:border-slate-700/50 shadow-lg hover:shadow-xl hover:shadow-purple-500/10"
+                        onclick="showMetricDetail('biometric')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="fas fa-fingerprint text-6xl text-purple-600"></i>
                         </div>
-                        <div class="metric-content">
-                            <span class="metric-value" id="bio-updates">69.8M</span>
-                            <span class="metric-label">Biometric Updates</span>
-                            <span class="metric-subtext">58.6% of updates</span>
+                        <div class="flex items-start justify-between">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-fingerprint text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span
+                                class="block text-4xl font-display font-bold text-slate-800 dark:text-white tracking-tight"
+                                id="bio-updates">69.8M</span>
+                            <span
+                                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-1 block">Biometric
+                                Updates</span>
+                        </div>
+                        <div class="mt-4 flex items-center gap-2">
+                            <span class="text-sm font-semibold text-purple-600 dark:text-purple-400">58.6%</span>
+                            <div class="h-1.5 flex-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-500 rounded-full" style="width: 58.6%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Second Row Metrics -->
-                <div class="metrics-grid four-col">
-                    <div class="metric-card small" onclick="showMetricDetail('states')">
-                        <div class="metric-content">
-                            <span class="metric-value">54</span>
-                            <span class="metric-label">States Analyzed</span>
+                <!-- Secondary Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                        onclick="showMetricDetail('states')">
+                        <div>
+                            <span class="block text-2xl font-bold text-slate-800 dark:text-white">54</span>
+                            <span class="text-xs font-semibold text-slate-500 uppercase tracking-widest">States
+                                Analyzed</span>
                         </div>
+                        <i class="fas fa-map text-slate-300 dark:text-slate-600 text-2xl"></i>
                     </div>
-                    <div class="metric-card small" onclick="showMetricDetail('districts')">
-                        <div class="metric-content">
-                            <span class="metric-value">1,041</span>
-                            <span class="metric-label">Districts</span>
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between hover:bg-white/40 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+                        onclick="showMetricDetail('districts')">
+                        <div>
+                            <span class="block text-2xl font-bold text-slate-800 dark:text-white">1,041</span>
+                            <span
+                                class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Districts</span>
                         </div>
+                        <i class="fas fa-layer-group text-slate-300 dark:text-slate-600 text-2xl"></i>
                     </div>
-                    <div class="metric-card small warning" onclick="showMetricDetail('childgap')">
-                        <div class="metric-content">
-                            <span class="metric-value">-22.8%</span>
-                            <span class="metric-label">Avg Child Gap</span>
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between border-l-4 border-orange-400 bg-orange-50/50 dark:bg-orange-900/10 cursor-pointer hover:shadow-lg hover:shadow-orange-500/10 transition-all"
+                        onclick="showMetricDetail('childgap')">
+                        <div>
+                            <span class="block text-2xl font-bold text-orange-600 dark:text-orange-400">-22.8%</span>
+                            <span
+                                class="text-xs font-bold text-orange-600/70 dark:text-orange-400/70 uppercase tracking-widest">Avg
+                                Child Gap</span>
                         </div>
+                        <i
+                            class="fas fa-exclamation-triangle text-orange-300 dark:text-orange-500/30 text-2xl animate-pulse-slow"></i>
                     </div>
-                    <div class="metric-card small danger" onclick="showMetricDetail('underserved')">
-                        <div class="metric-content">
-                            <span class="metric-value">22.8%</span>
-                            <span class="metric-label">Underserved Regions</span>
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between border-l-4 border-red-500 bg-red-50/50 dark:bg-red-900/10 cursor-pointer hover:shadow-lg hover:shadow-red-500/10 transition-all"
+                        onclick="showMetricDetail('underserved')">
+                        <div>
+                            <span class="block text-2xl font-bold text-red-600 dark:text-red-400">22.8%</span>
+                            <span
+                                class="text-xs font-bold text-red-600/70 dark:text-red-400/70 uppercase tracking-widest">Underserved</span>
                         </div>
+                        <i class="fas fa-ban text-red-300 dark:text-red-500/30 text-2xl"></i>
                     </div>
                 </div>
 
                 <!-- Interactive Charts Row -->
-                <div class="charts-grid two-column">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Update Composition</h3>
-                            <div class="chart-actions">
-                                <button class="btn-icon" onclick="toggleChartType('compositionChart')"
-                                    title="Toggle Chart"><i class="fas fa-exchange-alt"></i></button>
-                                <button class="btn-icon" onclick="downloadChart('compositionChart')" title="Download"><i
-                                        class="fas fa-download"></i></button>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Composition Chart -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col h-[400px]">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800 dark:text-white">Update Taxonomy</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Breakdown of administrative
+                                    interactions</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button
+                                    class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-center text-slate-500"
+                                    onclick="toggleChartType('compositionChart')" title="Toggle View">
+                                    <i class="fas fa-exchange-alt text-xs"></i>
+                                </button>
+                                <button
+                                    class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-center text-slate-500"
+                                    onclick="downloadChart('compositionChart')" title="Download">
+                                    <i class="fas fa-download text-xs"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="chart-body">
+                        <div class="flex-1 relative w-full h-full flex items-center justify-center">
                             <canvas id="compositionChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Top 10 States by Update Volume</h3>
-                            <div class="chart-actions">
-                                <button class="btn-icon" onclick="downloadChart('stateVolumeChart')" title="Download"><i
-                                        class="fas fa-download"></i></button>
+                    <!-- State Volume Chart -->
+                    <div class="glass-card p-6 rounded-2xl flex flex-col h-[400px]">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-800 dark:text-white">Top 10 High-Volume
+                                    States</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Absolute volume contribution by
+                                    region</p>
                             </div>
+                            <button
+                                class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-center text-slate-500"
+                                onclick="downloadChart('stateVolumeChart')" title="Download">
+                                <i class="fas fa-download text-xs"></i>
+                            </button>
                         </div>
-                        <div class="chart-body">
+                        <div class="flex-1 relative w-full h-full">
                             <canvas id="stateVolumeChart"></canvas>
                         </div>
                     </div>
@@ -225,7 +870,8 @@
                     <h3><i class="fas fa-lightbulb"></i> Key Insights</h3>
                     <ul class="insights-list">
                         <li>System has transitioned from <strong>enrolment-driven</strong> to
-                            <strong>maintenance-phase</strong> operations</li>
+                            <strong>maintenance-phase</strong> operations
+                        </li>
                         <li>Biometric updates dominate system throughput, indicating verification mandates</li>
                         <li>Temporal volatility suggests <strong>campaign-based</strong> rather than continuous delivery
                         </li>
@@ -235,10 +881,11 @@
             </section>
 
             <!-- Temporal Analysis Section -->
-            <section id="temporal" class="dashboard-section">
+            <section id="temporal" class="dashboard-section space-y-6 animate-fade-in">
                 <div class="section-header">
-                    <h2>Temporal Analysis</h2>
-                    <p>Time-series patterns, growth dynamics, and operational stability indicators</p>
+                    <h2>Are Update Volumes Accelerating or Stabilizing?</h2>
+                    <p>Analysis of month-over-month growth patterns and operational stability across the 12-month
+                        window.</p>
                 </div>
 
                 <!-- Monthly Trends Chart -->
@@ -246,7 +893,8 @@
                     <div class="chart-header">
                         <h3>Monthly Update Trends (Interactive)</h3>
                         <div class="chart-actions">
-                            <select id="trendMetric" onchange="updateTrendChart()">
+                            <select id="trendMetric" onchange="updateTrendChart()"
+                                class="bg-slate-50 dark:bg-slate-800 border-none text-sm rounded-lg px-3 py-1 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 mr-2">
                                 <option value="both">Both Types</option>
                                 <option value="demographic">Demographic Only</option>
                                 <option value="biometric">Biometric Only</option>
@@ -263,7 +911,7 @@
                 <div class="charts-grid two-column">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Intensity Growth Rate (State × Month)</h3>
+                            <h3>Which States are Accelerating?</h3>
                             <div class="chart-actions">
                                 <button class="btn-icon"
                                     onclick="openImageModal('../outputs/integrated_analysis/plots_final/new_01_intensity_growth_rate.png', 'Growth Rate')"
@@ -283,7 +931,7 @@
 
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Temporal Stability Index by State</h3>
+                            <h3>How Consistent are Operations?</h3>
                             <div class="chart-actions">
                                 <button class="btn-icon"
                                     onclick="openImageModal('../outputs/integrated_analysis/plots_final/new_04_temporal_stability_index.png', 'Stability Index')"
@@ -304,10 +952,10 @@
             </section>
 
             <!-- Spatial Patterns Section -->
-            <section id="spatial" class="dashboard-section">
+            <section id="spatial" class="dashboard-section space-y-6 animate-fade-in">
                 <div class="section-header">
-                    <h2>Spatial Patterns</h2>
-                    <p>State-level heterogeneity, regional concentration, and geographic disparities</p>
+                    <h2>Where is the System Most Active?</h2>
+                    <p>Geospatial intensity analysis revealing regional concentration and high-traffic frontiers.</p>
                 </div>
 
                 <!-- State Comparison Chart -->
@@ -315,7 +963,8 @@
                     <div class="chart-header">
                         <h3>State-wise Update Intensity Comparison</h3>
                         <div class="chart-actions">
-                            <select id="stateMetric" onchange="updateStateChart()">
+                            <select id="stateMetric" onchange="updateStateChart()"
+                                class="bg-slate-50 dark:bg-slate-800 border-none text-sm rounded-lg px-3 py-1 text-slate-600 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 mr-2">
                                 <option value="total">Total Updates</option>
                                 <option value="demographic">Demographic</option>
                                 <option value="biometric">Biometric</option>
@@ -349,7 +998,7 @@
                 <div class="charts-grid two-column">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Demographic Update Intensity: State × Month</h3>
+                            <h3>Demographic Intensity Heatmap</h3>
                         </div>
                         <div class="chart-body">
                             <img src="../outputs/integrated_analysis/plots_final/core_08_demo_intensity_heatmap.png"
@@ -360,7 +1009,7 @@
 
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Biometric Update Intensity: State × Month</h3>
+                            <h3>Biometric Intensity Heatmap</h3>
                         </div>
                         <div class="chart-body">
                             <img src="../outputs/integrated_analysis/plots_final/core_09_bio_intensity_heatmap.png"
@@ -372,17 +1021,27 @@
             </section>
 
             <!-- Demographic Section -->
-            <section id="demographic" class="dashboard-section">
+            <section id="demographic" class="dashboard-section space-y-6 animate-fade-in">
                 <div class="section-header">
-                    <h2>Demographic Equity Analysis</h2>
-                    <p>Child attention gaps, age-based exclusion patterns, and equity indicators</p>
+                    <h2>Is the System Inclusive of All Age Groups?</h2>
+                    <p>Forensic examination of child attention gaps and age-stratified service delivery.</p>
                 </div>
 
-                <div class="alert-banner warning">
-                    <i class="fas fa-exclamation-triangle"></i>
+                <div
+                    class="relative overflow-hidden rounded-xl bg-amber-50/50 dark:bg-amber-900/10 border-l-4 border-amber-500 p-6 flex items-start gap-5 shadow-sm">
+                    <div
+                        class="flex-shrink-0 w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                    </div>
                     <div>
-                        <strong>Equity Concern:</strong> Children are systematically under-represented in update
-                        processes across ALL states, with deficits ranging from 5-40 percentage points.
+                        <h4 class="text-base font-bold text-slate-800 dark:text-white mb-2">Systemic Equity Concern
+                            Identified</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Children are systematically under-represented in update processes across <strong>ALL
+                                states</strong>, with participation deficits ranging from <span
+                                class="font-mono font-bold text-amber-700 dark:text-amber-400">5-40%</span>. This
+                            indicates a structural service delivery gap.
+                        </p>
                     </div>
                 </div>
 
@@ -561,6 +1220,19 @@
                 </div>
             </section>
 
+            <!-- Analytical Outputs Section (Auto-Ingested) -->
+            <section id="outputs" class="dashboard-section space-y-8 animate-fade-in">
+                <div class="section-header">
+                    <h2>Generated Insights & Plots</h2>
+                    <p>Curated gallery of analytical outputs including forecasts, maps, and high-impact reports.</p>
+                </div>
+
+                <!-- Content will be injected here by script.js -->
+                <div id="outputsContainer" class="space-y-12">
+                    <!-- Categories will be rendered here -->
+                </div>
+            </section>
+
             <!-- Data Tables Section -->
             <section id="data" class="dashboard-section">
                 <div class="section-header">
@@ -630,79 +1302,178 @@
                     </table>
                 </div>
 
-                <!-- Cluster Details Table -->
+                <!-- Cluster Details UI (Rebuilt) -->
                 <div id="clusterTable" class="table-container">
-                    <div class="table-header">
-                        <h3>Cluster Distribution Details</h3>
+                    <div
+                        class="px-8 py-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-display font-bold text-slate-800 dark:text-white">Cluster
+                                Distribution Overview</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Operational segmentation and
+                                district typology</p>
+                        </div>
+                        <span
+                            class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">4
+                            Segments</span>
                     </div>
-                    <div class="cluster-stats">
-                        <div class="cluster-stat-card">
-                            <h4>Cluster 0: Enrolment Frontiers</h4>
-                            <span class="stat-value">~80 districts</span>
-                            <p>Ongoing enrolment zones, frontier regions</p>
+                    <div class="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                        <!-- Cluster 0 -->
+                        <div
+                            class="relative p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 hover:shadow-lg hover:shadow-blue-500/10 transition-all group">
+                            <div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 text-lg">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">
+                                Frontier Zones</h4>
+                            <span
+                                class="text-xs font-mono text-blue-600 dark:text-blue-400 font-bold mb-3 block">Cluster
+                                0</span>
+                            <div class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">~80</div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                High enrolment activity. New population centers requiring infrastructure expansion.
+                            </p>
                         </div>
-                        <div class="cluster-stat-card">
-                            <h4>Cluster 1-2: Mature Systems</h4>
-                            <span class="stat-value">~560 districts</span>
-                            <p>Modal administrative state, maintenance phase</p>
+
+                        <!-- Cluster 1-2 -->
+                        <div
+                            class="relative p-5 rounded-2xl bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 hover:shadow-lg hover:shadow-emerald-500/10 transition-all group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 text-lg">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">
+                                Mature Systems</h4>
+                            <span
+                                class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-bold mb-3 block">Clusters
+                                1-2</span>
+                            <div class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">~560</div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Modal state. Steady-state maintenance with predictable update volumes.
+                            </p>
                         </div>
-                        <div class="cluster-stat-card">
-                            <h4>Cluster 3: High Verification</h4>
-                            <span class="stat-value">~200 districts</span>
-                            <p>Urban centers, high compliance regions</p>
+
+                        <!-- Cluster 3 -->
+                        <div
+                            class="relative p-5 rounded-2xl bg-orange-50/50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-800 hover:shadow-lg hover:shadow-orange-500/10 transition-all group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-4 text-lg">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">
+                                High Verification</h4>
+                            <span
+                                class="text-xs font-mono text-orange-600 dark:text-orange-400 font-bold mb-3 block">Cluster
+                                3</span>
+                            <div class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">~200</div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Urban centers with strict mandatory update compliance and high biometric traffic.
+                            </p>
                         </div>
-                        <div class="cluster-stat-card">
-                            <h4>Cluster 4: Dormant</h4>
-                            <span class="stat-value">~60 districts</span>
-                            <p>Remote areas, completed saturation</p>
+
+                        <!-- Cluster 4 -->
+                        <div
+                            class="relative p-5 rounded-2xl bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 hover:shadow-lg hover:shadow-red-500/10 transition-all group">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 text-lg">
+                                <i class="fas fa-pause-circle"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-1">
+                                Dormant / Saturated</h4>
+                            <span class="text-xs font-mono text-red-600 dark:text-red-400 font-bold mb-3 block">Cluster
+                                4</span>
+                            <div class="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">~60</div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Remote or saturated regions with minimal administrative interaction.
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
         </div>
-    </main>
+        </main>
 
-    <!-- Modal -->
-    <div id="imageModal" class="modal">
-        <div class="modal-overlay" onclick="closeImageModal()"></div>
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeImageModal()">&times;</button>
-            <img id="modalImage" src="" alt="">
-            <p id="modalCaption"></p>
-        </div>
-    </div>
-
-    <!-- Critical Districts Modal -->
-    <div id="criticalModal" class="modal">
-        <div class="modal-overlay" onclick="closeCriticalModal()"></div>
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h3><i class="fas fa-exclamation-triangle"></i> Critical Child Gap Districts</h3>
-                <button class="modal-close" onclick="closeCriticalModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="criticalModalBody">
-                <!-- Populated by JavaScript -->
+        <!-- Modal -->
+        <div id="imageModal" class="modal">
+            <div class="modal-overlay" onclick="closeImageModal()"></div>
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeImageModal()">&times;</button>
+                <img id="modalImage" src="" alt="">
+                <p id="modalCaption"></p>
             </div>
         </div>
-    </div>
 
-    <!-- Metric Detail Modal -->
-    <div id="metricModal" class="modal">
-        <div class="modal-overlay" onclick="closeMetricModal()"></div>
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h3 id="metricModalTitle">Metric Details</h3>
-                <button class="modal-close" onclick="closeMetricModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="metricModalBody">
-                <!-- Populated by JavaScript -->
+        <!-- Critical Districts Modal -->
+        <div id="criticalModal" class="modal">
+            <div class="modal-overlay" onclick="closeCriticalModal()"></div>
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Critical Child Gap Districts</h3>
+                    <button class="modal-close" onclick="closeCriticalModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="criticalModalBody">
+                    <!-- Populated by JavaScript -->
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+        <!-- Metric Detail Modal -->
+        <div id="metricModal" class="modal">
+            <div class="modal-overlay" onclick="closeMetricModal()"></div>
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h3 id="metricModalTitle">Metric Details</h3>
+                    <button class="modal-close" onclick="closeMetricModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="metricModalBody">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <script src="data.js"></script>
+        <script src="plots_manifest.js"></script>
+        <script src="script.js"></script>
+        <!-- Dark Mode Chart Handling -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const updateChartTheme = () => {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const textColor = isDark ? '#94a3b8' : '#64748b'; // slate-400 : slate-500
+                    const gridColor = isDark ? '#334155' : '#e2e8f0'; // slate-700 : slate-200
+
+                    Chart.defaults.color = textColor;
+                    Chart.defaults.scale.grid.color = gridColor;
+
+                    // Update all active charts
+                    Object.values(charts).forEach(chart => {
+                        if (chart) {
+                            chart.options.scales.x.grid.color = gridColor;
+                            chart.options.scales.y.grid.color = gridColor;
+                            chart.options.scales.x.ticks.color = textColor;
+                            chart.options.scales.y.ticks.color = textColor;
+                            chart.update('none'); // Update without animation
+                        }
+                    });
+                };
+
+                // Observe attribute changes on html element for dark mode
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            updateChartTheme();
+                        }
+                    });
+                });
+                observer.observe(document.documentElement, { attributes: true });
+
+                // Initial call
+                updateChartTheme();
+            });
+        </script>
 </body>
 
 </html>

@@ -251,13 +251,22 @@ body {
 /* ========================================
    Dashboard Sections
    ======================================== */
+/* ========================================
+   Dashboard Sections (Long-Scroll Architecture)
+   ======================================== */
 .dashboard-section {
-    display: none;
-    animation: fadeIn 0.3s ease;
+    /* display: none;  <-- REMOVED (Tabbed Mode) */
+    display: block;
+    margin-bottom: 6rem;
+    /* Vertical Spacing */
+    scroll-margin-top: 120px;
+    /* Offset for Sticky Header */
+    animation: fadeIn 0.5s ease;
 }
 
+/* Active class now mainly for Reference/styling, not visibility logic */
 .dashboard-section.active {
-    display: block;
+    /* display: block; */
 }
 
 @keyframes fadeIn {
