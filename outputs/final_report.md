@@ -35,7 +35,9 @@ Ayush Patel
 {\large
 International Institute of Information Technology, Bangalore \\
 Datathon Analytical Track
-}
+} \\[0.5cm]
+
+\url{https://github.com/oki-dokii/UIDAI}
 \end{center}
 
 \newpage
