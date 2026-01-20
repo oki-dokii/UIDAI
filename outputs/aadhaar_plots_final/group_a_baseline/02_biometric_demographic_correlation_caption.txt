@@ -1,0 +1,5 @@
+District-level biometric and demographic update volumes exhibit strong positive 
+correlation (r=0.87), indicating that administrative interaction propensity manifests 
+consistently across update categories rather than through channel substitution. Each point 
+represents one district-time observation (n=500+ district-months, March–August 2025). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

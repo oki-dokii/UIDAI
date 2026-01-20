@@ -1,0 +1,5 @@
+ELIMINATED: Redundant with national time series, amplifies data quality concern. 
+State-level disaggregation confirms temporal artifact is system-wide, not state-specific. 
+All states exhibit synchronized collapse post-September 2025, confirming campaign-bounded 
+collection rather than operational issues. 
+Forensic Audit Recommendation: Remove from final submission.

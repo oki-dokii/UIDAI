@@ -1,0 +1,5 @@
+State-level distributions of district update intensities reveal substantial within-state 
+heterogeneity, with Maharashtra exhibiting both elevated median intensity and extreme outliers 
+exceeding 900,000 updates per 1,000 enrolments. Strip plots show individual district values; 
+positively skewed distributions indicate inequality (n=districts by state). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

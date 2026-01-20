@@ -1,0 +1,5 @@
+District-level update profiles reveal near-universal dominance of biometric updates 
+(>60% share for majority of districts), with demographic-dominant districts confined to 
+low-enrolment, low-update jurisdictions. Trivariate encoding: enrolment volume (x-axis), 
+total updates (y-axis), biometric share (color) (n=642 districts). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

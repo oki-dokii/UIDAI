@@ -1,0 +1,5 @@
+Fifteen districts exhibit extreme temporal volatility (SD > 300) in update intensity, 
+with Maharashtra districts dominating the top decile, indicating campaign-driven rather than 
+steady-state administrative processes. High standard deviation identifies districts requiring 
+intervention-aware monitoring frameworks (n=15 most volatile districts). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

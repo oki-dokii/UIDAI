@@ -1,0 +1,4 @@
+Biometric updates comprise 85% of total update volume consistently throughout the 
+active period (April–July 2025), indicating stable compositional preference independent of 
+temporal variation. Stacked area chart shows absolute volumes; compositional ratio remains 
+stable across observation window. Source: UIDAI Integrated Analysis Dataset, 2025.

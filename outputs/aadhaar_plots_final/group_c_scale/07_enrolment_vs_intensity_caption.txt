@@ -1,0 +1,5 @@
+Update intensity declines monotonically with enrolment size, with small districts 
+(<5,000 enrolments) exhibiting extreme variance (0–100,000 updates/1,000 enrolments) compared 
+to stable intensities (5,000–20,000) in larger jurisdictions. Heteroscedastic pattern reveals 
+scale-dependence in administrative behavior and small-N ratio instability (n=642 districts). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

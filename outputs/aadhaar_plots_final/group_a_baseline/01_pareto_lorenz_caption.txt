@@ -1,0 +1,4 @@
+Update activity exhibits moderate geographic concentration, with 20% of districts 
+generating 58% of total updates, indicating service interaction is spatially clustered 
+but not monopolistic. Lorenz curve quantifies update inequality across all districts 
+(n=642 districts, March–August 2025). Source: UIDAI Integrated Analysis Dataset, 2025.

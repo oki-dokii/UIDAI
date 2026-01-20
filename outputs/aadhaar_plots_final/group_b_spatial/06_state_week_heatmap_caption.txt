@@ -1,0 +1,5 @@
+Weekly update intensity across top-10 states reveals episodic, campaign-driven activity 
+patterns, with Maharashtra exhibiting sustained surges exceeding 100 updates per 1,000 enrolments 
+in early-to-mid November 2025. Temporal concentration indicates coordinated interventions rather 
+than continuous steady-state activity (n=10 states, weekly aggregates). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

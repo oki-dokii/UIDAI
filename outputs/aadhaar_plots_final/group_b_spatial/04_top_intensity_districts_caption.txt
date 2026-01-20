@@ -1,0 +1,5 @@
+Fifteen districts exceed 75,000 updates per 1,000 enrolments, with Manipur accounting 
+for three of the top five, indicating state-coordinated update campaigns or localized data 
+correction initiatives. Extreme intensity values warrant investigation for data quality or 
+exceptional administrative interventions (n=15 districts with ≥1,000 enrolments). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

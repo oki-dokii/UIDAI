@@ -1,0 +1,5 @@
+Fifteen districts exhibit near-zero update intensity (<1 update per 1,000 enrolments) 
+despite exceeding minimum enrolment thresholds, flagging zones of administrative disengagement 
+requiring operational review. Zero intensity may indicate service infrastructure absence or 
+population out-migration (n=15 districts with ≥1,000 enrolments). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

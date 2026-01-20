@@ -449,6 +449,15 @@ def plot_national_timeseries(national_date, output_dir):
     axes[1].legend(loc='upper right')
     axes[1].tick_params(axis='x', rotation=45)
     
+    # FIX 6: Add 0-5 absence note
+    axes[1].text(0.98, 0.02,
+                 'Note: Age 0-5 not included in source data',
+                 transform=axes[1].transAxes,
+                 fontsize=9,
+                 ha='right',
+                 va='bottom',
+                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.7))
+    
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '01_national_timeseries.png'), dpi=150)
     plt.close()
@@ -463,14 +472,16 @@ def plot_state_heatmaps(state_month, output_dir):
     top_states = pivot1.sum(axis=1).nlargest(15).index
     pivot1 = pivot1.loc[top_states]
     
-    sns.heatmap(pivot1, cmap='YlOrRd', annot=True, fmt='.0f', ax=axes[0], linewidths=0.5)
+    # FIX 3: Remove illegible annotations from heatmaps
+    sns.heatmap(pivot1, cmap='YlOrRd', annot=False, ax=axes[0], linewidths=0.5, cbar_kws={'label': 'Total Updates'})
     axes[0].set_title('Biometric Updates by State × Month', fontweight='bold')
     
     # Minor share heatmap
     pivot2 = state_month.pivot_table(index='state', columns='month', values='minor_share', aggfunc='mean')
     pivot2 = pivot2.loc[top_states]
     
-    sns.heatmap(pivot2, cmap='RdYlGn_r', annot=True, fmt='.1%', ax=axes[1], linewidths=0.5)
+    # FIX 2: Change from red-green to perceptually uniform color scale
+    sns.heatmap(pivot2, cmap='viridis', annot=False, ax=axes[1], linewidths=0.5, cbar_kws={'label': 'Minor Share'})
     axes[1].set_title('Minor Share by State × Month', fontweight='bold')
     
     plt.tight_layout()
@@ -487,7 +498,9 @@ def plot_age_group_analysis(state_minor, district_minor, output_dir):
     axes[0,0].barh(top_minor['state'], top_minor['minor_share'], color='coral')
     axes[0,0].set_title('Top 15 States by Minor Share', fontweight='bold')
     axes[0,0].set_xlabel('Minor Share')
-    axes[0,0].axvline(x=0.5, color='red', linestyle='--', alpha=0.7)
+    # FIX 1: Add context to 50% threshold line
+    axes[0,0].axvline(x=0.5, color='gray', linestyle=':', alpha=0.5, label='50% reference')
+    axes[0,0].legend(fontsize=8, loc='lower right')
     
     # Top states by volume
     top_vol = state_minor.nlargest(15, 'total_bio')
@@ -497,15 +510,16 @@ def plot_age_group_analysis(state_minor, district_minor, output_dir):
     
     # Distribution of minor share
     sns.histplot(data=district_minor, x='minor_share', bins=50, ax=axes[1,0])
-    axes[1,0].axvline(x=0.5, color='red', linestyle='--', alpha=0.7, label='50% threshold')
-    axes[1,0].set_title('Distribution of Minor Share Across Districts', fontweight='bold')
-    axes[1,0].legend()
+    # FIX 1: Add context to 50% reference line
+    axes[1,0].axvline(x=0.5, color='gray', linestyle=':', alpha=0.5, label='50% reference (not target)')
+    axes[1,0].legend(fontsize=8)
     
     # Scatter: Volume vs Minor Share
     sns.scatterplot(data=district_minor, x='total_bio', y='minor_share', alpha=0.5, ax=axes[1,1])
-    axes[1,1].axhline(y=0.5, color='red', linestyle='--', alpha=0.7)
+    axes[1,1].axhline(y=0.5, color='gray', linestyle=':', alpha=0.5)
     axes[1,1].set_title('District Volume vs Minor Share', fontweight='bold')
-    axes[1,1].set_xlabel('Total Updates (log scale)')
+    # FIX 5: Add explicit log-scale annotation
+    axes[1,1].set_xlabel('Total Updates (log scale)', fontweight='bold')
     axes[1,1].set_xscale('log')
     
     plt.tight_layout()
@@ -543,7 +557,9 @@ def plot_temporal_patterns(national_date, dow_pattern, output_dir):
     axes[1,1].set_title('Monthly Minor Share Trend', fontweight='bold')
     axes[1,1].set_xlabel('Month')
     axes[1,1].set_ylabel('Minor Share')
-    axes[1,1].axhline(y=0.5, color='red', linestyle='--', alpha=0.5)
+    # FIX 1: Add context to 50% reference line
+    axes[1,1].axhline(y=0.5, color='gray', linestyle=':', alpha=0.5, label='50% reference')
+    axes[1,1].legend(fontsize=8)
     
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '04_temporal_patterns.png'), dpi=150)
@@ -599,20 +615,36 @@ def plot_top_districts(district_agg, output_dir):
     """Plot top districts."""
     fig, axes = plt.subplots(1, 2, figsize=(16, 8))
     
+    # FIX 4: Create consistent state abbreviation function
+    def abbrev_state(state):
+        abbrev = {
+            'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR',
+            'Chhattisgarh': 'CG', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR',
+            'Himachal Pradesh': 'HP', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL',
+            'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML',
+            'Mizoram': 'MZ', 'Nagaland': 'NL', 'Odisha': 'OR', 'Punjab': 'PB',
+            'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telangana': 'TG',
+            'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UK', 'West Bengal': 'WB',
+            'Delhi': 'DL', 'Jammu And Kashmir': 'JK', 'Puducherry': 'PY'
+        }
+        return abbrev.get(state, state[:3].upper())
+    
     # Top 25 by volume
-    top_vol = district_agg.nlargest(25, 'total_bio')
-    top_vol['label'] = top_vol['district'] + ' (' + top_vol['state'].str[:3] + ')'
+    top_vol = district_agg.nlargest(25, 'total_bio').copy()
+    top_vol['label'] = top_vol['district'] + ' (' + top_vol['state'].apply(abbrev_state) + ')'
     axes[0].barh(top_vol['label'], top_vol['total_bio'], color='steelblue')
     axes[0].set_title('Top 25 Districts by Biometric Updates', fontweight='bold')
     axes[0].set_xlabel('Total Updates')
     
     # Top 25 by minor share (min 1000 updates)
-    top_minor = district_agg[district_agg['total_bio'] > 1000].nlargest(25, 'minor_share')
-    top_minor['label'] = top_minor['district'] + ' (' + top_minor['state'].str[:3] + ')'
+    top_minor = district_agg[district_agg['total_bio'] > 1000].nlargest(25, 'minor_share').copy()
+    top_minor['label'] = top_minor['district'] + ' (' + top_minor['state'].apply(abbrev_state) + ')'
     axes[1].barh(top_minor['label'], top_minor['minor_share'], color='coral')
     axes[1].set_title('Top 25 Districts by Minor Share (min 1000 updates)', fontweight='bold')
     axes[1].set_xlabel('Minor Share')
-    axes[1].axvline(x=0.5, color='red', linestyle='--', alpha=0.7)
+    # FIX 1: Add context to 50% reference line
+    axes[1].axvline(x=0.5, color='gray', linestyle=':', alpha=0.5, label='50% reference')
+    axes[1].legend(fontsize=8, loc='lower right')
     
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, '07_top_districts.png'), dpi=150)
@@ -624,8 +656,22 @@ def plot_volatility(volatility, output_dir):
     fig, axes = plt.subplots(1, 2, figsize=(14, 6))
     
     # Top volatile districts
-    top_volatile = volatility.nlargest(20, 'cv')
-    top_volatile['label'] = top_volatile['district'] + ' (' + top_volatile['state'].str[:3] + ')'
+    top_volatile = volatility.nlargest(20, 'cv').copy()
+    # FIX 4: Use consistent state abbreviations
+    def abbrev_state(state):
+        abbrev = {
+            'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR',
+            'Chhattisgarh': 'CG', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR',
+            'Himachal Pradesh': 'HP', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL',
+            'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML',
+            'Mizoram': 'MZ', 'Nagaland': 'NL', 'Odisha': 'OR', 'Punjab': 'PB',
+            'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telangana': 'TG',
+            'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UK', 'West Bengal': 'WB',
+            'Delhi': 'DL', 'Jammu And Kashmir': 'JK', 'Puducherry': 'PY'
+        }
+        return abbrev.get(state, state[:3].upper())
+    
+    top_volatile['label'] = top_volatile['district'] + ' (' + top_volatile['state'].apply(abbrev_state) + ')'
     axes[0].barh(top_volatile['label'], top_volatile['cv'], color='purple')
     axes[0].set_title('Most Volatile Districts (CV of Daily Updates)', fontweight='bold')
     axes[0].set_xlabel('Coefficient of Variation')

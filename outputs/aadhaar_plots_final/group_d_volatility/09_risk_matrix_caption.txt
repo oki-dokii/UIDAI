@@ -1,0 +1,5 @@
+Risk matrix positioning districts by average update intensity and temporal volatility 
+reveals Maharashtra districts dominate the high-risk (high-intensity, high-volatility) quadrant, 
+while Uttar Pradesh and Bihar exhibit low-risk but disengaged profiles. Quadrant classification 
+guides resource allocation priorities (n=districts in top 5 states). 
+Source: UIDAI Integrated Analysis Dataset, 2025.

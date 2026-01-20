@@ -1,0 +1,5 @@
+ELIMINATED: Temporal artifact undermines credibility. National aggregates reveal 
+temporally bounded data collection: enrolments peak in March 2025 and cease by September; 
+updates spike anomalously in July (16M) before similar collapse. Dual-axis scaling and 
+data truncation make this unsuitable for publication. 
+Forensic Audit Recommendation: Archive with data quality caveat.

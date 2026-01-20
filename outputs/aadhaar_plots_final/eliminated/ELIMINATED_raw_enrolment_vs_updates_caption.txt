@@ -1,0 +1,4 @@
+ELIMINATED: Redundant with normalized version (Image 4/File 07). Raw enrolment volume 
+explains only 9% of variance in update volumes (r²=0.09), underscoring the inadequacy of absolute 
+counts. Superseded by update intensity analysis which incorporates per-capita normalization. 
+Forensic Audit Recommendation: Remove from final submission.
