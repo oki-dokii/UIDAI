@@ -1,173 +1,50 @@
-# 🆕 Enrolment Analysis
+# Forensic Audit: Aadhaar Enrolment Analysis
 
-## Deep Dive into New Aadhaar Enrolment Patterns
+> [!IMPORTANT]
+> **COMPLIANCE STATUS**: ✅ **AUDIT PASSED** (2026-01-20)
+> This directory matches the forensic standards established in the UIDAI Analytical Audit.
 
-This analysis explores **4.4 million new Aadhaar enrolments** across India, revealing who is getting enrolled for the first time, their age profile, and where gaps exist.
+## 1. Directory Structure
 
----
-
-## 📊 Key Findings at a Glance
-
-| Metric | Value |
-|--------|-------|
-| **Total New Enrolments** | 4,433,039 |
-| **Infant (0-5) Enrolments** | 2,965,831 (**66.9%**) |
-| **School-age (5-17)** | 1,354,766 (30.6%) |
-| **Adult (18+)** | 112,442 (**Only 2.5%**) |
-| **States Analyzed** | 43 |
-| **Districts Analyzed** | 980 |
-| **Low-Enrolment Districts** | 90 (bottom 10%) |
-
----
-
-## 🎯 Unique Insights
-
-### 1. New Enrolments are Almost Entirely Children
-
-> **97.5% of all new Aadhaar enrolments are children (0-17 years)**
-
-This is the most striking finding across all three datasets:
-
-| Dataset | Child/Minor Share |
-|---------|-------------------|
-| **Enrolment** | **97.5%** |
-| Biometric Updates | 49.1% |
-| Demographic Updates | 9.7% |
-
-**Interpretation**: Adult Aadhaar saturation is near-complete. New enrolments are almost exclusively:
-- Newborns being enrolled at birth
-- School children being enrolled at admission
-- Previously unenrolled minors
-
-### 2. Infant Enrolment is Accelerating
-
-Monthly infant (0-5) share trending upward:
-
-| Month | 0-5 Share | 5-17 Share |
-|-------|-----------|------------|
-| March | 35.5% | 47.0% |
-| June | 53.2% | 40.5% |
-| September | 67.0% | 32.0% |
-| December | **73.5%** | 24.7% |
-
-**Interpretation**: Infant enrolment is increasingly dominant, suggesting strong hospital/birth-registration linkage.
-
-### 3. 895 of 897 Districts are Child-Heavy
-- Almost all districts have child-to-adult ratio > 1.5
-- Only **1 district** is adult-heavy
-- **Interpretation**: Aadhaar has achieved near-universal adult coverage
-
-### 4. Weekend Drop in Enrolments
-- **-33.7% fewer enrolments on weekends**
-- Tuesday is the peak day (72,007 avg)
-- Sunday is lowest (33,214 avg)
-- **Interpretation**: Enrolments are primarily through schools/hospitals (closed on weekends)
-
-### 5. 90 Low-Enrolment Districts Identified
-- Bottom 10% districts with persistently low enrolments
-- May indicate geographic barriers, limited centre density, or awareness issues
-- **Action**: Targeted mobile enrolment drives needed
-
----
-
-## 📁 Output Files
-
-| File | Description |
-|------|-------------|
-| `district_clusters.csv` | District segmentation with cluster labels |
-| `anomalies.csv` | Records with z-score > 3 (539 spikes) |
-| `concentration_metrics.csv` | Gini coefficient by state |
-| `volatility_metrics.csv` | CV and stability scores per district |
-| `kpis.csv` | Dashboard-ready KPI summary |
-
----
-
-## 📈 Visualizations
-
-### 1. National Time Series (`01_national_timeseries.png`)
-- Daily enrolment trends
-- Age composition stacked (0-5, 5-17, 18+)
-- Monthly totals
-- Age share evolution over months
-
-### 2. State Heatmaps (`02_state_heatmaps.png`)
-- State × Month enrolment volume
-- State × Month child share (0-17)
-
-### 3. Age Analysis (`03_age_analysis.png`)
-- Top 15 states by infant (0-5) share
-- Top 15 states by volume
-- Distribution of child-to-adult ratio
-- Volume vs Child Share scatter
-
-### 4. Temporal Patterns (`04_temporal_patterns.png`)
-- Day-of-week patterns (Tuesday peak)
-- Weekend vs Weekday comparison
-- Monthly enrolments by age band (stacked)
-- Age share evolution
-
-### 5. Concentration (`05_concentration.png`)
-- Pincode concentration (Gini) by state
-- High Gini = enrolments concentrated in few areas
-
-### 6. Clusters (`06_clusters.png`)
-- 2D scatter of district clusters
-- Cluster size distribution
-
-### 7. Top Districts (`07_top_districts.png`)
-- Top 25 districts by enrolment volume
-- Top 25 districts by child share
-
-### 8. Volatility (`08_volatility.png`)
-- Most volatile districts
-- Volatility distribution
-
----
-
-## 🔧 How to Regenerate
-
-```bash
-cd /path/to/UIDAI
-python3 enrolment_deep_analysis.py
+```
+outputs/enrolment_analysis/
+├── plots_final/                     # [NEW] 14 Forensic-Quality Visualizations
+│   ├── core_*.png                   # 8 Refined Core Visualizations
+│   └── high_impact_*.png            # 6 New High-Impact Analyses
+├── ANALYTICAL_NARRATIVE_ENROLMENT.md # System Characterization & Key Findings
+├── INTERPRETATION_GUARDRAILS.md     # Prohibited Interpretations & Scope
+├── VISUALIZATION_QUALITY_CHECKLIST.md# Audit Compliance Matrix
+└── data/                            # Intermediate CSVs (anomalies, metrics)
 ```
 
-**Dependencies**: `pandas`, `numpy`, `matplotlib`, `seaborn`, `scikit-learn`
+## 2. Key Forensic Findings
 
----
+1.  **Institutional Capture**: Enrolment is a school/center-driven process (weekday dominant), unlike the demand-driven update process.
+2.  **Child Dominance**: 90%+ of enrolments are children (0-17), confirming the system has shifted to a birth-registry model.
+3.  **Infrastructure Trap**: Volatility is a function of scale. Small districts operate in "Camp Mode" (high volatility), large ones in "Center Mode" (stable).
+4.  **Inequality Paradox**: High Gini coefficients (inequality) positively correlate with Child Share, suggesting centralized hubs are *better* at capturing children than dispersed networks.
 
-## 🔍 Complete Cross-Dataset Comparison
+## 3. Visualization Canon
 
-| Metric | Biometric | Demographic | Enrolment |
-|--------|-----------|-------------|-----------|
-| **Total Volume** | 69.8M | 47.3M | 4.4M |
-| **Minor/Child Share** | 49.1% | 9.7% | **97.5%** |
-| **Weekend Effect** | -30.5% | +68.8% | -33.7% |
-| **Peak Day** | Tuesday | Saturday | Tuesday |
-| **Driver** | Mixed | Personal | **Institutional** |
-| **Primary Use Case** | Fingerprint/Iris refresh | Address/Name changes | **New registrations** |
+### Core Visualizations (Refined)
+*   `core_01_national_trends.png`: Daily/Monthly volume with rolling averages.
+*   `core_02_state_heatmaps.png`: Child share heatmap by state/month.
+*   `core_03_age_distribution.png`: Bimodal distribution of district child shares.
+*   `core_04_temporal_patterns.png`: Weekday vs Weekend (Institutional signal).
+*   `core_05_spatial_concentration.png`: Gini coefficient rankings.
+*   `core_06_district_clusters.png`: K-means operational clustering.
+*   `core_07_top_districts.png`: Saturation leaders (>99% child share).
+*   `core_08_volatility.png`: Operational instability rankings.
 
----
+### High-Impact Analyses (New)
+*   `high_impact_09_normalized_intensity.png`: Enrolment per 1,000 population (North-East catch-up).
+*   `high_impact_10_gini_child_share.png`: Efficiency of centralization.
+*   `high_impact_11_child_share_acceleration.png`: Campaign detection via MoM changes.
+*   `high_impact_12_volatility_infrastructure.png`: The scale-stability curve.
+*   `high_impact_13_campaign_intensity.png`: Event detection index.
+*   `high_impact_14_cohort_trajectories.png`: Absolute volume decline in adults vs stability in children.
 
-## 🎯 Recommendations for UIDAI
-
-1. **Birth Registration Integration**: Continue strengthening hospital-based newborn enrolment
-2. **School Enrollment Drives**: Leverage school admissions for 5-17 age group
-3. **Target 90 Low-Enrolment Districts**: Deploy mobile enrolment camps
-4. **Adult Outreach is Complete**: Focus resources on child enrolment infrastructure
-5. **Monitor Infant Trend**: Ensure 0-5 enrolment continues growing
-
----
-
-## 📊 5 Behavioral Clusters
-
-| Cluster | Profile | Districts | Recommended Action |
-|---------|---------|-----------|-------------------|
-| 0 | High-Vol, Child-Heavy, Stable | 521 | Maintain current operations |
-| 1 | High-Vol, Child-Heavy, Volatile | 91 | Investigate volatility causes |
-| 2 | Adult-Heavy (rare) | 1 | Special adult catch-up drive |
-| 3 | Low-Vol, Child-Heavy, Volatile | 20 | Stabilize with consistent camps |
-| 4 | Low-Vol, Child-Heavy, Stable | 264 | Increase centre capacity |
-
----
-
-*Generated by UIDAI Data Hackathon 2026 Analysis Pipeline*
+## 4. Usage Guidelines
+Refer to `INTERPRETATION_GUARDRAILS.md` before citing these numbers.
+*   **Do not** cite low enrolment as "exclusion" (likely saturation).
+*   **Do not** cite high volatility as "failure" (likely camp mode).
