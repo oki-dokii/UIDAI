@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,12 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 </head>
+
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
@@ -42,8 +48,16 @@
                 <i class="fas fa-atom"></i>
                 <span>Advanced Analytics</span>
             </li>
+            <li class="nav-item" data-section="data">
+                <i class="fas fa-table"></i>
+                <span>Data Tables</span>
+            </li>
         </ul>
         <div class="sidebar-footer">
+            <button class="btn-export" onclick="exportDashboard()">
+                <i class="fas fa-file-export"></i>
+                <span>Export Report</span>
+            </button>
             <div class="version-info">
                 <span>UIDAI Datathon 2026</span>
             </div>
@@ -63,75 +77,146 @@
                     <i class="fas fa-calendar"></i>
                     <span>12-Month Observation Window</span>
                 </div>
+                <button class="btn-refresh" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
             </div>
         </header>
 
         <!-- Dashboard Sections -->
         <div class="dashboard-container">
-            
+
             <!-- Overview Section -->
             <section id="overview" class="dashboard-section active">
                 <div class="section-header">
                     <h2>System Overview</h2>
                     <p>National-level administrative interaction patterns and system maturity indicators</p>
                 </div>
-                
+
                 <!-- Key Metrics Cards -->
                 <div class="metrics-grid">
-                    <div class="metric-card">
+                    <div class="metric-card" onclick="showMetricDetail('enrolments')">
                         <div class="metric-icon blue">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="metric-content">
+                            <span class="metric-value" id="total-enrolments">5.44M</span>
+                            <span class="metric-label">Total Enrolments</span>
+                            <span class="metric-trend positive"><i class="fas fa-arrow-up"></i> Active</span>
+                        </div>
+                    </div>
+                    <div class="metric-card" onclick="showMetricDetail('updates')">
+                        <div class="metric-icon green">
                             <i class="fas fa-sync-alt"></i>
                         </div>
                         <div class="metric-content">
-                            <span class="metric-value">2-5x</span>
-                            <span class="metric-label">Biometric to Demographic Ratio</span>
+                            <span class="metric-value" id="total-updates">119.1M</span>
+                            <span class="metric-label">Total Updates</span>
+                            <span class="metric-trend positive"><i class="fas fa-arrow-up"></i> 21.9x Ratio</span>
                         </div>
                     </div>
-                    <div class="metric-card">
-                        <div class="metric-icon green">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="metric-content">
-                            <span class="metric-value">3 Orders</span>
-                            <span class="metric-label">Regional Intensity Variation</span>
-                        </div>
-                    </div>
-                    <div class="metric-card">
+                    <div class="metric-card" onclick="showMetricDetail('demographic')">
                         <div class="metric-icon orange">
-                            <i class="fas fa-child"></i>
+                            <i class="fas fa-id-card"></i>
                         </div>
                         <div class="metric-content">
-                            <span class="metric-value">5-40%</span>
-                            <span class="metric-label">Child Attention Gap Range</span>
+                            <span class="metric-value" id="demo-updates">49.3M</span>
+                            <span class="metric-label">Demographic Updates</span>
+                            <span class="metric-subtext">41.4% of updates</span>
                         </div>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" onclick="showMetricDetail('biometric')">
                         <div class="metric-icon purple">
-                            <i class="fas fa-layer-group"></i>
+                            <i class="fas fa-fingerprint"></i>
                         </div>
                         <div class="metric-content">
-                            <span class="metric-value">4</span>
-                            <span class="metric-label">Administrative Regimes</span>
+                            <span class="metric-value" id="bio-updates">69.8M</span>
+                            <span class="metric-label">Biometric Updates</span>
+                            <span class="metric-subtext">58.6% of updates</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Chart -->
+                <!-- Second Row Metrics -->
+                <div class="metrics-grid four-col">
+                    <div class="metric-card small" onclick="showMetricDetail('states')">
+                        <div class="metric-content">
+                            <span class="metric-value">54</span>
+                            <span class="metric-label">States Analyzed</span>
+                        </div>
+                    </div>
+                    <div class="metric-card small" onclick="showMetricDetail('districts')">
+                        <div class="metric-content">
+                            <span class="metric-value">1,041</span>
+                            <span class="metric-label">Districts</span>
+                        </div>
+                    </div>
+                    <div class="metric-card small warning" onclick="showMetricDetail('childgap')">
+                        <div class="metric-content">
+                            <span class="metric-value">-22.8%</span>
+                            <span class="metric-label">Avg Child Gap</span>
+                        </div>
+                    </div>
+                    <div class="metric-card small danger" onclick="showMetricDetail('underserved')">
+                        <div class="metric-content">
+                            <span class="metric-value">22.8%</span>
+                            <span class="metric-label">Underserved Regions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Charts Row -->
+                <div class="charts-grid two-column">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Update Composition</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon" onclick="toggleChartType('compositionChart')"
+                                    title="Toggle Chart"><i class="fas fa-exchange-alt"></i></button>
+                                <button class="btn-icon" onclick="downloadChart('compositionChart')" title="Download"><i
+                                        class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="compositionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Top 10 States by Update Volume</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon" onclick="downloadChart('stateVolumeChart')" title="Download"><i
+                                        class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="stateVolumeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Plot -->
                 <div class="chart-container large">
                     <div class="chart-header">
                         <h3>Monthly Transaction Volumes: Demographic vs Biometric Updates</h3>
                         <div class="chart-actions">
-                            <button class="btn-icon" title="Download"><i class="fas fa-download"></i></button>
-                            <button class="btn-icon" title="Fullscreen"><i class="fas fa-expand"></i></button>
+                            <button class="btn-icon"
+                                onclick="downloadImage('../outputs/integrated_analysis/plots_final/core_01_demo_vs_bio_monthly.png', 'monthly_trends')"
+                                title="Download"><i class="fas fa-download"></i></button>
+                            <button class="btn-icon"
+                                onclick="openImageModal('../outputs/integrated_analysis/plots_final/core_01_demo_vs_bio_monthly.png', 'Monthly Trends')"
+                                title="Fullscreen"><i class="fas fa-expand"></i></button>
                         </div>
                     </div>
                     <div class="chart-body">
-                        <img src="../outputs/integrated_analysis/plots_final/core_01_demo_vs_bio_monthly.png" 
-                             alt="Demographic vs Biometric Monthly Trends" 
-                             class="chart-image">
+                        <img src="../outputs/integrated_analysis/plots_final/core_01_demo_vs_bio_monthly.png"
+                            alt="Demographic vs Biometric Monthly Trends" class="chart-image"
+                            onclick="openImageModal(this.src, this.alt)">
                     </div>
                     <div class="chart-footer">
-                        <p class="chart-caption">Biometric updates consistently exceed demographic corrections by 2-5x ratios. Month 3 collapse and Month 9 surge indicate episodic campaign-based operations.</p>
+                        <p class="chart-caption">Biometric updates consistently exceed demographic corrections by 2-5x
+                            ratios. Month 3 collapse and Month 9 surge indicate episodic campaign-based operations.</p>
                     </div>
                 </div>
 
@@ -139,9 +224,11 @@
                 <div class="insights-panel">
                     <h3><i class="fas fa-lightbulb"></i> Key Insights</h3>
                     <ul class="insights-list">
-                        <li>System has transitioned from <strong>enrolment-driven</strong> to <strong>maintenance-phase</strong> operations</li>
+                        <li>System has transitioned from <strong>enrolment-driven</strong> to
+                            <strong>maintenance-phase</strong> operations</li>
                         <li>Biometric updates dominate system throughput, indicating verification mandates</li>
-                        <li>Temporal volatility suggests <strong>campaign-based</strong> rather than continuous delivery</li>
+                        <li>Temporal volatility suggests <strong>campaign-based</strong> rather than continuous delivery
+                        </li>
                         <li>Month 3 disruption is system-wide, not region-specific</li>
                     </ul>
                 </div>
@@ -154,32 +241,63 @@
                     <p>Time-series patterns, growth dynamics, and operational stability indicators</p>
                 </div>
 
+                <!-- Monthly Trends Chart -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>Monthly Update Trends (Interactive)</h3>
+                        <div class="chart-actions">
+                            <select id="trendMetric" onchange="updateTrendChart()">
+                                <option value="both">Both Types</option>
+                                <option value="demographic">Demographic Only</option>
+                                <option value="biometric">Biometric Only</option>
+                            </select>
+                            <button class="btn-icon" onclick="downloadChart('monthlyTrendChart')" title="Download"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body chart-tall">
+                        <canvas id="monthlyTrendChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="charts-grid two-column">
                     <div class="chart-container">
                         <div class="chart-header">
                             <h3>Intensity Growth Rate (State × Month)</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon"
+                                    onclick="openImageModal('../outputs/integrated_analysis/plots_final/new_01_intensity_growth_rate.png', 'Growth Rate')"
+                                    title="Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/new_01_intensity_growth_rate.png" 
-                                 alt="Growth Rate Heatmap" 
-                                 class="chart-image">
+                            <img src="../outputs/integrated_analysis/plots_final/new_01_intensity_growth_rate.png"
+                                alt="Growth Rate Heatmap" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                         <div class="chart-footer">
-                            <p class="chart-caption">Month-over-month growth rates reveal accelerating vs decelerating states and recovery dynamics post-Month 3.</p>
+                            <p class="chart-caption">Month-over-month growth rates reveal accelerating vs decelerating
+                                states.</p>
                         </div>
                     </div>
 
                     <div class="chart-container">
                         <div class="chart-header">
                             <h3>Temporal Stability Index by State</h3>
+                            <div class="chart-actions">
+                                <button class="btn-icon"
+                                    onclick="openImageModal('../outputs/integrated_analysis/plots_final/new_04_temporal_stability_index.png', 'Stability Index')"
+                                    title="Fullscreen"><i class="fas fa-expand"></i></button>
+                            </div>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/new_04_temporal_stability_index.png" 
-                                 alt="Temporal Stability Index" 
-                                 class="chart-image">
+                            <img src="../outputs/integrated_analysis/plots_final/new_04_temporal_stability_index.png"
+                                alt="Temporal Stability Index" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                         <div class="chart-footer">
-                            <p class="chart-caption">Coefficient of variation identifies episodic campaign-dependent vs continuous steady-state operations.</p>
+                            <p class="chart-caption">Coefficient of variation identifies episodic vs continuous
+                                operations.</p>
                         </div>
                     </div>
                 </div>
@@ -192,17 +310,39 @@
                     <p>State-level heterogeneity, regional concentration, and geographic disparities</p>
                 </div>
 
+                <!-- State Comparison Chart -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>State-wise Update Intensity Comparison</h3>
+                        <div class="chart-actions">
+                            <select id="stateMetric" onchange="updateStateChart()">
+                                <option value="total">Total Updates</option>
+                                <option value="demographic">Demographic</option>
+                                <option value="biometric">Biometric</option>
+                                <option value="intensity">Intensity</option>
+                            </select>
+                            <button class="btn-icon" onclick="downloadChart('stateComparisonChart')" title="Download"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body chart-tall">
+                        <canvas id="stateComparisonChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="chart-container large">
                     <div class="chart-header">
                         <h3>Top 10 States: Update Intensity (Population-Normalized)</h3>
+                        <div class="chart-actions">
+                            <button class="btn-icon"
+                                onclick="openImageModal('../outputs/integrated_analysis/plots_final/core_02_state_intensity.png', 'State Intensity')"
+                                title="Fullscreen"><i class="fas fa-expand"></i></button>
+                        </div>
                     </div>
                     <div class="chart-body">
-                        <img src="../outputs/integrated_analysis/plots_final/core_02_state_intensity.png" 
-                             alt="State Intensity Comparison" 
-                             class="chart-image">
-                    </div>
-                    <div class="chart-footer">
-                        <p class="chart-caption">Regional variation spans 3 orders of magnitude when normalized for population, revealing genuine administrative heterogeneity.</p>
+                        <img src="../outputs/integrated_analysis/plots_final/core_02_state_intensity.png"
+                            alt="State Intensity Comparison" class="chart-image"
+                            onclick="openImageModal(this.src, this.alt)">
                     </div>
                 </div>
 
@@ -212,12 +352,9 @@
                             <h3>Demographic Update Intensity: State × Month</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_08_demo_intensity_heatmap.png" 
-                                 alt="Demographic Intensity Heatmap" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Universal Month 3 collapse and Month 11 surge alongside extreme state heterogeneity.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_08_demo_intensity_heatmap.png"
+                                alt="Demographic Intensity Heatmap" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
 
@@ -226,12 +363,9 @@
                             <h3>Biometric Update Intensity: State × Month</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_09_bio_intensity_heatmap.png" 
-                                 alt="Biometric Intensity Heatmap" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Biometric updates demonstrate operational independence with state-specific campaign calendars.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_09_bio_intensity_heatmap.png"
+                                alt="Biometric Intensity Heatmap" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
                 </div>
@@ -247,7 +381,25 @@
                 <div class="alert-banner warning">
                     <i class="fas fa-exclamation-triangle"></i>
                     <div>
-                        <strong>Equity Concern:</strong> Children are systematically under-represented in update processes across ALL states, with deficits ranging from 5-40 percentage points.
+                        <strong>Equity Concern:</strong> Children are systematically under-represented in update
+                        processes across ALL states, with deficits ranging from 5-40 percentage points.
+                    </div>
+                </div>
+
+                <!-- Child Gap Chart -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>Child Attention Gap by State (Interactive)</h3>
+                        <div class="chart-actions">
+                            <button class="btn-primary" onclick="showCriticalDistricts()">
+                                <i class="fas fa-exclamation-circle"></i> View Critical Districts
+                            </button>
+                            <button class="btn-icon" onclick="downloadChart('childGapChart')" title="Download"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body chart-tall">
+                        <canvas id="childGapChart"></canvas>
                     </div>
                 </div>
 
@@ -257,12 +409,9 @@
                             <h3>Child Attention Gap by State</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_03_child_gap_state.png" 
-                                 alt="Child Gap by State" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Universal negative gaps indicate structural barriers to child-focused engagement.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_03_child_gap_state.png"
+                                alt="Child Gap by State" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
 
@@ -271,12 +420,8 @@
                             <h3>Distribution of Child Attention Gap</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_04_gap_distribution.png" 
-                                 alt="Gap Distribution" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Pronounced bimodality indicates policy fragmentation rather than gradual variation.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_04_gap_distribution.png"
+                                alt="Gap Distribution" class="chart-image" onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
                 </div>
@@ -287,12 +432,9 @@
                             <h3>Child Share: Enrolment vs Updates</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_05_child_share_scatter.png" 
-                                 alt="Child Share Scatter" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Near-universal clustering below parity line confirms systematic child exclusion.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_05_child_share_scatter.png"
+                                alt="Child Share Scatter" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
 
@@ -301,12 +443,9 @@
                             <h3>Minor Share: Demographic vs Biometric</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/core_06_minor_share_scatter.png" 
-                                 alt="Minor Share Scatter" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Minors face additional barriers in biometric updates relative to demographic corrections.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/core_06_minor_share_scatter.png"
+                                alt="Minor Share Scatter" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
                 </div>
@@ -319,44 +458,54 @@
                     <p>Administrative regime classification and district-level behavioral patterns</p>
                 </div>
 
+                <!-- Cluster Distribution Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>District Cluster Distribution</h3>
+                        <div class="chart-actions">
+                            <button class="btn-icon" onclick="downloadChart('clusterPieChart')" title="Download"><i
+                                    class="fas fa-download"></i></button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="clusterPieChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="chart-container large">
                     <div class="chart-header">
                         <h3>District Clusters: Enrolment vs Update Intensity</h3>
                     </div>
                     <div class="chart-body">
-                        <img src="../outputs/integrated_analysis/plots_final/core_07_district_clusters.png" 
-                             alt="District Clusters" 
-                             class="chart-image">
-                    </div>
-                    <div class="chart-footer">
-                        <p class="chart-caption">K-means clustering identifies 4 archetypal administrative regimes for differentiated monitoring.</p>
+                        <img src="../outputs/integrated_analysis/plots_final/core_07_district_clusters.png"
+                            alt="District Clusters" class="chart-image" onclick="openImageModal(this.src, this.alt)">
                     </div>
                 </div>
 
                 <!-- Cluster Legend -->
                 <div class="cluster-legend">
-                    <div class="cluster-item">
+                    <div class="cluster-item" onclick="filterByCluster(0)">
                         <span class="cluster-dot" style="background: #1e88e5;"></span>
                         <div>
-                            <strong>Cluster 0:</strong> Ongoing enrolment frontiers (frontier regions, recent formations)
+                            <strong>Cluster 0:</strong> Ongoing enrolment frontiers (frontier regions)
                         </div>
                     </div>
-                    <div class="cluster-item">
+                    <div class="cluster-item" onclick="filterByCluster(1)">
                         <span class="cluster-dot" style="background: #43a047;"></span>
                         <div>
-                            <strong>Cluster 1-2:</strong> Mature maintenance systems (modal administrative state)
+                            <strong>Cluster 1-2:</strong> Mature maintenance systems (modal state)
                         </div>
                     </div>
-                    <div class="cluster-item">
+                    <div class="cluster-item" onclick="filterByCluster(3)">
                         <span class="cluster-dot" style="background: #fb8c00;"></span>
                         <div>
-                            <strong>Cluster 3:</strong> High-verification zones (urban centers, enforcement areas)
+                            <strong>Cluster 3:</strong> High-verification zones (urban centers)
                         </div>
                     </div>
-                    <div class="cluster-item">
+                    <div class="cluster-item" onclick="filterByCluster(4)">
                         <span class="cluster-dot" style="background: #e53935;"></span>
                         <div>
-                            <strong>Cluster 4:</strong> Dormant/saturated districts (remote areas, completed saturation)
+                            <strong>Cluster 4:</strong> Dormant/saturated districts (remote areas)
                         </div>
                     </div>
                 </div>
@@ -372,15 +521,12 @@
                 <div class="charts-grid two-column">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Demographic-Biometric Coupling Coefficients</h3>
+                            <h3>Demographic-Biometric Coupling</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/new_02_demo_bio_coupling.png" 
-                                 alt="Demo-Bio Coupling" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">Coupling reveals integrated vs siloed verification streams across districts.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/new_02_demo_bio_coupling.png"
+                                alt="Demo-Bio Coupling" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
 
@@ -389,21 +535,127 @@
                             <h3>Child Gap × Update Intensity Quadrants</h3>
                         </div>
                         <div class="chart-body">
-                            <img src="../outputs/integrated_analysis/plots_final/new_03_gap_intensity_quadrants.png" 
-                                 alt="Gap Intensity Quadrants" 
-                                 class="chart-image">
-                        </div>
-                        <div class="chart-footer">
-                            <p class="chart-caption">High-intensity, child-underserved districts are priority intervention targets.</p>
+                            <img src="../outputs/integrated_analysis/plots_final/new_03_gap_intensity_quadrants.png"
+                                alt="Gap Intensity Quadrants" class="chart-image"
+                                onclick="openImageModal(this.src, this.alt)">
                         </div>
                     </div>
                 </div>
 
-                <!-- Interpretation Warning -->
+                <!-- Correlation Matrix -->
+                <div class="chart-container large">
+                    <div class="chart-header">
+                        <h3>Key Metrics Correlation</h3>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="correlationChart"></canvas>
+                    </div>
+                </div>
+
                 <div class="alert-banner info">
                     <i class="fas fa-info-circle"></i>
                     <div>
-                        <strong>Interpretation Note:</strong> All analyses are descriptive characterizations of administrative interaction structure. Causal attribution and normative evaluation are explicitly avoided.
+                        <strong>Interpretation Note:</strong> All analyses are descriptive characterizations. Causal
+                        attribution and normative evaluation are explicitly avoided.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Tables Section -->
+            <section id="data" class="dashboard-section">
+                <div class="section-header">
+                    <h2>Data Tables</h2>
+                    <p>Explore raw data with sorting, filtering, and export capabilities</p>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="stateTable">State Summary</button>
+                    <button class="tab-btn" data-tab="criticalTable">Critical Districts</button>
+                    <button class="tab-btn" data-tab="clusterTable">Cluster Details</button>
+                </div>
+
+                <!-- State Summary Table -->
+                <div id="stateTable" class="table-container active">
+                    <div class="table-header">
+                        <h3>State-wise Summary</h3>
+                        <div class="table-actions">
+                            <button class="btn-secondary" onclick="exportTableCSV('stateDataTable')">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    <table id="stateDataTable" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>State</th>
+                                <th>Enrolments</th>
+                                <th>Demo Updates</th>
+                                <th>Bio Updates</th>
+                                <th>Total Updates</th>
+                                <th>Child Gap</th>
+                                <th>Intensity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stateTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Critical Districts Table -->
+                <div id="criticalTable" class="table-container">
+                    <div class="table-header">
+                        <h3>Top 20 Critical Child Gap Districts</h3>
+                        <div class="table-actions">
+                            <button class="btn-secondary" onclick="exportTableCSV('criticalDataTable')">
+                                <i class="fas fa-file-csv"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    <table id="criticalDataTable" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>State</th>
+                                <th>District</th>
+                                <th>Child Gap</th>
+                                <th>Severity</th>
+                                <th>Recommendation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="criticalTableBody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Cluster Details Table -->
+                <div id="clusterTable" class="table-container">
+                    <div class="table-header">
+                        <h3>Cluster Distribution Details</h3>
+                    </div>
+                    <div class="cluster-stats">
+                        <div class="cluster-stat-card">
+                            <h4>Cluster 0: Enrolment Frontiers</h4>
+                            <span class="stat-value">~80 districts</span>
+                            <p>Ongoing enrolment zones, frontier regions</p>
+                        </div>
+                        <div class="cluster-stat-card">
+                            <h4>Cluster 1-2: Mature Systems</h4>
+                            <span class="stat-value">~560 districts</span>
+                            <p>Modal administrative state, maintenance phase</p>
+                        </div>
+                        <div class="cluster-stat-card">
+                            <h4>Cluster 3: High Verification</h4>
+                            <span class="stat-value">~200 districts</span>
+                            <p>Urban centers, high compliance regions</p>
+                        </div>
+                        <div class="cluster-stat-card">
+                            <h4>Cluster 4: Dormant</h4>
+                            <span class="stat-value">~60 districts</span>
+                            <p>Remote areas, completed saturation</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -411,6 +663,46 @@
         </div>
     </main>
 
+    <!-- Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-overlay" onclick="closeImageModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="">
+            <p id="modalCaption"></p>
+        </div>
+    </div>
+
+    <!-- Critical Districts Modal -->
+    <div id="criticalModal" class="modal">
+        <div class="modal-overlay" onclick="closeCriticalModal()"></div>
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Critical Child Gap Districts</h3>
+                <button class="modal-close" onclick="closeCriticalModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="criticalModalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Metric Detail Modal -->
+    <div id="metricModal" class="modal">
+        <div class="modal-overlay" onclick="closeMetricModal()"></div>
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="metricModalTitle">Metric Details</h3>
+                <button class="modal-close" onclick="closeMetricModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="metricModalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
