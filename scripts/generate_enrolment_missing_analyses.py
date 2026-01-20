@@ -199,7 +199,7 @@ def create_gini_vs_child_share(df, concentration, output_dir):
     plot_data = concentration.merge(final_shares[['state', 'child_share']], on='state')
     
     # Calculate correlation
-    corr = plot_data['gini'].corr(plot_data['child_share'])
+    corr = plot_data['gini_pincode'].corr(plot_data['child_share'])
     
     # Plot
     fig, ax = plt.subplots(figsize=(10, 8))
@@ -229,9 +229,9 @@ def create_gini_vs_child_share(df, concentration, output_dir):
             )
     
     # Add correlation line
-    z = np.polyfit(plot_data['gini'], plot_data['child_share'], 1)
+    z = np.polyfit(plot_data['gini_pincode'], plot_data['child_share'], 1)
     p = np.poly1d(z)
-    x_line = np.linspace(plot_data['gini'].min(), plot_data['gini'].max(), 100)
+    x_line = np.linspace(plot_data['gini_pincode'].min(), plot_data['gini_pincode'].max(), 100)
     ax.plot(x_line, p(x_line), "r--", alpha=0.5, linewidth=2, label=f'Trend (r={corr:.3f})')
     
     # Styling
@@ -346,16 +346,16 @@ def create_volatility_vs_infrastructure(volatility, clusters, output_dir):
     
     # Merge volatility with cluster data
     plot_data = volatility.merge(
-        clusters[['state', 'district', 'total_enrol', 'avg_monthly_enrol']],
+        clusters[['state', 'district', 'total_enrol']],
         on=['state', 'district'],
         how='left'
     )
     
-    # Use average monthly enrolment as infrastructure proxy
-    plot_data = plot_data[plot_data['avg_monthly_enrol'] > 0].copy()
+    # Use total enrolment as infrastructure proxy
+    plot_data = plot_data[plot_data['total_enrol'] > 0].copy()
     
     # Calculate correlation
-    corr = plot_data['cv'].corr(plot_data['avg_monthly_enrol'])
+    corr = plot_data['cv'].corr(plot_data['total_enrol'])
     
     # Plot
     fig, ax = plt.subplots(figsize=(10, 8))
